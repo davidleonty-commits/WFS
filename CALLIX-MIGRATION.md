@@ -111,6 +111,45 @@ extracts the transcript), the fields are:
 - DESCRIPTION: `Recorder posts finished TikTok Wiz consultation calls here; Callix extracts the transcript and runs deal analysis.`
 - PROCESSING ACTION: `Analyze Call - extract transcript to AI deal analysis`
 
+## 5b. Why "Analyze Call on every call that day" does not solve it
+
+The proposal: set an endpoint's processing action to "Analyze Call, extract transcript to AI
+deal analysis" and push each of the day's calls through it.
+
+The blocker is enumeration, not transcription. Every report in section 2 opens by asking which
+calls happened in a window; `list_meetings` is 52 of the call sites, more than any other
+operation. A per-call analyze endpoint answers "tell me about this call" and cannot say which
+calls to ask about. The 6:30 PM publisher would not know how many consultations happened, and
+the show rate reports could not count live calls at all.
+
+Behind that, three more:
+
+- To POST the day's calls in, something must already hold them. If it does, that something is
+  the real Avoma replacement and Callix is a detour. If it does not, because the calls are
+  already inside Callix, there is nothing to send.
+- The result lands inside Callix, attached to a prospect or deal. A scheduled task still has
+  nothing to query.
+- It is the wrong analysis. These reports score against their own rubric: the 25-point
+  scorecard, the Decision Leadership matrix steps, the RED / GREEN / GREY / BLUE / ORANGE
+  buckets, `financially_qualified` with `dq_reason`, the CDPBC inputs. Callix's deal analysis is
+  its own product's opinion with its own schema. Substituting it would change every published
+  number and break the QA gates that check a score against its bucket rule. The Avoma swap kept
+  scoring inside the prompts deliberately; what is needed from Callix is the transcript, not an
+  analysis. Running analysis per call and discarding it also pays for work nobody reads.
+
+### The one test worth running
+
+Create the endpoint with the Analyze Call action, POST a single payload referencing a known
+call, and read the HTTP RESPONSE BODY, not only the Activity Log.
+
+- Response carries transcript text: that is a read path, one call at a time. Enumeration is
+  then the only gap, and the question for Callix narrows to "how do I list calls for a date".
+- Response is an acknowledgement (`{"ok": true}` or an id): dead end for reporting, established
+  in two minutes instead of a rebuild.
+
+Checked 2026-09-15: the closers' consultations are not reachable through any other connected
+source, so Callix is the only place they exist and this test decides the outcome.
+
 ## 6. The open question is now narrower
 
 Everything depends on whether call data can leave Callix at all:
