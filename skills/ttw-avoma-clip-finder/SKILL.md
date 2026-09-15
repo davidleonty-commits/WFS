@@ -1,15 +1,21 @@
 ---
 name: ttw-avoma-clip-finder
-description: Finds sales coaching clips from TikTok Wiz consultation calls by scoring how reps run the Decision Leadership Objection Matrix, then giving Caydo exact clip-in and clip-out anchors so the snippet is one click. Pulls call data from the Lovable WFS connector (calls_find_review_candidates, calls_get_analysis). Use when Caydo wants weekly clips, objection-handling clips, Great Demo or Missed Opportunity clips, or says "find this week's clips", "find clips", "run the clip finder", "find me 3 clips", or "who handled objections well this week", and when the weekly scheduled task fires. Always use it even when the request sounds simple, because rep identification, close vs no-close detection, the strict eligibility gate, and the verbatim anchor rule carry accuracy rules the output depends on.
+description: Finds sales coaching clips from TikTok Wiz consultation calls by scoring how reps run the Decision Leadership Objection Matrix, then giving Caydo exact clip-in and clip-out anchors so the snippet is one click. Pulls call data from Avoma (list_meetings, get_meeting_transcript, get_meeting_notes) and ranks the candidates itself. Use when Caydo wants weekly clips, objection-handling clips, Great Demo or Missed Opportunity clips, or says "find this week's clips", "find clips", "run the clip finder", "find me 3 clips", or "who handled objections well this week", and when the weekly scheduled task fires. Always use it even when the request sounds simple, because rep identification, close vs no-close detection, the strict eligibility gate, and the verbatim anchor rule carry accuracy rules the output depends on.
 ---
 
-# TTW Clip Finder (Lovable WFS)
+# TTW Clip Finder (Avoma)
 
 Finds teachable clips from TikTok Wiz consultation calls by scoring how a rep ran the Decision Leadership Objection Matrix, then delivers exact verbatim clip boundaries so Caydo can create the snippet in one highlight.
 
-Data source: the **Lovable WFS connector**. Two tools do the work:
-- `calls_find_review_candidates` returns the ranked calls to review (params: `brand` optional, `days_back` default 7 max 30, `limit` default 10 max 50). It already ranks by deal value, lead-score gaps, low rep score, and recency, so there is no manual pagination.
-- `calls_get_analysis` (param: `call_id`) returns, for one call, a 25-point scorecard, financial signals, close attempts, downsell, lead bucket, and the speaker transcript.
+Data source: **Avoma**, through the Avoma MCP connector (`list_meetings`, `get_meeting`, `get_meeting_transcript`, `get_meeting_notes`), or the REST API at `https://api.avoma.com/v1/...` with header `Authorization: Bearer $AVOMA_API_KEY` when the MCP is unavailable.
+
+This skill owns the candidate ranking. The old connector returned calls pre-ranked and pre-scored; Avoma returns neither, so the ranking below is run here, and every score comes from the transcript.
+
+**CANDIDATE RANKING (run after `list_meetings`, this replaces the old ranked feed):**
+1. Keep only real recorded closer consultations: subject contains "TikTok Wiz Consultation" (or the closer-consultation equivalent for the brand asked for), recorded duration strictly over 15 minutes, a transcript available.
+2. Drop setter introductions, S2C intros, team syncs, 1:1s, no-connects, voicemails and reschedules.
+3. Rank what survives by, in order: whether the call closed (a close and a clear no-close are both wanted, and the mix is set by the clip types below), the size of the deal discussed, how far the rep's handling fell short of the matrix on a no-close, and recency. Most recent first inside a tier.
+4. Cap the sweep at 50 candidates for a weekly run and pull transcripts only for the ones you will score.
 
 Target: 3 clips per week by default (Caydo may ask for a different count or mix, for example "3 good examples and 2 improvement points"). Two clip types, and the type controls which calls are even eligible:
 
@@ -28,44 +34,44 @@ The full scoring rubric, the 16 objections, the per-step 0-1-2 markers, and the 
 
 ## Step 1: Establish the window
 
-The window is expressed as `days_back` on `calls_find_review_candidates`.
-- Default weekly run: `days_back=7`.
-- "today and yesterday": `days_back=2`. "this week": `days_back=7`. "last two weeks": `days_back=14` (max 30).
-- Caydo is in Lehi, Utah (Mountain Time). If he names calendar dates, translate them to the smallest `days_back` that covers them and then drop anything outside the range after you pull.
-- If Caydo asks for one brand or one rep, pass `brand` and filter to that rep after the candidates come back.
+The window is a `from_date` / `to_date` pair on `list_meetings`, computed in Mountain Time.
+- Default weekly run: the last 7 days.
+- "today and yesterday": 2 days. "this week": 7 days. "last two weeks": 14 days (keep 30 as the practical ceiling).
+- Caydo is in Lehi, Utah (Mountain Time). If he names calendar dates, use those dates directly and drop anything outside the range after you pull.
+- If Caydo asks for one brand or one rep, filter by meeting subject (brand) and organizer email (rep) after the meetings come back.
 
 ## Step 2: List the calls to review
 
-1. Call `calls_find_review_candidates` with the chosen `days_back` and `limit` (use `limit=50` for a full weekly sweep, smaller for a tight window). Pass `brand` if Caydo named one.
-2. The response is already ranked and each candidate carries a `call_id` (uuid) used in the next step. There is no pagination to manage.
-3. If Caydo asked for a specific rep, keep only candidates for that rep.
+1. Call `list_meetings` over the window and PAGINATE to the end (the response carries a next page link; keep going until it is null). Avoma pages are small, so a week is several pages.
+2. Apply the CANDIDATE RANKING above. Each surviving meeting carries a `meeting_uuid` used in the next step.
+3. If Caydo asked for a specific rep, keep only that rep's meetings (match the organizer email, never the display name, since Avoma mislabels speakers and duplicate names exist).
 
 ## Step 3: Filter to scoreable consultations (STRICT)
 
-The connector surfaces review candidates, but still confirm each is a real closer consultation before scoring:
+The ranking surfaces review candidates, but still confirm each is a real closer consultation before scoring:
 - It is a closer **Consultation**, not a setter Introduction / intro call. The matrix does not apply to setter intros.
-- It has a usable speaker transcript in `calls_get_analysis`. No transcript means nothing to score.
+- It has a usable speaker transcript from `get_meeting_transcript`. No transcript means nothing to score.
 - It is a real, full-length pitch call, not a no-connect, voicemail, or reschedule. A long call is not proof of a real consultation, confirm from the transcript end-state.
 
 Keep a short operator list of what got dropped and why. It does not go in the output.
 
 ## Step 4: Reliability and the incomplete-run rule
 
-The connector can time out or error intermittently. For every call:
-- Retry a failed or timed-out `calls_find_review_candidates` or `calls_get_analysis` at least twice before giving up. The same `call_id` often succeeds on a retry.
-- If the connector throws an auth error, tell Caydo his Lovable WFS connector needs re-approving, then continue once it is back.
+Avoma can time out or error intermittently. For every call:
+- Retry a failed or timed-out `list_meetings` or `get_meeting_transcript` at least twice before giving up. The same `meeting_uuid` often succeeds on a retry.
+- If Avoma throws an auth error, tell Caydo the Avoma connector needs re-approving (or that `AVOMA_API_KEY` needs refreshing if you are on the REST path), then continue once it is back.
 
 Never silently drop a scoreable call. If an analysis cannot be pulled after retries, note it in the output as not yet scored rather than omitting it.
 
 ## Step 4b: Large transcripts (context safety)
 
-`calls_get_analysis` returns the full speaker transcript inline, and for a long consultation that payload can exceed the inline token limit and be saved to a file instead. When that happens, do NOT read the whole file into the main context. Hand the saved file path to a subagent and have it score the call against the rubric and return only the findings: rep by behavior, close status with the end-state quote, the per-step scores with verbatim evidence, and the candidate clip with verbatim CLIP IN / CLIP OUT anchors plus the timestamp of each anchor if the transcript carries timestamps. This keeps the full transcript out of the main context while preserving verbatim accuracy.
+`get_meeting_transcript` returns the full speaker transcript inline, and for a long consultation that payload can exceed the inline token limit and be saved to a file instead. When that happens, do NOT read the whole file into the main context. Hand the saved file path to a subagent and have it score the call against the rubric and return only the findings: rep by behavior, close status with the end-state quote, the per-step scores with verbatim evidence, and the candidate clip with verbatim CLIP IN / CLIP OUT anchors plus the timestamp of each anchor if the transcript carries timestamps. This keeps the full transcript out of the main context while preserving verbatim accuracy.
 
 ## Step 5: Pull and read each analysis
 
-1. For each kept candidate, call `calls_get_analysis` with its `call_id`.
-2. Score the matrix from the SPEAKER TRANSCRIPT, never from the scorecard summary alone. The transcript is where the permission ask, the relabel, the future pace, and whether the rep folded actually live.
-3. Use the analysis extras as cross-checks, not as the score: the 25-point scorecard, the `close attempts`, the `downsell` signal, and the `lead bucket` all help confirm close-vs-no-close and where the friction was, but the matrix score and the clip come from the transcript.
+1. For each kept candidate, call `get_meeting_transcript` with its `meeting_uuid` (and `get_meeting_notes` for the AI notes).
+2. Score the matrix from the SPEAKER TRANSCRIPT, never from the notes alone. The transcript is where the permission ask, the relabel, the future pace, and whether the rep folded actually live. There is no pre-computed scorecard any more: the 25-point score, close attempts, downsell and lead bucket are all derived here, from the transcript, against `references/decision-leadership-rubric.md`.
+3. Use the AI notes as a cross-check only, never as the score: they help confirm close-vs-no-close and point at where the friction was, but the matrix score and the clip come from the transcript.
 4. Work through candidates one at a time or in batches of no more than 5, summarizing each batch before loading more so the run does not blow past context.
 
 ## Step 6: Identify the rep by behavior, NEVER by the label
@@ -181,11 +187,11 @@ Open the run with a one-line summary: how many consultations were scanned, how m
 
 ## Delivery
 
-Default (scheduled or "send it"): send to Caydo's own Slack DM with `slack_send_message`, `channel_id` set to his user ID `U092C85GA4D`. Send the run summary as message one and the cards as message two. Split at a card boundary, never mid-card, only if a message would exceed about 5000 characters.
+Default (scheduled or "send it"): send to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` set to the director's Slack member ID (DIRECTOR_SLACK_ID). Send the run summary as message one and the cards as message two. Split at a card boundary, never mid-card, only if a message would exceed about 5000 characters.
 
 On-demand in a chat ("find me clips" while working together): show the cards inline in the conversation instead of the DM, unless Caydo asks for the DM.
 
-Optional: to log a clip as a formal call-review note for the Director to approve, use the Lovable WFS `calls_propose_review_note` tool (needs `call_id`, `rep_id`, a `summary`, and a `rationale`). This does not replace the Slack delivery, it is for when Caydo wants the note written to the review tracker.
+Optional: to log a clip as a formal call-review note, write it straight to the review tracker yourself (a Pipedrive note on the matching deal, or the coaching ledger the `sip-watch-loop` skill maintains) with the call, the rep, a summary and a rationale. The old proposal queue lived inside the retired Director Console, so there is nothing to approve any more: the write is the record. This does not replace the Slack delivery.
 
 The snippet itself is still created by hand where the recording lives: open the call, highlight from CLIP IN to CLIP OUT, create the snippet, and name it with the Clip title. The skill's job is to make that highlight unambiguous and correct.
 
@@ -193,4 +199,4 @@ The snippet itself is still created by hand where the recording lives: open the 
 
 ## Scheduled run (weekly)
 
-When the scheduled task fires, call `calls_find_review_candidates` with `days_back=7` and `limit=50`, pull each candidate with `calls_get_analysis`, score the full step sequence strictly against the rubric, pass every card through the accuracy gate, and deliver to the Slack DM unattended. The Lovable WFS and Slack connectors must be authorized in the task context. If a run returns no calls or cannot send, surface that as the failure rather than delivering an empty or padded report.
+When the scheduled task fires, call `list_meetings` over the last 7 days, rank the candidates per CANDIDATE RANKING (cap 50), pull each kept candidate with `get_meeting_transcript`, score the full step sequence strictly against the rubric, pass every card through the accuracy gate, and deliver to the Slack DM unattended. The Avoma and Slack connectors must be authorized in the task context. If a run returns no calls or cannot send, surface that as the failure rather than delivering an empty or padded report.

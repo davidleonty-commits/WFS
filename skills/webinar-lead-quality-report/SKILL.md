@@ -48,7 +48,7 @@ Capture per deal: deal id, title (the lead's full name), person name, status (op
 
 Never blend other funnels into a dated webinar's numbers. `Webinar S2C | Demo | Closer | 45min` is the setter-routed funnel, `Automated Webinar | Paid | Closer | 45min` is the evergreen funnel, and labels like `Youtube | Organic | Closer | 45min` are separate sources entirely. Each is its own cohort, run only when Caydo names it.
 
-If the search returns nothing, the label is probably wrong. Do not guess a nearby date. Run `oncehub_list_master_pages` to read the exact label text, since spacing in these labels is occasionally inconsistent, then retry once with the corrected string.
+If the search returns nothing, the label is probably wrong. Do not guess a nearby date. Read the exact label text from OnceHub (`GET https://api.oncehub.com/v2/master_pages` with header `API-Key: $ONCEHUB_API_KEY`, paginated to the end), since spacing in these labels is occasionally inconsistent, then retry once with the corrected string.
 
 ## Step 3: Establish the call window
 
@@ -170,7 +170,7 @@ Put `&nbsp;` on its own line between sections so Slack renders spacing.
 
 ## Delivery
 
-TEST MODE until Caydo explicitly declares this skill out of test mode: send output through the **Lovable WFS Slack connector** (`slack_schedule_message`, send-now) to Caydo's DM (@cayden, channel U092C85GA4D). Never the native Slack connector for sending, never a team channel while in test mode.
+TEST MODE until Caydo explicitly declares this skill out of test mode: send output with **`chat.postMessage`** on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), sent immediately, to the director's DM (channel = DIRECTOR_SLACK_ID). One sender only: never a personal user token, never a second sender, never a team channel while in test mode.
 
 Split at webinar-block boundaries if a message would exceed the roughly 3000-character Slack block cap, never mid-lead.
 

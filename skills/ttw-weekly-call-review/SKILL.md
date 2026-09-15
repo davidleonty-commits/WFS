@@ -32,15 +32,16 @@ Never present figures without saying how many rows were independently verified a
 Confirm the window per the rule above, then:
 
 ```
-mcp__Lovable_WFS_Slack__calls_list
-  from: <ISO start>   to: <ISO end>
-  min_duration_seconds: 1800     # consultations run over 30 minutes
-  limit: 500
+mcp__Avoma_MCP__list_meetings
+  from_date: <ISO start>   to_date: <ISO end>
+  page_size: 100
 ```
+
+Paginate to the end (follow the `next` link until it is null), then keep only recorded consultations over 1800 seconds, since consultations run over 30 minutes. If the Avoma MCP is unavailable, the same sweep is `GET https://api.avoma.com/v1/meetings/` with `{from_date, to_date, page, page_size}` and header `Authorization: Bearer $AVOMA_API_KEY`.
 
 The result usually exceeds the inline token cap and is written to a file. Parse it with python. Never read a whole persisted tool result into context.
 
-Resolve `rep_id` to names via `mcp__Lovable_WFS_Slack__reps_scoreboard`.
+Reps are identified by the meeting's **organizer email**, not by a connector rep id. Resolve an email to a name through the WFS Active Sales Team Roster sheet. Never join on a display name: the roster carries duplicate full names, and Avoma mislabels speakers.
 
 **Exclusions.** Drop internal team syncs and any calls run by the sales director themselves. They are not consultations and they distort every rate. State what you excluded.
 

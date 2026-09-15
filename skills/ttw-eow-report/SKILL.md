@@ -1,6 +1,6 @@
 ---
 name: ttw-eow-report
-description: Cayden's weekly End of Week sales report for TikTok Wiz: team KPIs, a prose rep summary, his call review activity, per rep Call Analysis graded against the five coaching categories, tactical themes, and the team touchpoint close. Manual run only, never scheduled. Cayden supplies a Closer Sales Dashboard screenshot plus any talking points, and every number comes from that screenshot. Never build a rep table. Weeks run Sunday through Friday. Always delivered through the WFS Lovable connector to Cayden's DM, never a channel. Use when he says "run the EOW report", "end of week report", "weekly sales summary", "build my Friday message", "weekly KPI recap", or sends a Sales Rep Table View screenshot. Always use it even when the ask sounds simple, because the five categories, the no dashes rule, the no table rule, first names only, the forward looking coaching frame, and DM only delivery are what he corrected and are easy to get wrong.
+description: Cayden's weekly End of Week sales report for TikTok Wiz: team KPIs, a prose rep summary, his call review activity, per rep Call Analysis graded against the five coaching categories, tactical themes, and the team touchpoint close. Manual run only, never scheduled. Cayden supplies a Closer Sales Dashboard screenshot plus any talking points, and every number comes from that screenshot. Never build a rep table. Weeks run Sunday through Friday. Always delivered with the Slack bot token to the director's DM, never a channel. Use when he says "run the EOW report", "end of week report", "weekly sales summary", "build my Friday message", "weekly KPI recap", or sends a Sales Rep Table View screenshot. Always use it even when the ask sounds simple, because the five categories, the no dashes rule, the no table rule, first names only, the forward looking coaching frame, and DM only delivery are what he corrected and are easy to get wrong.
 ---
 
 # TTW End of Week Report
@@ -16,17 +16,17 @@ The Friday leadership message. Always a DRAFT for Cayden to review and post hims
 1. **The dashboard screenshot.** Required. Nothing gets built without it.
 2. **Extra talking points.** Optional. Anything he wants worked into the report: a rep conversation he had, a leadership ask, a win, a policy change. Weave these into the section they belong in, in his voice. If he does not mention any, ask once whether he has anything to add before you build.
 
-## Hard rule 1: delivery is the WFS connector, DM only
+## Hard rule 1: one sender, DM only
 
-Every outbound message uses `mcp__Lovable_WFS_Slack__slack_schedule_message`.
+Every outbound message uses `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`).
 
-Parameters every time: `channel` = `"U092C85GA4D"`, `jitter_minutes` = `0`, `agent` = `"claude-eow-report"`, omit `send_at_mt` so it sends immediately. Confirm with `mcp__Lovable_WFS_Slack__slack_list_pending`.
+Parameters every time: `channel` = DIRECTOR_SLACK_ID (fill in your own Slack member ID), nothing scheduled so it sends immediately. Confirm from the return value: `ok` = true, a non-empty `ts`, and a returned `channel` matching DIRECTOR_SLACK_ID.
 
-- **Never** use `mcp__Slack__slack_send_message` or any other Slack send tool.
-- **Never** post to a channel. The only destination ever allowed is Cayden's DM, `U092C85GA4D`.
-- Only fallback if the send fails outright: `mcp__Lovable_WFS_Slack__slack_send_sos`, target `"U092C85GA4D"`.
+- **Never** a personal user token and never a second sender.
+- **Never** post to a channel. The only destination ever allowed is the director's DM, DIRECTOR_SLACK_ID.
+- If the send fails outright, retry `chat.postMessage` ONCE. There is no second sender, so a failed retry is reported, not worked around.
 
-Reading is separate from sending. Use the normal Slack read tools to gather source material from anywhere. Reading is unrestricted, sending is DM only.
+Reading is separate from sending. Use `conversations.history` and `conversations.replies` to gather source material from anywhere. Reading is unrestricted, sending is DM only.
 
 ## Hard rule 2: never fabricate the numbers
 
@@ -154,11 +154,11 @@ Read every figure **exactly as shown**. Do not recompute, round, or correct. Bla
 
 ## Avoma call review activity
 
-`list_team_usage_metrics`, from_date = Sunday 06:00Z, to_date = Saturday 06:00Z (MT midnight boundaries). On 403, fall back to `avoma_api`, path `/v1/engagement/`, same dates. Row `cayden.johnson@ttwhizprogram.com`. Duration as hours and minutes, never raw seconds.
+`list_team_usage_metrics`, from_date = Sunday 06:00Z, to_date = Saturday 06:00Z (MT midnight boundaries). On 403, fall back to the Avoma REST API directly: `GET https://api.avoma.com/v1/engagement/` with the same dates and header `Authorization: Bearer $AVOMA_API_KEY`. Row = the director's own Avoma account email (the outgoing director's was `cayden.johnson@ttwhizprogram.com`). Duration as hours and minutes, never raw seconds.
 
 ## QA gate, before every send
 
-1. Destination is `U092C85GA4D` and the tool is `slack_schedule_message`. No channel, no other send tool.
+1. Destination is DIRECTOR_SLACK_ID and the call is `chat.postMessage` on the bot token. No channel, no second sender.
 2. No rep table and no code block of rep metrics anywhere.
 3. Zero dash characters except the name separator hyphens in Call Analysis.
 4. Every Call Analysis bullet lands on one of the five categories, introduces it in Cayden's words rather than as a bare label, varies that lead in across reps, and says what the rep needs to **do**. If a bullet describes what went wrong instead of what to fix, rewrite it.

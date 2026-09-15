@@ -9,8 +9,10 @@ Treat this as a data-quality gate, not a nicety.
 Primary route, always try first:
 
 ```
-mcp__Lovable_WFS_Slack__calls_get_analysis  call_id: <uuid>
+mcp__Avoma_MCP__get_meeting_transcript  uuid: <meeting_uuid>
 ```
+
+**Pagination is mandatory**: loop on `next_cursor`, passing it back unchanged, until `has_more` is false. A single call truncates by 20 to 25 percent, and the close is at the end.
 
 The output is large and usually persists to a file. Extract with python rather than reading the whole thing:
 
@@ -20,27 +22,26 @@ python3 -c "
 import json
 raw=json.load(open('<PERSISTED_PATH>'))
 d=json.loads(raw[0]['text']) if isinstance(raw,list) else raw
-print('id', d.get('id'), '| title', d.get('title'))
-print('avoma', d.get('avoma_meeting_id'), '| dur_s', d.get('duration_seconds'))
+print('uuid', d.get('meeting_uuid') or d.get('uuid'))
 open('<scratch>/<TAG>/<CALL_ID>.txt','w').write(d.get('transcript') or '')
 print('tlen', len(d.get('transcript') or ''))
 "
 ```
 
-**Always confirm the returned `id` matches the call_id you asked for** before scoring anything.
+**Always confirm the returned meeting uuid matches the one you asked for** before scoring anything.
 
-## When the WFS transcript is null
+## When the MCP transcript is unavailable
 
-A meaningful share of records return `transcript: null` even with `processing_status: notes_available`. This is a WFS ingestion gap, not data loss. Avoma still has them.
+The Avoma MCP is intermittently blocked (403) and some meetings return notes before the transcript finishes processing.
 
 Fallback order:
 
-1. `mcp__Avoma_MCP__get_meeting_transcript` with `uuid` = the record's `avoma_meeting_id`. **Pagination is mandatory**: loop on `next_cursor`, passing it back unchanged, until `has_more` is false. A single call truncates by 20 to 25 percent, and the close is at the end.
-2. If that tool is unavailable or returns 403 (it has been intermittently blocked), use the WFS passthrough:
-   `mcp__Lovable_WFS_Slack__avoma_api` on `/v1/transcriptions/` with `from_date` and `to_date`.
+1. Retry `get_meeting_transcript` once; a transcript that was still processing often lands on the second attempt.
+2. If the tool is unavailable or returns 403, call the REST API directly:
+   `GET https://api.avoma.com/v1/transcriptions/` with `from_date` and `to_date`, header `Authorization: Bearer $AVOMA_API_KEY`.
    **Its `meeting` filter is silently ignored.** Narrow the date window to the call, page through, and match on `meeting_uuid` yourself.
 
-If neither source has it, mark the row NA with `data_quality: "no transcript in WFS or Avoma"` and exclude it from bucket rates. Say so in the report rather than guessing.
+If neither route has it, mark the row NA with `data_quality: "no transcript in Avoma"` and exclude it from bucket rates. Say so in the report rather than guessing.
 
 ## The completeness check
 
