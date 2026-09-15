@@ -112,7 +112,7 @@ Record R, C, D, |I|, B, and both percentages for STEP 4 and the QA gate. Any cav
 =====================================================
 STEP 2: Count today's live calls + per-rep breakdown (Avoma MCP) READ-ONLY
 =====================================================
-Use the Avoma MCP: get_current_datetime, then list_meetings (meeting_state=completed) across the full Mountain-Time day (query UTC window from that day 06:00Z to next day 06:00Z), paginating all pages (page_size caps at 10; if the day spans many pages, run the retrieval and filtering in a subagent and return only the qualifying list). Never modify anything in Avoma.
+Use the Avoma MCP: anchor now from the system clock (`TZ=America/Denver date`), then list the completed calls across the full Mountain-Time day (query UTC window from that day 06:00Z to next day 06:00Z), paginating all pages (page_size caps at 10; if the day spans many pages, run the retrieval and filtering in a subagent and return only the qualifying list). Never modify anything in Avoma.
 
 TITLE NORMALIZATION (L7, owner-directed 2026-07-09) - apply BEFORE any title test:
   norm = title, lowercased, with ALL spaces, commas, hyphens and periods removed.

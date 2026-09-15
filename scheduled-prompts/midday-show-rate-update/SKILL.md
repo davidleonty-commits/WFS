@@ -54,7 +54,7 @@ HARD RULES (never violate)
 =====================================================
 STEP 0: Startup
 =====================================================
-Check the day of week from the system date. If Saturday or Sunday, produce no output and end. Only proceed Monday through Friday. Confirm OnceHub access (`GET https://api.oncehub.com/v2/master_pages` returning rows, header `API-Key: $ONCEHUB_API_KEY`), the Avoma MCP (list_meetings, get_meeting_transcript, get_current_datetime), and Slack send access (an `auth.test` call returning ok on the bot token) are reachable; if one is down, that is a SELF-HEAL condition (and if it stays down all run, a last-resort condition). Do NOT fall back to a browser for any data.
+Check the day of week from the system date. If Saturday or Sunday, produce no output and end. Only proceed Monday through Friday. Confirm OnceHub access (`GET https://api.oncehub.com/v2/master_pages` returning rows, header `API-Key: $ONCEHUB_API_KEY`), the Avoma MCP (list_meetings, get_meeting_transcript), and Slack send access (an `auth.test` call returning ok on the bot token) are reachable; if one is down, that is a SELF-HEAL condition (and if it stays down all run, a last-resort condition). Do NOT fall back to a browser for any data.
 
 =====================================================
 OBJECTIVE
@@ -74,7 +74,7 @@ Core principles:
 =====================================================
 STEP 1: Read today's scheduled closer calls, TIME-SLICED (OnceHub, via its REST API)
 =====================================================
-First determine NOW: get the current time (use Avoma get_current_datetime for a reliable clock, which returns UTC; if it times out, use any reliable runtime clock) and express it as an ET timestamp with the correct offset (-04:00 EDT / -05:00 EST). Call this NOW_ET.
+First determine NOW: get the current time from the system clock (`date -u`, then convert) and express it as an ET timestamp with the correct offset (-04:00 EDT / -05:00 EST). Call this NOW_ET.
 
 Sweep `GET /v2/bookings` for TODAY once, paginated to the end, with status in ["scheduled","rescheduled","completed","no-show"] (excludes canceled) and `starting_time` inside today ET, then derive TWO slices from those same rows by `starting_time`:
 - TOTAL: starting_time from today 00:00:00 ET to today 23:59:59 ET. This yields each bucket's attributed Total for today.
@@ -116,7 +116,7 @@ SOURCE-CONDITION CHECK: if either OnceHub call errors or the TOTAL call returns 
 =====================================================
 STEP 2: Count today's live calls + per-rep breakdown + capture the qualifying set (Avoma MCP)
 =====================================================
-Use the Avoma MCP: get_current_datetime (also reused for NOW_ET above), then list_meetings (meeting_state=completed) across the full Mountain-Time day (query UTC window from that day 06:00Z to next day 06:00Z), paginating all pages (page_size caps at 10; if the day has many pages, run the retrieval and filtering in a subagent and return only the qualifying list).
+Use the Avoma MCP: list_meetings (meeting_state=completed) across the full Mountain-Time day (query UTC window from that day 06:00Z to next day 06:00Z), paginating all pages (page_size caps at 10; if the day has many pages, run the retrieval and filtering in a subagent and return only the qualifying list).
 
 COMMON GATES (apply to every candidate): recording duration strictly greater than 15:00 / 900 seconds (exclude exactly 15:00 and any row with null/no recording duration); dated today; meeting_state completed; title does NOT contain "sync" (case-insensitive); NOT prefixed "CANCELED -"; NOT an "Introduction"/intro call; NOT a "TikTok Shop" call (that is a different product, never Wiz).
 

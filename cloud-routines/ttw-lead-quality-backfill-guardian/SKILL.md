@@ -25,7 +25,7 @@ HARD RULES
 TIMEZONE: Work in Mountain Time (America/Denver, currently UTC-6). Compute "today" in MT. This task fires about 02:30 UTC Tue-Sat, i.e. about 20:30 MT Mon-Fri, roughly 2 hours after the publisher's 00:30 UTC run, so the day the publisher just scored is included below.
 
 STEP 1 - SCOPE THE DAYS
-Call Avoma get_current_datetime to anchor now in UTC, convert to MT. Build TARGET_DAYS = every calendar date in the last 7 days (inclusive of today MT) whose weekday is Monday-Friday MT. Skip Saturday and Sunday MT entirely (no calls expected). Check each target day independently.
+Anchor now from the system clock (`date -u`), convert to MT. Build TARGET_DAYS = every calendar date in the last 7 days (inclusive of today MT) whose weekday is Monday-Friday MT. Skip Saturday and Sunday MT entirely (no calls expected). Check each target day independently.
 
 STEP 2 - PER DAY, DERIVE THE AVOMA QUALIFYING SET
 For each MT weekday D:

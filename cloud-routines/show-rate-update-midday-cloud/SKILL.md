@@ -57,12 +57,12 @@ HARD RULES (never violate)
 =====================================================
 STEP 0: Startup
 =====================================================
-Compute the current day of week explicitly in America/Denver (read a reliable UTC clock via Avoma get_current_datetime and convert; NEVER use the session/UTC day, since cloud runs may execute in UTC). If Saturday or Sunday in America/Denver, produce no output and end. Proceed Monday through Friday only.
-Confirm OnceHub access (`GET https://api.oncehub.com/v2/master_pages` returning rows, header `API-Key: $ONCEHUB_API_KEY`), list_meetings and get_current_datetime (Avoma MCP), and Slack send access (an `auth.test` call returning ok on the bot token) are reachable; if one is down, that is a SELF-HEAL condition (and if down all run, a last-resort condition). Never fall back to a browser for any data.
+Compute the current day of week explicitly in America/Denver (read the clock explicitly in that zone (`TZ=America/Denver date +%A`); NEVER use the session/UTC day, since cloud runs may execute in UTC). If Saturday or Sunday in America/Denver, produce no output and end. Proceed Monday through Friday only.
+Confirm OnceHub access (`GET https://api.oncehub.com/v2/master_pages` returning rows, header `API-Key: $ONCEHUB_API_KEY`), list_meetings (Avoma MCP), and Slack send access (an `auth.test` call returning ok on the bot token) are reachable; if one is down, that is a SELF-HEAL condition (and if down all run, a last-resort condition). Never fall back to a browser for any data.
 
-AVOMA ACCESS FALLBACK (method, not policy; allowed by HARD RULE 7): If ANY native Avoma MCP tool (list_meetings, get_current_datetime) errors or is unreachable (e.g. 403 mcp_request_blocked, 502, "MCP server not connected"), retry once, then access the SAME Avoma data through the Avoma REST API directly instead of treating Avoma as down. Avoma stays the source of truth for live counts; this is only a different access METHOD, and is NOT a SELF-HEAL last-resort condition. REST usage (header `Authorization: Bearer $AVOMA_API_KEY`, GET only):
+AVOMA ACCESS FALLBACK (method, not policy; allowed by HARD RULE 7): If ANY native Avoma MCP tool (list_meetings) errors or is unreachable (e.g. 403 mcp_request_blocked, 502, "MCP server not connected"), retry once, then access the SAME Avoma data through the Avoma REST API directly instead of treating Avoma as down. Avoma stays the source of truth for live counts; this is only a different access METHOD, and is NOT a SELF-HEAL last-resort condition. REST usage (header `Authorization: Bearer $AVOMA_API_KEY`, GET only):
 - Meetings: `GET https://api.avoma.com/v1/meetings/` with query {from_date, to_date, page, page_size:100}. The API caps ~10 rows per page, so paginate by incrementing page until `next` is null. Qualify calls with the same rules as STEP 2 (state completed, duration > 900s, title contains a TikTok Wiz Consultation, exclude Introductions/sync/TikTok Shop/CANCELED). Note that duration is null for scheduled/not-yet-held calls and "not_recorded"/silent recordings have duration 0; both are excluded.
-- Clock: if get_current_datetime is down, read a reliable UTC clock from the system and convert to America/Denver and America/New_York (never use the raw session/UTC day for the weekday test).
+- Clock: the clock is the system clock, read explicitly in each zone (`TZ=America/Denver date`, `TZ=America/New_York date`); never use the raw session/UTC day for the weekday test.
 Only if BOTH the native Avoma MCP AND the Avoma REST API are down for the whole run is Avoma a last-resort condition.
 
 =====================================================
@@ -76,7 +76,7 @@ OnceHub active counts (statuses scheduled, rescheduled, completed, no-show; canc
 =====================================================
 STEP 1: Scheduled closer calls, TIME-SLICED (OnceHub)
 =====================================================
-Determine NOW: read the clock via Avoma get_current_datetime (returns UTC) and express it as an ET timestamp with the correct offset. Call this NOW_ET.
+Determine NOW: read the system clock (`date -u`) and express it as an ET timestamp with the correct offset. Call this NOW_ET.
 Sweep `GET /v2/bookings` for TODAY once, paginated to the end, with status = ["scheduled","rescheduled","completed","no-show"], then derive TWO slices from those same rows by `starting_time`, identical except the upper bound:
 - CALL TOTAL: date_from = today 00:00:00 ET, date_to = today 23:59:59 ET.
 - CALL SO-FAR: date_from = today 00:00:00 ET, date_to = NOW_ET.

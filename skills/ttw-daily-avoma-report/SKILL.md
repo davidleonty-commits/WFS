@@ -15,7 +15,7 @@ The closers are Vidush Rana, Tom Judson, Crue Lindgren, Turok Tarango, and Paul 
 
 ## Step 1: Establish the day window
 
-1. Call `get_current_datetime` to anchor the run.
+1. Anchor the run on the system clock (`TZ=America/Denver date`).
 2. The director works in Mountain Time (America/Denver). Build the local-day window in UTC: from the target date at 06:00:00Z through the next date at 05:59:59Z. That covers 00:00 to 23:59 local. Adjust by one hour across daylight-saving boundaries.
 
 ## Step 2: List the day's meetings

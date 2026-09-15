@@ -159,7 +159,7 @@ IMPORTANT: the cancel and reschedule slices can surface Webinar Closer pages abs
 =====================================================
 STEP 2: Today's live calls + per-rep breakdown (Avoma MCP, READ-ONLY)
 =====================================================
-get_current_datetime, then list_meetings (meeting_state=completed) across the full Mountain-Time day (UTC window from that day 06:00Z to next day 06:00Z), paginating all pages. page_size caps at 10 and busy days span many pages: run retrieval and filtering in a SUBAGENT that returns only the qualifying list (title, duration, date, organizer/host) as QA evidence. Never modify anything in Avoma.
+anchor now from the system clock (`TZ=America/Denver date`), then list the completed calls across the full Mountain-Time day (UTC window from that day 06:00Z to next day 06:00Z), paginating all pages. page_size caps at 10 and busy days span many pages: run retrieval and filtering in a SUBAGENT that returns only the qualifying list (title, duration, date, organizer/host) as QA evidence. Never modify anything in Avoma.
 
 TITLE NORMALIZATION - apply BEFORE any title test:
   norm = title, lowercased, with ALL spaces, commas, hyphens and periods removed.
