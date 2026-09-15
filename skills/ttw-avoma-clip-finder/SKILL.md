@@ -187,7 +187,7 @@ Open the run with a one-line summary: how many consultations were scanned, how m
 
 ## Delivery
 
-Default (scheduled or "send it"): send to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` set to the director's Slack member ID (DIRECTOR_SLACK_ID). Send the run summary as message one and the cards as message two. Split at a card boundary, never mid-card, only if a message would exceed about 5000 characters.
+Default (scheduled or "send it"): send to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` set to the director's Slack member ID (DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>). Send the run summary as message one and the cards as message two. Split at a card boundary, never mid-card, only if a message would exceed about 5000 characters.
 
 On-demand in a chat ("find me clips" while working together): show the cards inline in the conversation instead of the DM, unless Caydo asks for the DM.
 

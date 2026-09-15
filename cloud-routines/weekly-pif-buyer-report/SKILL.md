@@ -14,7 +14,7 @@ MISSION
 Profile every TikTok Wiz deal that closed PAID IN FULL during the past week, and send the marketing team a written Slack post describing who those buyers were, what pain drove them, and what closed them. PIF buyers are the highest-margin, lowest-risk segment, so marketing's job is to find more of them.
 Accuracy beats completeness. A blank field is acceptable. A fabricated field is a task failure. ALWAYS publish the confirmed paid-in-full buyers you have this week, even if some are missing a call and even if only a couple qualify. Note what is missing rather than holding the report. Confirmed paid in full is defined by the money: the balance remaining is fully collected, no matter how many payments it took.
 MODE
-TEST MODE is currently active. Deliver only to the director's Slack DM (channel = DIRECTOR_SLACK_ID; fill in your own Slack member ID before the first run).
+TEST MODE is currently active. Deliver only to the director's Slack DM (channel = DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>).
 LIVE MODE target, once Cayden explicitly declares this task out of test phase: post to the Slack channel #wfs-ttw-sales-mgmt-client with chat.postMessage on the workspace bot token.
 Do NOT post to #wfs-ttw-sales-mgmt-client until Cayden has explicitly said this task is live. If you are unsure which mode you are in, default to TEST and send to the DM.
 STANDING RULES

@@ -220,8 +220,8 @@ changes — Asana already logs those.
 
 Channel: **`chat.postMessage`** on the WFS Group workspace bot token (Slack MCP connector,
 or a direct POST to https://slack.com/api/chat.postMessage with header
-`Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` = DIRECTOR_SLACK_ID (fill in your own
-Slack member ID). Operational alerts go out immediately. If the send fails outright, retry
+`Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` = DIRECTOR_SLACK_ID
+<fill in: your own Slack member ID, for example U01234567>. Operational alerts go out immediately. If the send fails outright, retry
 it ONCE: there is no second sender, so a failed retry is reported in the pass summary
 instead.
 

@@ -20,7 +20,7 @@ The Friday leadership message. Always a DRAFT for Cayden to review and post hims
 
 Every outbound message uses `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`).
 
-Parameters every time: `channel` = DIRECTOR_SLACK_ID (fill in your own Slack member ID), nothing scheduled so it sends immediately. Confirm from the return value: `ok` = true, a non-empty `ts`, and a returned `channel` matching DIRECTOR_SLACK_ID.
+Parameters every time: `channel` = DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>, nothing scheduled so it sends immediately. Confirm from the return value: `ok` = true, a non-empty `ts`, and a returned `channel` matching DIRECTOR_SLACK_ID.
 
 - **Never** a personal user token and never a second sender.
 - **Never** post to a channel. The only destination ever allowed is the director's DM, DIRECTOR_SLACK_ID.
