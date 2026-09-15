@@ -35,7 +35,7 @@ TEAM_SYNC_ORGANIZER: cayden.johnson@thewfsgroup.com
 =====================================================
 HARD RULES
 =====================================================
-1. DATA SOURCE: all OnceHub data via the WFS OnceHub MCP tools, READ-ONLY (never create, edit, cancel, reschedule, or delete any OnceHub object). No browser, ever.
+1. DATA SOURCE: all OnceHub data via the OnceHub REST API, READ-ONLY (GET only) (never create, edit, cancel, reschedule, or delete any OnceHub object). No browser, ever.
 2. DELIVERY: all Slack delivery via `chat.postMessage` on the workspace bot token, NEVER a personal user token and never a second sender. In TEST the destination is ALWAYS TEST_TARGET, never LIVE_TARGET. Send exactly once.
 3. Never change, recompute, or substitute the Closer Capacity number; only source is CLOSER_CAPACITY in CONFIG.
 4. Never enter credentials; OnceHub auth is server-side.
@@ -183,4 +183,4 @@ On any QA failure, and on any pass that required one or more fix-and-recheck ret
 STEP 6: DELIVER AND RECORD (autonomous — no confirmation)
 =====================================================
 DELIVER (only after QA PASS): destination = TEST_TARGET if TEST, else LIVE_TARGET (never LIVE_TARGET in TEST). Call `chat.postMessage` with text = the report and channel = that destination. JITTER_MINUTES is 0, so send immediately; if it is ever set above 0, pick a random whole number of minutes in that range and use `chat.scheduleMessage` with post_at = now plus that offset instead. Send exactly once; capture the returned ts (or scheduled_message_id) and the resolved channel as the delivery proof.
-RECORD (run log): (a) full report text; (b) the two webinar dates used and why; (c) any partial-window flag; (d) QA verdict, any slice re-pulled, anything corrected / confirmed live-data change, and how many unattributed bookings were excluded; (e) any new/ambiguous master-page source; (f) delivery confirmation (queue id, channel, planned send time); (g) Team Sync Recap outcome — meeting found or not, notes vs transcript source used, included or omitted and why.
+RECORD (run log): (a) full report text; (b) the two webinar dates used and why; (c) any partial-window flag; (d) QA verdict, any slice re-pulled, anything corrected / confirmed live-data change, and how many unattributed bookings were excluded; (e) any new/ambiguous master-page source; (f) delivery confirmation (returned ts, resolved channel); (g) Team Sync Recap outcome — meeting found or not, notes vs transcript source used, included or omitted and why.

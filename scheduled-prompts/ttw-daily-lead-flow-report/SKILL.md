@@ -138,7 +138,7 @@ Only after QA PASS. Build the Slack message as an EXACT mirror of the report. Us
 =====================================================
 STEP 9: RECORD (autonomous — no confirmation)
 =====================================================
-Surface: (a) full report text; (b) the two webinar dates used and why; (c) any partial-window flag; (d) self-check results incl. how many unattributed bookings were excluded; (e) QA verdict and anything corrected / confirmed live-data change; (f) any new/ambiguous master-page source; (g) delivery confirmation (queue id, channel, planned send time); (h) whether the archive doc was updated or skipped; (i) which DATA METHOD was used per slice.
+Surface: (a) full report text; (b) the two webinar dates used and why; (c) any partial-window flag; (d) self-check results incl. how many unattributed bookings were excluded; (e) QA verdict and anything corrected / confirmed live-data change; (f) any new/ambiguous master-page source; (g) delivery confirmation (returned ts, resolved channel); (h) whether the archive doc was updated or skipped; (i) which DATA METHOD was used per slice.
 =====================================================
 PAGINATION NOTE — why the method above is written the way it is
 =====================================================

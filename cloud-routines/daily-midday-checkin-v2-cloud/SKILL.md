@@ -130,6 +130,6 @@ If TEST: the STEP 6 delivery already went to MEMORY_TARGET; nothing more needed.
 =====================================================
 STEP 8: Closing summary
 =====================================================
-Output the final message in chat, then a short summary: the day-of-week check passed; the eligible payments used and who each is credited to (or "quiet"); each setter's set count; confirmation the message avoided the last two check-ins' wording (or that anti-repetition was skipped and why); and the delivery result (DELIVERY_MODE, resolved destination, queue id and planned send time, plus the memory-copy queue id if LIVE). Do not ask a question; end with the summary.
+Output the final message in chat, then a short summary: the day-of-week check passed; the eligible payments used and who each is credited to (or "quiet"); each setter's set count; confirmation the message avoided the last two check-ins' wording (or that anti-repetition was skipped and why); and the delivery result (DELIVERY_MODE, resolved destination, the returned ts, plus the memory-copy ts if LIVE). Do not ask a question; end with the summary.
 
 Repeats: Weekdays at ~12:30 PM

@@ -158,4 +158,4 @@ Determine the destination from DELIVERY_MODE (TEST_TARGET if TEST, LIVE_TARGET i
 =====================================================
 STEP 7: Closing summary
 
-Output the report in chat, then a short summary: the day-of-week check passed; the three figures per qualifying rep; confirmation that QA re-counted with code and every section reconciled parts-to-whole; any rep in REP_SET that could not be resolved (flagged); and the delivery result (DELIVERY_MODE, the resolved destination, the connector's returned queue id and planned send time, and mentions_resolved). Do not ask a question; end with the summary.
+Output the report in chat, then a short summary: the day-of-week check passed; the three figures per qualifying rep; confirmation that QA re-counted with code and every section reconciled parts-to-whole; any rep in REP_SET that could not be resolved (flagged); and the delivery result (DELIVERY_MODE, the resolved destination, the returned ts and resolved channel, and any tagging warning). Do not ask a question; end with the summary.

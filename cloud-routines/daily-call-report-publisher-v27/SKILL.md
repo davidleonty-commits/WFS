@@ -75,7 +75,7 @@ Rules:
 
 SLACK DELIVERY RULE (all phases): every Slack SEND goes through `chat.postMessage` on the WFS Group workspace bot token and NOTHING ELSE (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header Authorization: Bearer $SLACK_BOT_TOKEN). Never a personal user token, never a second sender. Reads (`conversations.history`, `conversations.replies`) ARE allowed on the same token, used only for the duplicate guard and to verify delivery.
 
-DELIVERY STRUCTURE (verified method): the summary is ONE standalone DM message; every per-call block is a THREADED COMMENT under it. Use channel + thread_ts (parent_message_id does NOT reliably dispatch).
+DELIVERY STRUCTURE (verified method): the summary is ONE standalone DM message; every per-call block is a THREADED COMMENT under it. Use channel + thread_ts.
   1. Once QA passes, send Message 1 standalone via `chat.postMessage` with channel = DIRECTOR_SLACK_ID, sent immediately.
   2. Take Message 1's `ts` and the returned `channel` straight from that call's return value. An accepted send has already posted, so there is no queue to poll and no read-back needed for the ts.
   3. Confirm the return shows ok = true with a non-empty ts. That is the proof Message 1 posted as one top-level DM message.

@@ -1,11 +1,11 @@
 ---
 name: eod-show-rate-update
-description: Weekday 7pm MT end-of-day Webinar + S2C show rate report, connector-based (no browser): scheduled + booking-health counts from the WFS OnceHub MCP, live calls from Avoma MCP, full-day scheduled counts (NO halving). Also reports today's closer-call reschedules, cancellations, double bookings, and the scheduled-vs-category %. QA gate with self-healing fix loop, delivers via one chat.postMessage call on the workspace bot token. LIVE as of 07/09/26 to #wfs-ttw-sales-mgmt-client (client-facing).
+description: Weekday 7pm MT end-of-day Webinar + S2C show rate report, connector-based (no browser): scheduled + booking-health counts from the OnceHub API, live calls from Avoma MCP, full-day scheduled counts (NO halving). Also reports today's closer-call reschedules, cancellations, double bookings, and the scheduled-vs-category %. QA gate with self-healing fix loop, delivers via one chat.postMessage call on the workspace bot token. LIVE as of 07/09/26 to #wfs-ttw-sales-mgmt-client (client-facing).
 ---
 
 SCHEDULED TASK: Show Rate Report, End-of-Day, Webinar + S2C (v6: LIVE to the client-facing channel, OnceHub-sourced scheduled counts + closer Booking Health, fully connector-based, cloud-capable, autonomous, QA-gated with self-healing fix loop)
 
-MIGRATION (2026-07-07, owner-directed): scheduled counts come from the WFS OnceHub MCP, NOT the Leadflow Google Doc. The team no longer updates the Leadflow doc; the Lead Flow report is posted directly and is itself computed from OnceHub. This task reads the SAME OnceHub source with the SAME ET day boundary and status filter as the midday-show-rate-update and ttw-daily-lead-flow-report tasks so its scheduled numbers stay consistent. The old Leadflow-doc date-mismatch stop condition is RETIRED (there is no doc header to match anymore).
+MIGRATION (2026-07-07, owner-directed): scheduled counts come from the OnceHub API, NOT the Leadflow Google Doc. The team no longer updates the Leadflow doc; the Lead Flow report is posted directly and is itself computed from OnceHub. This task reads the SAME OnceHub source with the SAME ET day boundary and status filter as the midday-show-rate-update and ttw-daily-lead-flow-report tasks so its scheduled numbers stay consistent. The old Leadflow-doc date-mismatch stop condition is RETIRED (there is no doc header to match anymore).
 
 GO-LIVE (2026-07-09, owner-directed): DELIVERY_MODE is now LIVE and this report posts to #wfs-ttw-sales-mgmt-client, which the CLIENT reads. Owner confirmed the Booking Health section stays in the client-facing body. Accuracy standards are therefore higher than in TEST: an undercounted show rate is a credibility problem, not a nuisance. See L7 (title normalization) and L8 (closer pages that appear only in the cancel slice).
 
@@ -65,7 +65,7 @@ Core principles:
 - Closer calls only. Ignore all setter master pages/counts. The Booking Health metrics (STEP 1B) use this SAME closer universe (Webinar Closer pages + the two S2C Demo Closer pages); Setter and organic/automated closer sources are excluded from them too.
 
 =====================================================
-STEP 1: Read today's scheduled closer calls (OnceHub, via the WFS OnceHub MCP) READ-ONLY
+STEP 1: Read today's scheduled closer calls (OnceHub, via its REST API) READ-ONLY
 =====================================================
 Pull today's active bookings with ONE fully paginated `GET /v2/bookings` sweep, then group by master page in code:
 - slice on starting_time
@@ -192,7 +192,7 @@ STEP 7: Deliver + run output (only after QA passes)
 =====================================================
 Deliver per the DELIVERY block: make ONE `chat.postMessage` call with text = the STEP 5 Slack body (clean body only) and channel = the DELIVERY_MODE destination (LIVE_TARGET while LIVE), sent immediately. Send exactly once.
 DELIVERY VERIFICATION (the run is NOT complete until this passes): (1) the call returned ok = true with a non-empty ts; (2) the returned channel matches the DELIVERY_MODE destination (while LIVE it MUST be #wfs-ttw-sales-mgmt-client; while TEST it MUST be the director's DM, never a channel); (3) one `conversations.history` read of that destination (limit 2) shows the message, as a content spot-check (the title line and a couple of figures). NOTE (L5): (1) and (2) are the delivery proof. A read that does not show the message is a read problem, never evidence of non-delivery, and never a reason to resend. If (1) or (2) fails: re-check the exact channel value from CONFIG, send once more, and re-verify. If it still fails, do NOT report success: report the exact failure in the run output (and to the director's DM if Slack is reachable at all) so the operator knows the report was not delivered.
-Then report in your run output: the queue id, resolved channel label, planned send time; the QA result (PASS and how many self-heal cycles ran, or the last-resort failure detail); any LESSONS LEDGER entries added this run; and any data flags (unattributed bookings excluded, new/ambiguous master-page source, zero-bookings flag, N/A show rate, blank-name bookings skipped in the double-booking match, week pull pagination caveats, titles matched via the "whiz"/no-space variant, ambiguous reschedule/double pairs, etc.). Never make more than one report delivery call per run.
+Then report in your run output: the returned ts and resolved channel; the QA result (PASS and how many self-heal cycles ran, or the last-resort failure detail); any LESSONS LEDGER entries added this run; and any data flags (unattributed bookings excluded, new/ambiguous master-page source, zero-bookings flag, N/A show rate, blank-name bookings skipped in the double-booking match, week pull pagination caveats, titles matched via the "whiz"/no-space variant, ambiguous reschedule/double pairs, etc.). Never make more than one report delivery call per run.
 
 =====================================================
 LESSONS LEDGER (append-only; each entry prevents a recurrence)
