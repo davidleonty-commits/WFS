@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "oncehub": {
+      "type": "sse",
+      "url": "https://mcp.oncehub.com/sse",
+      "headers": {
+        "API-Key": "${ONCEHUB_API_KEY}"
+      }
+    }
+  }
+}

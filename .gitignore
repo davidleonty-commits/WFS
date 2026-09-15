@@ -1,0 +1,7 @@
+# Local Claude Code overrides. Holds real credentials (ONCEHUB_API_KEY and
+# friends), so it must never be committed.
+.claude/settings.local.json
+
+# Local env files, same reason.
+.env
+.env.local

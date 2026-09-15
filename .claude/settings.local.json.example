@@ -1,0 +1,8 @@
+{
+  "env": {
+    "ONCEHUB_API_KEY": "your-oncehub-api-key",
+    "SLACK_BOT_TOKEN": "xoxb-your-workspace-bot-token",
+    "AVOMA_API_KEY": "your-avoma-key-if-still-used",
+    "PIPEDRIVE_API_TOKEN": "your-pipedrive-token"
+  }
+}

@@ -67,7 +67,30 @@ different destination. `msg_too_long` means the 3000-character body cap was miss
 
 ## 2. OnceHub
 
-`GET https://api.oncehub.com/v2/<resource>` with header `API-Key: $ONCEHUB_API_KEY`.
+Two ways in, same credential.
+
+**MCP (configured in this repo).** `.mcp.json` registers a project-scoped server:
+
+```json
+{ "mcpServers": { "oncehub": {
+  "type": "sse",
+  "url": "https://mcp.oncehub.com/sse",
+  "headers": { "API-Key": "${ONCEHUB_API_KEY}" }
+} } }
+```
+
+The key is read from the environment, never committed. Put it in
+`.claude/settings.local.json` (gitignored; copy `.claude/settings.local.json.example`).
+Claude Code asks you to approve a project MCP server the first time it loads it.
+
+Two notes on the vendor's own docs, which contradict themselves: the prose says the header is
+`API-Key: <key>` while their sample config shows `authorization: Bearer <key>`. This repo uses
+`API-Key`, matching the prose and the REST convention below. If the server rejects it, swap to
+`"Authorization": "Bearer ${ONCEHUB_API_KEY}"`. Likewise their sample says `"type": "http"` for
+a `/sse` URL; if `sse` fails to connect, try `http`.
+
+**Direct REST (what the prompts use).** `GET https://api.oncehub.com/v2/<resource>` with header
+`API-Key: $ONCEHUB_API_KEY`.
 Every list endpoint is cursor-paginated: follow `next` until it is null. A partial sweep is
 never a publishable number.
 
