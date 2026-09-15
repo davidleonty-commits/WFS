@@ -6,10 +6,14 @@ cron_utc: "0 22 * * 6"
 enabled_at_handoff: True
 model: claude-opus-5
 created: 2026-08-19
-connectors_attached: Alpha_Vantage_MCP_Server, Asana, Avoma_MCP, Canva, Claude_Code_Remote, ClickUp, Excalidraw, Google_Calendar, Google_Drive, HyperFrames_by_HeyGen, Just_Call, Lovable, Lovable_WFS_Slack, Pipedrive_MCP, RobinHood, Slack, Supabase
+connectors_required: Avoma_MCP, Slack, Google_Drive
 ---
 
 Run the weekly TikTok Wiz sales call review report.
+
+CONFIG
+DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567. The completion DM goes here and nowhere else.>
+SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 
 Invoke the `ttw-weekly-call-review` skill and follow it end to end. This is an unattended scheduled run: do not stop to ask clarifying questions or wait for confirmation at the skill's normal checkpoints. Make the reasonable call, state the assumption in your final summary, and keep going.
 
@@ -24,7 +28,8 @@ Standing constraints (these are non-negotiable and carry over from prior runs)
 - Bucket grading follows `references/bucket-definitions.md` exactly. RED requires an affirmative financial reference in the lead's own words. An unrun application is not evidence of inability. GREY means funding, credit, affordability, and income were never established at all. Watch the Michelle Wilbur failure mode: a constraint on credit access is not the same as a lack of money.
 
 Data sources
-- Use the WFS connector (`mcp__Lovable_WFS_Slack__*`) as the primary source: `calls_list` for the window, `calls_get_analysis` per call. When `transcript` comes back null, fall back to `mcp__Avoma_MCP__get_meeting_transcript` with the `avoma_meeting_id`, and if that is 403-blocked use the WFS `avoma_api` passthrough on `/v1/transcriptions/` (the `meeting` filter is silently ignored there, so page through and match `meeting_uuid` manually).
+- Avoma is the source for all call data. List the window with `mcp__Avoma_MCP__list_meetings`, then pull each call with `mcp__Avoma_MCP__get_meeting_transcript` (plus `get_meeting_notes` for context). If a native Avoma tool is 403-blocked or unreachable, call the Avoma REST API directly with the same date window: `GET https://api.avoma.com/v1/meetings/` with `{from_date, to_date, page, page_size}` and `GET /v1/transcriptions/` with `from_date` and `to_date`, header `Authorization: Bearer $AVOMA_API_KEY` (the `meeting` filter is silently ignored on transcriptions, so page through and match `meeting_uuid` manually).
+- There is no pre-scored call object any more: the old connector returned a scorecard alongside the transcript, and Avoma does not. Grade every call from the transcript itself using the skill's own rubric and `references/bucket-definitions.md`. The grading rules are unchanged, only who runs them is.
 
 Deliverables
 1. The two-tab workbook (Data + Report) built per `references/report-spec.md`, with full-row bucket color coding, the Bucket Mix by Rep block showing RED % (not GREY %), and the FDQ opportunity-cost model at $6,400 net per deal. Recalculate formulas before shipping.
@@ -36,10 +41,10 @@ DO NOT SEND THE MANAGEMENT-TEAM SLACK MESSAGE. Cayden sends that one himself. Dr
 Also: keep any compliance findings out of the Slack draft. Report those separately in your response to Cayden.
 
 Final step, required: DM Cayden on Slack when the run is complete
-- After the report is finished and delivered, send Cayden a Slack DM using `mcp__Lovable_WFS_Slack__slack_schedule_message` with `channel` set to "@cayden" (his Slack user ID is U092C85GA4D if the handle does not resolve), `jitter_minutes` set to 0, and `send_at_mt` omitted so it goes out immediately.
+- After the report is finished and delivered, send the director a Slack DM with `chat.postMessage`, `channel` = DIRECTOR_SLACK_ID, nothing scheduled so it goes out immediately.
 - This DM is separate from the management-team draft above and IS meant to be sent. It is a completion notice to Cayden only. Do not post it to a channel.
 - Keep it to a few lines: the report is ready, the date window covered, call count and gradeable count, close count and close rate, average rep score, FDQ percentage, the estimated FDQ opportunity cost, the Google Sheet link, and a note that the management-team Slack draft is waiting in the session for him to review and send. Flag any QA gate failure or compliance finding in one line so he knows to open the session.
-- Send this DM even if the run had problems. If the report could not be completed, DM him saying what halted it and how far it got. If `slack_schedule_message` itself fails, fall back to `mcp__Lovable_WFS_Slack__slack_send_sos` with target U092C85GA4D.
-- Confirm the DM was queued (check the returned queue row id, or `slack_list_pending`) and say so in your final summary.
+- Send this DM even if the run had problems. If the report could not be completed, DM him saying what halted it and how far it got. If `chat.postMessage` fails outright, retry it ONCE after a short pause; there is no second sender.
+- Confirm the DM from the return value only (ok = true, a non-empty ts, and a returned channel matching DIRECTOR_SLACK_ID) and say so in your final summary.
 
 Finish with a short summary: call count, gradeable count, close count and rate, average rep score, bucket counts with percentages, FDQ percentage, whether the completion DM went out, and anything that failed a QA gate or needed a judgment call.

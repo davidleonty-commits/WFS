@@ -6,7 +6,7 @@ cron_utc: "0 21 * * 5"
 enabled_at_handoff: False
 model: claude-opus-4-8
 created: 2026-07-24
-connectors_attached: Avoma_MCP, Canva, Claude_Code_Remote, ClickUp, Excalidraw, Google_Calendar, Google_Drive, HyperFrames_by_HeyGen, Just_Call, Lovable, Lovable_WFS_Slack, Pipedrive_MCP, Slack, Supabase
+connectors_required: Slack, Google_Drive
 ---
 
 # SCHEDULED TASK: Weekly QA Failure Review
@@ -20,7 +20,9 @@ CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules 
 =====================================================
 DELIVERY_MODE: TEST
   (TEST or LIVE. TEST sends only to TEST_TARGET, the owner's DM. Keep TEST until officially out of test mode.)
-TEST_TARGET: @cayden
+DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+TEST_TARGET: DIRECTOR_SLACK_ID
+SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 LIVE_TARGET: @cayden
   (This task has no channel destination by design. Its output is owner-only in both modes.)
 LOOKBACK_DAYS: 14
@@ -85,7 +87,7 @@ This task logs its own QA failures and retries to the QA Failure Log, same as an
 =====================================================
 DELIVERY
 =====================================================
-Send through the Lovable WFS Slack connector (slack_schedule_message) to TEST_TARGET while DELIVERY_MODE is TEST. Never use the native Slack connector. One send only.
+Send with `chat.postMessage` on the bot token above to TEST_TARGET while DELIVERY_MODE is TEST. One sender, one send only. Delivery is proven by the return value: ok = true, a non-empty ts, and a returned channel matching the destination.
 
 Message contents:
 - Two-line summary: worst offender, root cause, patch shipped or proposed.

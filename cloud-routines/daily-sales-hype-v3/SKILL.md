@@ -6,11 +6,15 @@ cron_utc: "30 14 * * 1-5"
 enabled_at_handoff: True
 model: claude-sonnet-5
 created: 2026-07-19
-connectors_attached: Avoma_MCP, Canva, Claude_Code_Remote, ClickUp, Excalidraw, Google_Calendar, Google_Drive, HyperFrames_by_HeyGen, Just_Call, Lovable, Lovable_WFS_Slack, Pipedrive_MCP, Slack, Supabase
+connectors_required: Slack, Google_Drive, Pipedrive_MCP
 ---
 
 TASK: daily-sales-hype
 PURPOSE: Write Cayden's (Caydo's) daily sales hype message for the TTW closer/setter Slack channel.
+
+CONFIG
+DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567. This is the TEST destination and the destination for every failure DM.>
+SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 Runs as a remote cloud task, fully connector-based, no browser, autonomous — never ask the user questions; the user is not present.
 
 ROLE
@@ -64,7 +68,7 @@ NAME SPELLING (applies everywhere a name appears): the roster sheet's Full Name 
 At the start of the run, load the roster: read the WFS Active Sales Team Roster, Google Drive fileId 1qynTKt3Z8JhJK_CkdmwMcfiR5XbD1L0NKkZ4xcImDKo, first tab, via the Google Drive connector download_file_content with exportMimeType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet (xlsx), parsed in a subagent with openpyxl (live read only; never a cached export). Identify columns by HEADER NAME, never position; trim every cell; treat In_ flags case-insensitively (Y / Yes / TRUE = yes). Only rows with Status = Active are eligible; a non-Active row is excluded regardless of its flags.
 The LOOKUP TABLE = for every eligible row where In_Hype = yes, map Full Name -> Slack User ID (tagged as the bare <@ID> token per the CRITICAL FORMAT RULE). A row whose Slack User ID is "NONE" is written as a plain bolded name and never tagged. The roster stores Crue's correct account (the one WITHOUT the TTW icon), so use each ID exactly as given. The roster's Full Name and First Name columns are the canonical spellings. The reps in this table are the only active team members; if a name not in this table appears on the Salesboard, use their plain bolded name and do not invent an ID.
 VALIDATE before using: required headers present (Full Name, Role, Status, Slack User ID, In_Hype); every tagged rep has a non-blank Slack ID; no duplicate names or IDs. Any failure counts as a failed read.
-FALLBACK: retry the read twice; if it still fails or validation fails, use the SNAPSHOT below and flag it in the run summary; if the snapshot is also unusable, send the draft plus the failure to Cayden's DM (@cayden) instead of posting live. Capture the resolved lookup as QA evidence.
+FALLBACK: retry the read twice; if it still fails or validation fails, use the SNAPSHOT below and flag it in the run summary; if the snapshot is also unusable, send the draft plus the failure to the director's DM (DIRECTOR_SLACK_ID) instead of posting live. Capture the resolved lookup as QA evidence.
 SNAPSHOT (fallback only, NOT the source of truth; last updated 2026-07-17):
   Turok Tarango       -> U0B26QM90GL
   Crue Lindgren       -> U09E6D2GZAN   (account WITHOUT the TTW icon)
@@ -100,14 +104,14 @@ Verify every deal and figure in the message against the source rows and values C
 - STRUCTURE satisfied: NO intro or lead-in sentence between the title line and the wins section; wins header reads exactly "Yesterday's wins on the salesboard:"; setters have their own labeled section; correct day's rotation, links, and day nickname; GIF hyperlinked in the title and no raw GIF URL in the body.
 - TAGGING satisfied: EVERY rep reference anywhere in the message is tagged with the correct member ID (not just the first mention), Crue using the non-TTW-icon account; every tag is the bare <@MEMBER_ID> form with NO pipe and NO name label (scan the raw message text for any "|" character sitting inside a <@...> tag and delete the pipe and everything after it up to the closing bracket).
 - Correct delivery target for the current mode.
-On a fixable failure: fix ONLY the failed checklist item and re-check that item, up to 2 retries. If a figure can't be verified or the Salesboard is unreachable, do NOT send live — send the draft plus the specific QA failures to Cayden's DM (@cayden) instead.
+On a fixable failure: fix ONLY the failed checklist item and re-check that item, up to 2 retries. If a figure can't be verified or the Salesboard is unreachable, do NOT send live — send the draft plus the specific QA failures to the director's DM (DIRECTOR_SLACK_ID) instead.
 
 QA FAILURE LOGGING
 On any QA failure, and on any pass that required one or more fix-and-recheck retries, read the qa-failure-loop skill and append a row to the QA Failure Log sheet in Drive with full specifics (stage, class, exact error or wrong value, retries count, outcome, known-issue match) before sending any failure DM. If the failure matches a Known Issues playbook row, apply that documented fix during the retry cycle and log the match. If a playbook fix fails to resolve the issue, flag that in both the log and the DM, because a rotted workaround is itself a finding. The QA Failure Log is an additional write target for this task. KNOWN TOOLING LIMIT (2026-07-29): the Google Drive connector in cloud sessions exposes read plus create_file only, with no tool to append a row to an existing Sheet. When the append is therefore impossible, do not block or retry the run on it: include the fully formed log row inline in the failure DM, clearly labeled for manual paste, and note that the append was not possible.
 
 DELIVERY
-Deliver ONLY via the Lovable WFS Slack connector (slack_schedule_message). Never use the native Slack connector or any other delivery method under any circumstance. Verify the send landed via slack_list_pending (correct destination label and intended text).
-- TEST MODE (default until Cayden explicitly says this task is out of test mode): send as a Slack DM to Cayden (@cayden).
+Deliver ONLY with `chat.postMessage` on the bot token above, one sender, no other delivery method under any circumstance. Verify the send from its RETURN VALUE and nothing else: ok = true, a non-empty ts, and a returned channel matching the destination the mode resolved to. If the send fails, retry chat.postMessage ONCE; there is no second sender.
+- TEST MODE (default until Cayden explicitly says this task is out of test mode): send as a Slack DM to the director (channel = DIRECTOR_SLACK_ID).
   TEST MARKER (cloud-migration testing only): while DELIVERY_MODE is TEST, the delivered message MUST begin with the emoji 🙌🏽 followed by a space, before all other content. This tags it as the CLOUD task test DM so the owner can compare it against the local task output. The QA gate must verify the marker is present in TEST. When this task is flipped to LIVE, delete this marker rule: the 🙌🏽 must NEVER appear in a live channel post.
 - LIVE MODE (only after Cayden explicitly says it's live): send to the channel #wfs-ttw-sales-reps-dm-external.
 Fully autonomous, no approval prompts. Safety comes from test-mode DM routing and the QA gate, not from asking.

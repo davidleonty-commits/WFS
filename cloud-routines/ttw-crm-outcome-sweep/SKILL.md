@@ -6,7 +6,7 @@ cron_utc: "0 15 * * 2-6"
 enabled_at_handoff: False
 model: claude-sonnet-5
 created: 2026-07-24
-connectors_attached: Avoma_MCP, Canva, Claude_Code_Remote, ClickUp, Excalidraw, Google_Calendar, Google_Drive, HyperFrames_by_HeyGen, Just_Call, Lovable, Lovable_WFS_Slack, Pipedrive_MCP, Slack, Supabase
+connectors_required: Supabase, Pipedrive_MCP, Slack
 ---
 
 === TTW CRM OUTCOME SWEEP [lead-quality-sweep, v2 TEST-DM] ===
@@ -15,7 +15,10 @@ Purpose: the Daily Call Report Publisher runs at 6:30 PM MT, which is too early 
 
 STOP CONDITION (timezone-safe): compute the day of week in Mountain Time (America/Denver), never the session or UTC day. Run Tuesday through Saturday MT. On Sunday and Monday MT, produce no output and end.
 
-DELIVERY_MODE: TEST. Any message goes to Caydo's Slack DM, user id U092C85GA4D, through the WFS connector's slack_schedule_message only. Never the generic Slack connector for sending, never a team channel.
+DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
+
+DELIVERY_MODE: TEST. Any message goes to the director's Slack DM, channel = DIRECTOR_SLACK_ID, via `chat.postMessage` on that bot token only. Never a second sender, never a team channel.
 
 STEP 1, DEFINE THE SWEEP WINDOW
 Compute today's local Mountain date. The sweep covers lead_quality rows whose call_date falls in the last 7 local days, inclusive of yesterday. Seven days rather than one, because a deal can be won several days after the call and one nightly pass would miss it.
