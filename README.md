@@ -122,6 +122,20 @@ That returns nothing today. Then run each task once in TEST and confirm the Slac
 matches the template in its own prompt line for line: the templates were not touched by the
 swap, so any drift is a real finding.
 
+One assumption is worth checking before the first TEST run, because five prompts are written
+around it: that OnceHub accepts `starting_time.gt` / `.lt` and rejects `starting_time_from` /
+`_to`, and that a booking carries `booking_page.master_page`. `scripts/verify-oncehub.py`
+checks exactly that, read-only, printing structure and counts but never a booking's contents:
+
+```bash
+export ONCEHUB_API_KEY=...        # from your secret store, never committed
+python3 scripts/verify-oncehub.py
+```
+
+It was written but NOT run: this environment's network policy blocks `api.oncehub.com`, so the
+OnceHub behavior in those prompts is still carried over from the outgoing director's notes
+rather than confirmed.
+
 Key reference docs (links are inside the prompts):
 - Decision Leadership Objection Matrix (Sales Rep Quick Reference): every coaching point must trace to it.
 - SIP master template.
