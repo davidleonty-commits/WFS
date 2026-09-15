@@ -5,7 +5,7 @@ Powers the ttw-avoma-clip-finder. Surfaces two clip types from real consultation
 1. GREAT DEMO clips come ONLY from calls that CLOSED where the rep actually executed a matrix step well. Teaching clips.
 2. MISSED OPPORTUNITY clips come ONLY from calls that did NOT close where a clear trigger fired and the rep failed to run the step the moment called for. Coaching clips.
 
-Built to be read off the Lovable WFS call transcript (from calls_get_analysis). Tone still needs a human gut check on the final shortlist, but every marker below is detectable from words.
+Built to be read off the Avoma call transcript (from `get_meeting_transcript`). Tone still needs a human gut check on the final shortlist, but every marker below is detectable from words.
 
 ---
 

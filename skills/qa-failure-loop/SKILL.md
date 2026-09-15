@@ -13,7 +13,7 @@ Every Cowork task already has a QA gate. Today a failure DMs Caydo and dies; nex
 2. **Log first, then DM.** The failure DM to Caydo still happens per his task rules; the log entry is written before or alongside it, never skipped because the DM "already covered it."
 3. **The log is append-only fact.** Entries record what happened with specifics (the exact error, the exact wrong number, the exact format drift), never a vague "QA failed."
 4. **Patches follow the update rule.** Any task update produced by this loop follows create-then-verify-then-delete: build the new task, verify it exists and is scheduled correctly, only then remove the old one. Prefer editing in place when tooling supports it. Skill patches get delivered as updated .skill packages for Caydo to install; this loop never silently swaps a skill.
-5. **Delivery rules apply.** Slack output through the Lovable WFS Slack connector to Caydo's DM while in test mode. The log is this skill's only write target.
+5. **Delivery rules apply.** Slack output goes out with `chat.postMessage` on the WFS Group workspace bot token, one sender, to the director's DM while in test mode. The log is this skill's only write target.
 
 ## The log
 

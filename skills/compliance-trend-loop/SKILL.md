@@ -13,7 +13,7 @@ A compliance flag on one call is an anecdote. The same violation three times in 
 2. **Verbatim or it did not happen.** Every ledger entry carries the exact quoted line from the transcript and the call link with timestamp. A compliance entry without a quote is invalid; paraphrase is not evidence when the stakes are conduct.
 3. **Grade the line, not the rep.** An entry records what was said on a specific call. Trend math does the pattern reading; individual entries stay factual and neutral. No editorializing in the ledger.
 4. **Borderline gets logged as borderline.** If a line is arguably compliant, log it with severity "borderline" and the reason it might cross, rather than either dropping it or inflating it. Borderline entries count toward watch awareness but never toward escalation thresholds on their own.
-5. **Escalation packets go to Caydo only.** This loop never sends anything to leadership, the rep, or any channel on its own. It builds the packet, delivers it to Caydo's DM through the Lovable WFS Slack connector (test-mode routing rules apply), and he decides. The ledger is this skill's only write target.
+5. **Escalation packets go to Caydo only.** This loop never sends anything to leadership, the rep, or any channel on its own. It builds the packet, delivers it to the director's DM with `chat.postMessage` on the workspace bot token (test-mode routing rules apply), and he decides. The ledger is this skill's only write target.
 
 ## The ledger
 

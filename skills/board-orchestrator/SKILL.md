@@ -218,14 +218,16 @@ changes — Asana already logs those.
 
 ## 7. When to message Caydo
 
-Channel: **`mcp__Lovable_WFS_Slack__slack_schedule_message`**, `channel: "@cayden"`,
-`jitter_minutes: 0` (these are operational alerts; jitter is for messages that shouldn't
-look automated). Use **`mcp__Lovable_WFS_Slack__slack_send_sos`**, target `U092C85GA4D`,
-only when the pass itself halts and the normal path is failing.
+Channel: **`chat.postMessage`** on the WFS Group workspace bot token (Slack MCP connector,
+or a direct POST to https://slack.com/api/chat.postMessage with header
+`Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` = DIRECTOR_SLACK_ID (fill in your own
+Slack member ID). Operational alerts go out immediately. If the send fails outright, retry
+it ONCE: there is no second sender, so a failed retry is reported in the pass summary
+instead.
 
 > Note: Caydo originally specced Telegram. No Telegram connector is installed on this
-> account — the "WFS" connector is Slack-only. If a Telegram connector is added later,
-> swap the two calls above and nothing else changes.
+> account. If a Telegram connector is added later, swap the call above and nothing else
+> changes.
 
 ### 7.1 TEST mode — the daily board DM
 
