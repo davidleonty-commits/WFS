@@ -92,22 +92,54 @@ Two properties the prompts depend on, so the receiver must guarantee them:
   between a dropped call and a wrong published number, so it should be enabled before anything
   else goes LIVE.
 
-## 5. What I need before writing any of it
+## 5. Finding, 2026-09-15: the webhook screen points the wrong way
 
-1. **Does the Callix webhook payload carry the transcript?** This is the one that decides
-   everything. 44 call sites need transcript text. If the payload is only "call ended" with an
-   id, then transcripts have to be retrievable some other way, and with no API key that may not
-   be possible at all. A sample payload (redacted) answers this in one look.
-2. **Which events does Callix emit, and what are the field names?** `call.completed`,
-   `transcript.ready`, something else. The schema above is a guess at shapes, not names.
-3. **Where should the receiver live?** A Supabase Edge Function is the natural answer since
-   Supabase is already here: it gives an HTTPS endpoint and writes straight to the tables, with
-   no new host. The alternative is wherever you want to run it. (The retired
-   `commandcenter.aiautomating.com` app was exactly this sort of thing, which is why it went
-   when the previous director did.)
-4. **Can Callix replay or export past calls?** Decides whether the look-back reports resume
-   immediately or after their window fills.
+Callix's Settings, Developers, Custom Webhooks screen creates an **inbound** endpoint. Its own
+description: "Each endpoint gets a unique URL. Point any external platform at it and choose what
+to do with the incoming data." The five processing actions are all ingest actions (Log Only,
+Store Payment, Store Event, Upsert Prospect, and "Analyze Call, extract transcript to AI deal
+analysis").
 
-Worth confirming too: is Supabase staying? The README treats it as optional if the
-`lead_quality` pipeline is dropped. Under this design it stops being optional, because it
-becomes the only record of a call ever happening.
+That is Callix receiving. Every consumer in section 2 needs Callix emitting, or at least being
+readable on a schedule. So this screen does not replace the Avoma reads, and wiring it up would
+produce a working pipe that still leaves 25 files with nothing to query.
+
+If an ingest endpoint is wanted anyway (for example, pointing a recorder at Callix so it
+extracts the transcript), the fields are:
+
+- NAME: `WFS TTW Call Ingest`
+- DESCRIPTION: `Recorder posts finished TikTok Wiz consultation calls here; Callix extracts the transcript and runs deal analysis.`
+- PROCESSING ACTION: `Analyze Call - extract transcript to AI deal analysis`
+
+## 6. The open question is now narrower
+
+Everything depends on whether call data can leave Callix at all:
+
+1. **Is there any read path?** An API key or token under Developers, a native or Zapier
+   integration under Integrations, or an outbound event subscription. Any one of these makes
+   this a straightforward rebuild against the schema in section 3.
+2. **Failing that, can Callix export calls and transcripts** (CSV or JSON, scheduled or manual)?
+   An export to a watched Drive folder is slower and lossier than an API, but it is enough to
+   keep the scheduled reports alive, since the prompts can read Drive.
+3. **Failing both**, the unattended call reports cannot be rebuilt. See section 7.
+
+## 7. What survives if Callix stays closed
+
+The call-review skills come in pairs, and only one half of each pair needs a live source:
+
+| Needs a live source | Works from a supplied transcript |
+|---|---|
+| `ttw-daily-avoma-report` (the 6:30 PM self-serve report) | `ttw-daily-call-review` (grades an uploaded transcript file) |
+| `daily-call-report-publisher-v27` | `closer-call-review`, `closer-call-review-script`, `closer-call-review-slack` |
+| the show rate reports' live-call counts | `setter-call-review-slack`, `setter-call-review-script` |
+| the SIP engines' five-verified-calls gate | `ttw-weekly-call-review` (grades from transcripts it is given) |
+| `weekly-call-review-sourcing-v2`, the clip finder's sweep | the clip finder's scoring, once it has transcripts |
+
+So even in the worst case the coaching layer survives as a manual workflow: export transcripts
+from Callix, hand them to the review skills, and the rubrics, buckets and clip anchors all still
+apply. What is lost is the unattended half: the daily publisher, the live-call side of both show
+rate reports, and the SIP engines' automatic evidence gate.
+
+The show rate reports are the sharpest loss, because the live-call numerator has no substitute.
+Scheduled counts still come from OnceHub, so a show rate cannot be computed at all without a
+count of calls that actually happened.
