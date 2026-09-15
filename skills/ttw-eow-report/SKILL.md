@@ -56,7 +56,7 @@ No em dashes, no en dashes, no hyphens used as punctuation or to join clauses. W
 
 ## Call Analysis, the most important section
 
-Read `#wfs-ttw-sales-mgmt-client` (C098J2VG41E) and David's self DM (D092C868SPP) across the window, **including thread replies** on every "Daily Call Review" post. Get the total consultations scored and which days are covered.
+Read `#wfs-ttw-sales-mgmt-client` (C098J2VG41E) and your own self DM (the DM channel id for DIRECTOR_SLACK_ID; `conversations.open` returns it, or read it off any send this task makes) across the window, **including thread replies** on every "Daily Call Review" post. Get the total consultations scored and which days are covered.
 
 ### The five categories
 
