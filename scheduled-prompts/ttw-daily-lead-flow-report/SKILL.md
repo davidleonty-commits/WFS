@@ -14,7 +14,7 @@ CONFIG (edit only the values in this block; never edit the rules below.)
 =====================================================
 DELIVERY_MODE: LIVE
   (TEST sends only to TEST_TARGET, the owner's DM. LIVE sends to LIVE_TARGET. Went LIVE on 2026-07-02 per Cayden's instruction.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
 LIVE_TARGET: #wfs-ttw-sales-mgmt-client
 JITTER_MINUTES: 0

@@ -1,23 +1,23 @@
 ---
 name: qa-failure-loop
-description: Self-healing infrastructure loop for Caydo's Cowork scheduled tasks and skill library. Every QA gate failure in any scheduled task gets logged to a durable QA Failure Log instead of dying in a DM, failures get classified against a known-issue playbook (Avoma pagination, format drift, source data gaps, tool errors), and a weekly pass runs fable-review against the worst-offending task or skill using the failure log as input, producing a concrete patch. Use whenever a Cowork task hits its QA gate and fails, whenever a scheduled task misdelivers or DMs a failure, whenever Caydo says "log this failure", "QA log", "what keeps breaking", "which task fails most", "run the failure review", "patch the worst offender", or "why did the report not send", and on any weekly infrastructure review. Also use when building or updating any Cowork task, so its QA gate includes the logging step. Always log before or alongside the failure DM, because a failure that is only a DM teaches the system nothing.
+description: Self-healing infrastructure loop for David's Cowork scheduled tasks and skill library. Every QA gate failure in any scheduled task gets logged to a durable QA Failure Log instead of dying in a DM, failures get classified against a known-issue playbook (Avoma pagination, format drift, source data gaps, tool errors), and a weekly pass runs fable-review against the worst-offending task or skill using the failure log as input, producing a concrete patch. Use whenever a Cowork task hits its QA gate and fails, whenever a scheduled task misdelivers or DMs a failure, whenever David says "log this failure", "QA log", "what keeps breaking", "which task fails most", "run the failure review", "patch the worst offender", or "why did the report not send", and on any weekly infrastructure review. Also use when building or updating any Cowork task, so its QA gate includes the logging step. Always log before or alongside the failure DM, because a failure that is only a DM teaches the system nothing.
 ---
 
 # QA Failure Loop
 
-Every Cowork task already has a QA gate. Today a failure DMs Caydo and dies; next month the same Avoma pagination bug burns another hour. This loop gives failures a memory: log every one, classify it, and once a week aim fable-review at whichever task or skill is failing most, with the log as evidence. The infrastructure starts fixing itself instead of Caydo re-debugging the same issue.
+Every Cowork task already has a QA gate. Today a failure DMs David and dies; next month the same Avoma pagination bug burns another hour. This loop gives failures a memory: log every one, classify it, and once a week aim fable-review at whichever task or skill is failing most, with the log as evidence. The infrastructure starts fixing itself instead of David re-debugging the same issue.
 
 ## Non-negotiables
 
 1. **Never use em dashes.** Anywhere.
-2. **Log first, then DM.** The failure DM to Caydo still happens per his task rules; the log entry is written before or alongside it, never skipped because the DM "already covered it."
+2. **Log first, then DM.** The failure DM to David still happens per his task rules; the log entry is written before or alongside it, never skipped because the DM "already covered it."
 3. **The log is append-only fact.** Entries record what happened with specifics (the exact error, the exact wrong number, the exact format drift), never a vague "QA failed."
-4. **Patches follow the update rule.** Any task update produced by this loop follows create-then-verify-then-delete: build the new task, verify it exists and is scheduled correctly, only then remove the old one. Prefer editing in place when tooling supports it. Skill patches get delivered as updated .skill packages for Caydo to install; this loop never silently swaps a skill.
+4. **Patches follow the update rule.** Any task update produced by this loop follows create-then-verify-then-delete: build the new task, verify it exists and is scheduled correctly, only then remove the old one. Prefer editing in place when tooling supports it. Skill patches get delivered as updated .skill packages for David to install; this loop never silently swaps a skill.
 5. **Delivery rules apply.** Slack output goes out with `chat.postMessage` on the WFS Group workspace bot token, one sender, to the director's DM while in test mode. The log is this skill's only write target.
 
 ## The log
 
-A Google Sheet named **QA Failure Log** in Caydo's Drive. On first run, search Drive for it; if missing, create it and report the new file. Columns:
+A Google Sheet named **QA Failure Log** in David's Drive. On first run, search Drive for it; if missing, create it and report the new file. Columns:
 
 | Column | Content |
 |---|---|
@@ -58,7 +58,7 @@ Once a week (scheduled or on "run the failure review"):
 2. **Rank the offenders.** Frequency times severity: any rule_breach or delivered-wrong outcome outranks a pile of retried-and-recovered blips.
 3. **Run fable-review against the top offender**, with its failure rows as the evidence input. The review targets the actual failure mechanism, not the task in general: if 4 of 5 failures are source_shape on the same Avoma endpoint, the patch is pagination hardening, not a rewrite.
 4. **Produce the patch.** For a scheduled task: the exact revised task prompt, plus the create-verify-delete update plan. For a skill: an updated .skill package. For a playbook-level issue: the new or corrected Known Issues row, plus the list of tasks that embed the stale workaround.
-5. **Deliver to Caydo's DM:** two-line summary (worst offender, root cause, patch shipped or proposed), the patch itself, and the week's totals: failures by class, recoveries, anything new added to the playbook.
+5. **Deliver to David's DM:** two-line summary (worst offender, root cause, patch shipped or proposed), the patch itself, and the week's totals: failures by class, recoveries, anything new added to the playbook.
 6. **Close the loop in the log.** When a patch ships, fill the patched column on the rows it addresses. Next week's review checks whether patched failure types actually stopped. A patch that did not stop its failure type reopens automatically as the top offender.
 
 ### Quiet weeks

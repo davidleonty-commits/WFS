@@ -16,9 +16,9 @@ AUTONOMY: Fully autonomous, no approval or confirmation prompts; pre-authorized 
 
 ===== CONFIG (OPERATOR: edit only values in this block; never edit the rules below.)
 RUN_DAY: Sunday (weekly; operator may change the day)
-DELIVERY_MODE: TEST (TEST or LIVE; both currently point at the owner's own DM — this is Cayden's personal review tool, not team-facing; kept separate in case that changes)
+DELIVERY_MODE: TEST (TEST or LIVE; both currently point at the owner's own DM — this is David's personal review tool, not team-facing; kept separate in case that changes)
   TEST MARKER (cloud-migration testing only): while DELIVERY_MODE is TEST, the delivered message MUST begin with the emoji 🙌🏽 followed by a space, before all other content. This tags it as the CLOUD task test DM so the owner can compare it against the local task output. The QA gate must verify the marker is present in TEST. When this task is flipped to LIVE, delete this marker rule: the 🙌🏽 must NEVER appear in a live channel post.
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
 LIVE_TARGET: DIRECTOR_SLACK_ID
 JITTER_MINUTES: 0

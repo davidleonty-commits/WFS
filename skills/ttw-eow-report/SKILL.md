@@ -1,17 +1,17 @@
 ---
 name: ttw-eow-report
-description: Cayden's weekly End of Week sales report for TikTok Wiz: team KPIs, a prose rep summary, his call review activity, per rep Call Analysis graded against the five coaching categories, tactical themes, and the team touchpoint close. Manual run only, never scheduled. Cayden supplies a Closer Sales Dashboard screenshot plus any talking points, and every number comes from that screenshot. Never build a rep table. Weeks run Sunday through Friday. Always delivered with the Slack bot token to the director's DM, never a channel. Use when he says "run the EOW report", "end of week report", "weekly sales summary", "build my Friday message", "weekly KPI recap", or sends a Sales Rep Table View screenshot. Always use it even when the ask sounds simple, because the five categories, the no dashes rule, the no table rule, first names only, the forward looking coaching frame, and DM only delivery are what he corrected and are easy to get wrong.
+description: David's weekly End of Week sales report for TikTok Wiz: team KPIs, a prose rep summary, his call review activity, per rep Call Analysis graded against the five coaching categories, tactical themes, and the team touchpoint close. Manual run only, never scheduled. David supplies a Closer Sales Dashboard screenshot plus any talking points, and every number comes from that screenshot. Never build a rep table. Weeks run Sunday through Friday. Always delivered with the Slack bot token to the director's DM, never a channel. Use when he says "run the EOW report", "end of week report", "weekly sales summary", "build my Friday message", "weekly KPI recap", or sends a Sales Rep Table View screenshot. Always use it even when the ask sounds simple, because the five categories, the no dashes rule, the no table rule, first names only, the forward looking coaching frame, and DM only delivery are what he corrected and are easy to get wrong.
 ---
 
 # TTW End of Week Report
 
-The Friday leadership message. Always a DRAFT for Cayden to review and post himself.
+The Friday leadership message. Always a DRAFT for David to review and post himself.
 
-**Manual run only.** There is no scheduled task. Cayden kicks this off and supplies the inputs.
+**Manual run only.** There is no scheduled task. David kicks this off and supplies the inputs.
 
 **Window: Sunday through Friday.** Weeks always start on Sunday.
 
-## Inputs Cayden provides
+## Inputs David provides
 
 1. **The dashboard screenshot.** Required. Nothing gets built without it.
 2. **Extra talking points.** Optional. Anything he wants worked into the report: a rep conversation he had, a leadership ask, a win, a policy change. Weave these into the section they belong in, in his voice. If he does not mention any, ask once whether he has anything to add before you build.
@@ -20,7 +20,7 @@ The Friday leadership message. Always a DRAFT for Cayden to review and post hims
 
 Every outbound message uses `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`).
 
-Parameters every time: `channel` = DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>, nothing scheduled so it sends immediately. Confirm from the return value: `ok` = true, a non-empty `ts`, and a returned `channel` matching DIRECTOR_SLACK_ID.
+Parameters every time: `channel` = DIRECTOR_SLACK_ID U0BUZ6C0C91, nothing scheduled so it sends immediately. Confirm from the return value: `ok` = true, a non-empty `ts`, and a returned `channel` matching DIRECTOR_SLACK_ID.
 
 - **Never** a personal user token and never a second sender.
 - **Never** post to a channel. The only destination ever allowed is the director's DM, DIRECTOR_SLACK_ID.
@@ -38,7 +38,7 @@ Never build a per rep table or a code block of rep metrics. Individual rep data 
 
 ## Voice and style
 
-Written as Cayden, first person.
+Written as David, first person.
 
 ### NO DASHES
 
@@ -56,7 +56,7 @@ No em dashes, no en dashes, no hyphens used as punctuation or to join clauses. W
 
 ## Call Analysis, the most important section
 
-Read `#wfs-ttw-sales-mgmt-client` (C098J2VG41E) and Cayden's self DM (D092C868SPP) across the window, **including thread replies** on every "Daily Call Review" post. Get the total consultations scored and which days are covered.
+Read `#wfs-ttw-sales-mgmt-client` (C098J2VG41E) and David's self DM (D092C868SPP) across the window, **including thread replies** on every "Daily Call Review" post. Get the total consultations scored and which days are covered.
 
 ### The five categories
 
@@ -82,7 +82,7 @@ One or two sentences per rep. **First name only, never last names.**
 
 ### Introduce the category like a person, not a label
 
-Never drop the category in as a bare heading. Lead into it the way Cayden would say it out loud, and **vary the phrasing on every rep** so the section does not read like a template:
+Never drop the category in as a bare heading. Lead into it the way David would say it out loud, and **vary the phrasing on every rep** so the section does not read like a template:
 
 > Vidush - His main focus right now is personalizing the pitch.
 >
@@ -128,7 +128,7 @@ I listened to <h> hours and <m> minutes of calls this week across <n> conversati
 
 The Call Analysis opener is the count sentence only. **Do not add "Here is where each rep landed."**
 
-**Rep summary** is prose, not a table. Each sentence names the rep, the number that defines their week, and what Cayden is doing about it. Lead with whoever led the board, end with whoever needs the hardest conversation. Register to match:
+**Rep summary** is prose, not a table. Each sentence names the rep, the number that defines their week, and what David is doing about it. Lead with whoever led the board, end with whoever needs the hardest conversation. Register to match:
 
 > Garrett has the best CDPBC on the team at $965.71 and he closed half of every live call he took, he just needs more of his 35 booked calls to actually show up at 29%.
 >
@@ -161,12 +161,12 @@ Read every figure **exactly as shown**. Do not recompute, round, or correct. Bla
 1. Destination is DIRECTOR_SLACK_ID and the call is `chat.postMessage` on the bot token. No channel, no second sender.
 2. No rep table and no code block of rep metrics anywhere.
 3. Zero dash characters except the name separator hyphens in Call Analysis.
-4. Every Call Analysis bullet lands on one of the five categories, introduces it in Cayden's words rather than as a bare label, varies that lead in across reps, and says what the rep needs to **do**. If a bullet describes what went wrong instead of what to fix, rewrite it.
+4. Every Call Analysis bullet lands on one of the five categories, introduces it in David's words rather than as a bare label, varies that lead in across reps, and says what the rep needs to **do**. If a bullet describes what went wrong instead of what to fix, rewrite it.
 5. Nothing anywhere tells a rep to qualify financially before price.
 6. Call Analysis uses first names only, and the opener has no "Here is where each rep landed."
 7. My Call Review Activity is exactly one sentence with no team comparison.
 8. Themes are tactical actions carried up from the five categories. Any lead quality bullet is framed as sales team work, never as an expectation on marketing.
 9. Every figure matches the screenshot exactly.
-10. Cayden's extra talking points, if he gave any, are in the report.
+10. David's extra talking points, if he gave any, are in the report.
 
 Never send a fabricated or estimated number. Leave the field blank and say why.

@@ -1,11 +1,11 @@
 ---
 name: ttw-avoma-clip-finder
-description: Finds sales coaching clips from TikTok Wiz consultation calls by scoring how reps run the Decision Leadership Objection Matrix, then giving Caydo exact clip-in and clip-out anchors so the snippet is one click. Pulls call data from Avoma (list_meetings, get_meeting_transcript, get_meeting_notes) and ranks the candidates itself. Use when Caydo wants weekly clips, objection-handling clips, Great Demo or Missed Opportunity clips, or says "find this week's clips", "find clips", "run the clip finder", "find me 3 clips", or "who handled objections well this week", and when the weekly scheduled task fires. Always use it even when the request sounds simple, because rep identification, close vs no-close detection, the strict eligibility gate, and the verbatim anchor rule carry accuracy rules the output depends on.
+description: Finds sales coaching clips from TikTok Wiz consultation calls by scoring how reps run the Decision Leadership Objection Matrix, then giving David exact clip-in and clip-out anchors so the snippet is one click. Pulls call data from Avoma (list_meetings, get_meeting_transcript, get_meeting_notes) and ranks the candidates itself. Use when David wants weekly clips, objection-handling clips, Great Demo or Missed Opportunity clips, or says "find this week's clips", "find clips", "run the clip finder", "find me 3 clips", or "who handled objections well this week", and when the weekly scheduled task fires. Always use it even when the request sounds simple, because rep identification, close vs no-close detection, the strict eligibility gate, and the verbatim anchor rule carry accuracy rules the output depends on.
 ---
 
 # TTW Clip Finder (Avoma)
 
-Finds teachable clips from TikTok Wiz consultation calls by scoring how a rep ran the Decision Leadership Objection Matrix, then delivers exact verbatim clip boundaries so Caydo can create the snippet in one highlight.
+Finds teachable clips from TikTok Wiz consultation calls by scoring how a rep ran the Decision Leadership Objection Matrix, then delivers exact verbatim clip boundaries so David can create the snippet in one highlight.
 
 Data source: **Avoma**, through the Avoma MCP connector (`list_meetings`, `get_meeting`, `get_meeting_transcript`, `get_meeting_notes`), or the REST API at `https://api.avoma.com/v1/...` with header `Authorization: Bearer $AVOMA_API_KEY` when the MCP is unavailable.
 
@@ -17,7 +17,7 @@ This skill owns the candidate ranking. The old connector returned calls pre-rank
 3. Rank what survives by, in order: whether the call closed (a close and a clear no-close are both wanted, and the mix is set by the clip types below), the size of the deal discussed, how far the rep's handling fell short of the matrix on a no-close, and recency. Most recent first inside a tier.
 4. Cap the sweep at 50 candidates for a weekly run and pull transcripts only for the ones you will score.
 
-Target: 3 clips per week by default (Caydo may ask for a different count or mix, for example "3 good examples and 2 improvement points"). Two clip types, and the type controls which calls are even eligible:
+Target: 3 clips per week by default (David may ask for a different count or mix, for example "3 good examples and 2 improvement points"). Two clip types, and the type controls which calls are even eligible:
 
 1. **GREAT DEMO** comes ONLY from a call that CLOSED, where the rep executed a named matrix step well. The "watch how it is done" clip.
 2. **MISSED OPPORTUNITY** comes ONLY from a call that did NOT close, where a clear objection trigger fired and the rep failed to run the step the moment called for. The "here is where we lost it" clip.
@@ -37,14 +37,14 @@ The full scoring rubric, the 16 objections, the per-step 0-1-2 markers, and the 
 The window is a `from_date` / `to_date` pair on `list_meetings`, computed in Mountain Time.
 - Default weekly run: the last 7 days.
 - "today and yesterday": 2 days. "this week": 7 days. "last two weeks": 14 days (keep 30 as the practical ceiling).
-- Caydo is in Lehi, Utah (Mountain Time). If he names calendar dates, use those dates directly and drop anything outside the range after you pull.
-- If Caydo asks for one brand or one rep, filter by meeting subject (brand) and organizer email (rep) after the meetings come back.
+- The director works in Mountain Time (America/Denver). If he names calendar dates, use those dates directly and drop anything outside the range after you pull.
+- If David asks for one brand or one rep, filter by meeting subject (brand) and organizer email (rep) after the meetings come back.
 
 ## Step 2: List the calls to review
 
 1. Call `list_meetings` over the window and PAGINATE to the end (the response carries a next page link; keep going until it is null). Avoma pages are small, so a week is several pages.
 2. Apply the CANDIDATE RANKING above. Each surviving meeting carries a `meeting_uuid` used in the next step.
-3. If Caydo asked for a specific rep, keep only that rep's meetings (match the organizer email, never the display name, since Avoma mislabels speakers and duplicate names exist).
+3. If David asked for a specific rep, keep only that rep's meetings (match the organizer email, never the display name, since Avoma mislabels speakers and duplicate names exist).
 
 ## Step 3: Filter to scoreable consultations (STRICT)
 
@@ -59,7 +59,7 @@ Keep a short operator list of what got dropped and why. It does not go in the ou
 
 Avoma can time out or error intermittently. For every call:
 - Retry a failed or timed-out `list_meetings` or `get_meeting_transcript` at least twice before giving up. The same `meeting_uuid` often succeeds on a retry.
-- If Avoma throws an auth error, tell Caydo the Avoma connector needs re-approving (or that `AVOMA_API_KEY` needs refreshing if you are on the REST path), then continue once it is back.
+- If Avoma throws an auth error, tell David the Avoma connector needs re-approving (or that `AVOMA_API_KEY` needs refreshing if you are on the REST path), then continue once it is back.
 
 Never silently drop a scoreable call. If an analysis cannot be pulled after retries, note it in the output as not yet scored rather than omitting it.
 
@@ -104,7 +104,7 @@ Read `references/decision-leadership-rubric.md`, then for each call:
 4. Apply the eligibility gate:
    - From CLOSED calls, a step executed at a genuine 2 is a GREAT DEMO candidate.
    - From NO-CLOSE calls, a fired trigger where the matching step scored 0 is a MISSED OPPORTUNITY candidate.
-5. Rank candidates and select the requested number (default 3), aiming for a spread across different steps and reps. If Caydo asks for a specific mix (for example good examples plus improvement points), honor it. If real candidates are thin, deliver fewer and say why. Do not pad. If the calls that closed did so by breaking the matrix (discount, guarantee, urgency), say that plainly rather than dressing one up as a Great Demo.
+5. Rank candidates and select the requested number (default 3), aiming for a spread across different steps and reps. If David asks for a specific mix (for example good examples plus improvement points), honor it. If real candidates are thin, deliver fewer and say why. Do not pad. If the calls that closed did so by breaking the matrix (discount, guarantee, urgency), say that plainly rather than dressing one up as a Great Demo.
 
 ---
 
@@ -123,7 +123,7 @@ The clip boundary is verbatim anchor text, not a timestamp.
 
 - Score and label the FULL step sequence the rep runs in or around the clip (Foundation, Step 1 through Step 4), not only the single headline step. If the rep stacks multiple steps, the clip and the SAY THIS FIRST must showcase the whole run and name each step.
 - Every clip gets a **Clip title** (the snippet name) and, when available, a **Timestamp** range. The title format is: `[type] · [steps shown] — [teachable beat] (rep, objection)`, for example `GREAT DEMO · Reframe -> Self-Close — "what number would you sign up at?" (Vidush, price)`.
-- The **SAY THIS FIRST** is two sentences Caydo reads aloud before playing the clip. If the rep ran multiple steps, name the sequence and celebrate it. If the rep nailed only one step, or it is a MISSED OPPORTUNITY where the rep started right, explicitly say they started it right and name the exact step to EXPAND on next time.
+- The **SAY THIS FIRST** is two sentences David reads aloud before playing the clip. If the rep ran multiple steps, name the sequence and celebrate it. If the rep nailed only one step, or it is a MISSED OPPORTUNITY where the rep started right, explicitly say they started it right and name the exact step to EXPAND on next time.
 
 ---
 
@@ -161,7 +161,7 @@ Steps in this clip:  [every matrix step the rep runs in or around the clip with 
 CLIP IN  (highlight starts here): "[verbatim words]"
 CLIP OUT (highlight ends here):   "[verbatim words]"
 
-SAY THIS FIRST: [two sentences Caydo reads before the clip. Celebrate the full sequence if the
+SAY THIS FIRST: [two sentences David reads before the clip. Celebrate the full sequence if the
                  rep ran multiple steps. If only one step landed, or a missed clip where the rep
                  started right, say they started it right and name the step to EXPAND on next.]
 
@@ -187,9 +187,9 @@ Open the run with a one-line summary: how many consultations were scanned, how m
 
 ## Delivery
 
-Default (scheduled or "send it"): send to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` set to the director's Slack member ID (DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>). Send the run summary as message one and the cards as message two. Split at a card boundary, never mid-card, only if a message would exceed about 5000 characters.
+Default (scheduled or "send it"): send to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` set to the director's Slack member ID (DIRECTOR_SLACK_ID U0BUZ6C0C91). Send the run summary as message one and the cards as message two. Split at a card boundary, never mid-card, only if a message would exceed about 5000 characters.
 
-On-demand in a chat ("find me clips" while working together): show the cards inline in the conversation instead of the DM, unless Caydo asks for the DM.
+On-demand in a chat ("find me clips" while working together): show the cards inline in the conversation instead of the DM, unless David asks for the DM.
 
 Optional: to log a clip as a formal call-review note, write it straight to the review tracker yourself (a Pipedrive note on the matching deal, or the coaching ledger the `sip-watch-loop` skill maintains) with the call, the rep, a summary and a rationale. The old proposal queue lived inside the retired Director Console, so there is nothing to approve any more: the write is the record. This does not replace the Slack delivery.
 

@@ -18,11 +18,11 @@ CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules 
 
 PROCESS_MODE: EXECUTE (DRY_RUN or EXECUTE. DRY_RUN reads and classifies only and makes NO Pipedrive writes; it reports exactly what it WOULD label and mark done. EXECUTE performs the writes. There is no test version of a real write, so keep DRY_RUN until you have seen a clean dry run, then switch to EXECUTE.)
 DELIVERY_MODE: LIVE (TEST or LIVE. Controls only where the run report goes, not whether Pipedrive is touched. TEST sends the report to TEST_TARGET. LIVE sends it to LIVE_TARGET.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID (The director's Slack DM. The only report destination allowed while DELIVERY_MODE is TEST.)
 LIVE_TARGET: DIRECTOR_SLACK_ID (The director's Slack DM. This is an internal audit report; point it at a management channel if you ever want it shared.)
 JITTER_MINUTES: 0 (Randomizes the report send time within plus or minus this many minutes; 0 sends at a predictable time.)
-OWNER_USER_ID: <fill in: your own Pipedrive user id; the outgoing director's was 23815275, and running this task against that id would clear a departed user's activities> (Only activities owned by this user id are ever in scope.)
+OWNER_USER_ID: 27299998 (David Leonty's Pipedrive user id. Only activities owned by this user id are ever in scope.) (Only activities owned by this user id are ever in scope.)
 ACTIVITY_SCOPE: ALL not-done To-do activities owned by OWNER_USER_ID that are due today or overdue (due date on or before today in Mountain Time), regardless of activity subject or title. Subject text ("Neglected Deal", "Lost Previously on Hot List", or anything else) does NOT matter and must never be used to include or exclude an activity. Activities due in the future are NOT processed; list them in the report as "future-dated, skipped." If this scope ever appears to conflict with anything else, this CONFIG definition wins.
 LABEL: Director Audit (exact Pipedrive deal label option name; option id 63.)
 MAX_AUTO: 30 (Anomaly circuit-breaker: if the in-scope count exceeds this, process NOTHING. Report the count and the first few activity subjects to the DM, then stop. A suddenly huge list usually means a filter glitch or another user's activities leaking in, and mass-processing the wrong list is the worst failure this task can have.)
@@ -36,7 +36,7 @@ SLACK DELIVERY: send the run report with `chat.postMessage` to the DELIVERY_MODE
 =====================================================
 HARD RULES (never violate)
 
-1. OWNER LOCK: only activities owned by OWNER_USER_ID (Cayden Johnson) are ever read for processing or written to. Never process or modify an activity or deal tied to any other owner. If the connector cannot filter by this owner, STOP and report. (Note: the deal linked to an in-scope activity may be owned by a rep, not by OWNER_USER_ID; labeling that linked deal is allowed. The owner lock applies to which ACTIVITIES are in scope.)
+1. OWNER LOCK: only activities owned by OWNER_USER_ID (David Leonty) are ever read for processing or written to. Never process or modify an activity or deal tied to any other owner. If the connector cannot filter by this owner, STOP and report. (Note: the deal linked to an in-scope activity may be owned by a rep, not by OWNER_USER_ID; labeling that linked deal is allowed. The owner lock applies to which ACTIVITIES are in scope.)
 2. SCOPE OF EDITS: the ONLY writes this task may make in Pipedrive are (a) adding the Director Audit label to the deal linked to an in-scope activity, and (b) marking an in-scope activity as done. NEVER modify any other field on any deal or activity: not stage, value, owner, notes, contacts, due date, or any other label. Never delete anything. Never create a new activity or follow-up. Never touch a deal that is not linked to an in-scope activity. Everything in Pipedrive outside these two operations is READ-ONLY.
 3. NEVER REMOVE A LABEL: add Director Audit by taking the deal's current label_ids and adding this one if absent (the union). Never drop, replace, or overwrite an existing label. If Director Audit is already on the deal, make no label write for that deal.
 4. LABEL MUST EXIST: use only the existing Director Audit label option (id 63). Never create a new label option and never substitute a similar-looking one. If no label option named exactly Director Audit exists, STOP and report.

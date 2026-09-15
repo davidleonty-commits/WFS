@@ -1,11 +1,11 @@
 ---
 name: setter-call-review-script
-description: "Loom teleprompter film script for a single setter call, for Caydo. Use when he wants the SCRIPT he reads aloud while screen-recording the Loom review, not the written Slack post. Triggers: \"give me the loom script\", \"script for the loom\", \"call review script\", \"setter loom script\", \"write me the script to film\", \"teleprompter for this set\", \"script with timestamps for a loom\", \"/setter-call-review-script\", or any request for a film script or word-for-word walkthrough of a setter call he will record. Spoken companion to setter-call-review-slack; both run off the same analysis (track, wins, one tighten, status color) and this renders it as a timestamp-anchored script in Caydo's voice using SHARE / READ / SAY beats. For SETTER calls, NOT closer calls. If he wants both, run setter-call-review-slack for the post and this for the film script off one analysis."
+description: "Loom teleprompter film script for a single setter call, for David. Use when he wants the SCRIPT he reads aloud while screen-recording the Loom review, not the written Slack post. Triggers: \"give me the loom script\", \"script for the loom\", \"call review script\", \"setter loom script\", \"write me the script to film\", \"teleprompter for this set\", \"script with timestamps for a loom\", \"/setter-call-review-script\", or any request for a film script or word-for-word walkthrough of a setter call he will record. Spoken companion to setter-call-review-slack; both run off the same analysis (track, wins, one tighten, status color) and this renders it as a timestamp-anchored script in David's voice using SHARE / READ / SAY beats. For SETTER calls, NOT closer calls. If he wants both, run setter-call-review-slack for the post and this for the film script off one analysis."
 ---
 
 # Setter Call Review Script (Loom teleprompter)
 
-You are writing the word-for-word script Caydo reads out loud while he screen-records a Loom of a single setter call. He has the call recording open on screen, he scrubs to the moments you cue, and he talks over them in his own voice. Your job is to hand him a teleprompter he can read top to bottom and film in one take.
+You are writing the word-for-word script David reads out loud while he screen-records a Loom of a single setter call. He has the call recording open on screen, he scrubs to the moments you cue, and he talks over them in his own voice. Your job is to hand him a teleprompter he can read top to bottom and film in one take.
 
 This is the spoken companion to `setter-call-review-slack`. The written Slack post and this film script grade the exact same call the exact same way. Do the analysis once, then render it as a script here. If both are being produced, the wins, the single tighten, and the status color must match across the two. Never let the spoken script praise something the written review dings, or vice versa.
 
@@ -13,7 +13,7 @@ This is the spoken companion to `setter-call-review-slack`. The written Slack po
 
 ## What this skill outputs
 
-A teleprompter script built from beats. Every beat is one of three moves, and you label each move so Caydo knows what to do:
+A teleprompter script built from beats. Every beat is one of three moves, and you label each move so David knows what to do:
 
 - **JUMP TO mm:ss** — a cue telling him where to scrub the recording before he talks. Always a real timestamp from the transcript.
 - **READ** — the short verbatim line off the transcript he reads aloud (or lets the recording play) so the viewer hears the actual moment. One or two sentences, the prospect's or setter's real words, just enough to anchor the spot. Never paste a whole block.
@@ -74,7 +74,7 @@ For a **Track B** call, the win beats cover the red-flag read, the smokescreen h
 
 ---
 
-## Caydo's voice (this is the whole point)
+## David's voice (this is the whole point)
 
 The script has to sound like him talking, not like a written review read aloud. Study his real filmed Loom and match it.
 
@@ -88,10 +88,10 @@ The script has to sound like him talking, not like a written review read aloud. 
 
 ## Tone rules
 
-- **No em dashes anywhere.** Use commas, periods, or restructure. This is a hard standard across everything for Caydo.
+- **No em dashes anywhere.** Use commas, periods, or restructure. This is a hard standard across everything for David.
 - No consultant-speak, no corporate filler, no emojis in the script body.
 - Every SAY line carries information or a usable word track. No throat-clearing.
-- The READ lines are short verbatim anchors from Caydo's own call recording for internal coaching. Keep them to one or two sentences, just enough to land the spot. Do not reproduce long stretches of the transcript.
+- The READ lines are short verbatim anchors from David's own call recording for internal coaching. Keep them to one or two sentences, just enough to land the spot. Do not reproduce long stretches of the transcript.
 - Output as a clean plain-text / markdown script he can paste into a teleprompter or read off the screen. Use the JUMP / READ / SAY labels so the moves are obvious at a glance.
 - Acknowledge the call briefly, then produce the script. Do not ask clarifying questions unless the transcript is unreadable or you cannot tell who the setter is.
 
@@ -100,7 +100,7 @@ The script has to sound like him talking, not like a written review read aloud. 
 ## Inputs
 
 - **Transcript:** required. Read it in full, decide the track, mark the timestamps for the open (frame, pain, info confirmation), the middle (financial qual, pre-call sell, any red flags), and the close (the commitment stack, or the decision to walk).
-- **Setter and prospect identity:** the setter is the rep running the qualification and booking the call onto someone else's calendar. The prospect is the one being qualified. If speaker labels are scrambled, identify the setter by who is controlling the frame, confirming info, and booking. Use the setter's first name in the OPEN greeting. If the transcript never names the setter, greet with "[Name]" as a placeholder for Caydo to fill in, and tell him in the chat that the call did not name the rep.
+- **Setter and prospect identity:** the setter is the rep running the qualification and booking the call onto someone else's calendar. The prospect is the one being qualified. If speaker labels are scrambled, identify the setter by who is controlling the frame, confirming info, and booking. Use the setter's first name in the OPEN greeting. If the transcript never names the setter, greet with "[Name]" as a placeholder for David to fill in, and tell him in the chat that the call did not name the rep.
 - **Loom link:** usually NOT needed here, because this script is what he reads to CREATE the Loom. He records first, then the link exists. If he is regenerating a script for an already-filmed call and gives a link, ignore it for the script body (it belongs on the written Slack post, not the teleprompter).
 - **Call link (JustCall / Avoma):** optional, for his reference only. Does not go in the script body.
 
@@ -108,7 +108,7 @@ The script has to sound like him talking, not like a written review read aloud. 
 
 ## Reference example (built from a real filmed Loom, this is the target)
 
-This mirrors how Caydo actually films. Match this voice, density, and the JUMP / READ / SAY rhythm. This was a Track A clean set that closed.
+This mirrors how David actually films. Match this voice, density, and the JUMP / READ / SAY rhythm. This was a Track A clean set that closed.
 
 ```
 # Setter Loom Script — Petros / Alicia

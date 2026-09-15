@@ -9,8 +9,9 @@ Prepared by Cayden Johnson, September 2026, for the incoming Sales Director.
 >
 > - `DATA-ACCESS.md` is the canonical old-tool to new-call map, and the contract the prompts
 >   were rewritten against. Edit it first if you change how a source is read, then propagate.
-> - `RETARGETING.md` is what is left for you: the identity values that still point at the
->   outgoing director. Start there.
+> - `RETARGETING.md` tracks the director identity. Slack id, Pipedrive id and the name are
+>   filled in for David Leonty; four values (work Google account, Avoma account email, Team
+>   Sync organizer, browser deviceId) are still outstanding. Start there.
 >
 > The rest of this README is the outgoing director's handoff, kept as written except where the
 > swap changed the facts.
@@ -94,9 +95,10 @@ Two consequences worth knowing before you enable anything:
    write for real, `pipedrive-director-audit-labeling` and `pipedrive-activity-clearing-cloud`,
    and their `PROCESS_MODE: DRY_RUN` gate is now the only thing between a run and a live
    Pipedrive edit. Run them in DRY_RUN first.
-2. Identity was deliberately NOT guessed. Every destination that was the outgoing director's DM
-   is now a `DIRECTOR_SLACK_ID` placeholder you fill in, and the Pipedrive audit tasks' owner id
-   is a fill-in too. See `RETARGETING.md`.
+2. Identity was never guessed. It is now set to David Leonty: `DIRECTOR_SLACK_ID` = U0BUZ6C0C91
+   in all 39 sending prompts, `OWNER_USER_ID` = 27299998 in the two audit tasks, and the name
+   swapped wherever the text is about the sitting director. Four values remain outstanding, all
+   listed in `RETARGETING.md`.
 
 ### Credential checklist to collect from the new director
 
@@ -298,10 +300,7 @@ The closer skills ship with `references/`: the talk track, the objection matrix,
 
 1. **The Section 1A connector swap is already done.** What is left is to collect the credentials in that checklist and connect the standard connectors (Slack, Avoma, Pipedrive, Google Drive, Supabase if kept) under your own Claude account. Each prompt's frontmatter lists what it needs under `connectors_required`; attach only those.
 2. **Upload the 17 skill folders** to your Claude account (Settings, Capabilities, Skills, upload each folder). Names must stay the same because the scheduled prompts call them by name (for example `anthropic-skills:ttw-avoma-clip-finder`; the `anthropic-skills:` prefix is just the workspace label and may differ in yours).
-3. **Retarget the prompts.** Every prompt was written with me as the owner. `RETARGETING.md` is the full checklist; the blocking items are:
-   - `DIRECTOR_SLACK_ID`, a fill-in placeholder in every prompt that sends to a DM. Find them with `grep -rn "fill in: your own Slack member ID" --include='*.md' .`
-   - `OWNER_USER_ID` in the two Pipedrive audit tasks, which is also a fill-in now: running them against my Pipedrive id would clear a departed user's activities.
-   - "Caydo" and "Cayden" in the voice instructions, with your own name where it is about identity, but keep the voice rules (first names, no consultant-speak, no hype) since the team is used to them.
+3. **Retarget the prompts.** Done for the director identity: Slack `U0BUZ6C0C91`, Pipedrive `27299998`, and the name swapped to David Leonty wherever the text is about the sitting director. `RETARGETING.md` lists the four values still outstanding (work Google account, Avoma account email, Team Sync organizer, browser deviceId) and the five places that still say Cayden on purpose, because changing them would falsify a record or break a lookup. Still worth confirming yourself:
    - Roster tables: confirm the closers and setters are current. As handed off: Closers Vidush Rana, Crue Lindgren, Turok Tarango, Tom Judson, Garrett McKenna, Noel Soto, Scott Jose. Setters Antonio Vespa, Petros Foustanellas.
 4. **Create the scheduled tasks** in Claude Cowork, one per folder, pasting the `SKILL.md` body as the prompt and using the fire times in Section 2. Set the model to Opus and permission mode to auto (the prompts are written to run with no approval gate; safety comes from DELIVERY_MODE).
 5. **Run everything in TEST first.** Every task has a `DELIVERY_MODE` (or `PROCESS_MODE`) value at the top of its CONFIG block. Leave it on TEST so the output lands only in your DM, watch two or three runs, then flip the single value to LIVE. The two client-facing reports (`ttw-daily-lead-flow-report`, `eod-show-rate-update`) are read by the client; hold those in TEST until you trust the numbers.

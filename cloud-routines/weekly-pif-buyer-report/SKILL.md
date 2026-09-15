@@ -9,29 +9,29 @@ created: 2026-07-13
 connectors_required: Pipedrive_MCP, Avoma_MCP, Google_Drive, Slack
 ---
 
-You are running a scheduled weekly task for Cayden Johnson, Sales Director at The WFS Group, who manages the TikTok Wiz (TTW) sales program. Run fully autonomously. Never ask for approval or confirmation at any point.
+You are running a scheduled weekly task for David Leonty, Sales Director at The WFS Group, who manages the TikTok Wiz (TTW) sales program. Run fully autonomously. Never ask for approval or confirmation at any point.
 MISSION
 Profile every TikTok Wiz deal that closed PAID IN FULL during the past week, and send the marketing team a written Slack post describing who those buyers were, what pain drove them, and what closed them. PIF buyers are the highest-margin, lowest-risk segment, so marketing's job is to find more of them.
 Accuracy beats completeness. A blank field is acceptable. A fabricated field is a task failure. ALWAYS publish the confirmed paid-in-full buyers you have this week, even if some are missing a call and even if only a couple qualify. Note what is missing rather than holding the report. Confirmed paid in full is defined by the money: the balance remaining is fully collected, no matter how many payments it took.
 MODE
-TEST MODE is currently active. Deliver only to the director's Slack DM (channel = DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>).
-LIVE MODE target, once Cayden explicitly declares this task out of test phase: post to the Slack channel #wfs-ttw-sales-mgmt-client with chat.postMessage on the workspace bot token.
-Do NOT post to #wfs-ttw-sales-mgmt-client until Cayden has explicitly said this task is live. If you are unsure which mode you are in, default to TEST and send to the DM.
+TEST MODE is currently active. Deliver only to the director's Slack DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91).
+LIVE MODE target, once David explicitly declares this task out of test phase: post to the Slack channel #wfs-ttw-sales-mgmt-client with chat.postMessage on the workspace bot token.
+Do NOT post to #wfs-ttw-sales-mgmt-client until David has explicitly said this task is live. If you are unsure which mode you are in, default to TEST and send to the DM.
 STANDING RULES
 
 * Fully autonomous. No approval or confirmation prompts.
-* CLOUD EXECUTION, CONNECTORS ONLY. This task runs on Anthropic's cloud infrastructure with Cayden's machine off. It must therefore NEVER touch a local resource. Specifically:
+* CLOUD EXECUTION, CONNECTORS ONLY. This task runs on Anthropic's cloud infrastructure with David's machine off. It must therefore NEVER touch a local resource. Specifically:
    * Never open, attach to, or drive a browser. Do not use Claude in Chrome. Do not reference any browser deviceId. There is no browser available to you.
    * Never read from or write to a local folder or local file path.
    * Never depend on any local or desktop application.
    * Do ALL work through hosted connectors and direct APIs only: Pipedrive MCP, Avoma MCP, the Slack Web API, and Google Drive.
    * Write the running log via the Google Drive connector, not via a browser session.
-   * If you find yourself reaching for a browser or a local file, stop. The task is misconfigured. Report that to Cayden's DM instead of proceeding.
+   * If you find yourself reaching for a browser or a local file, stop. The task is misconfigured. Report that to David's DM instead of proceeding.
 * Slack delivery goes exclusively through `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header Authorization: Bearer $SLACK_BOT_TOKEN). One sender only: never a personal user token, never a second sender.
 * Read-only on all sources. Never edit the Salesboard, Pipedrive, or Avoma. Never set Avoma meeting outcomes, purposes, or privacy. The only write target in this task is the running log Google Sheet described below.
 * No em dashes anywhere in any output.
 * No emojis directly after any rep name.
-* Write in Cayden's voice: casual, first person, contractions, spoken. No AI-sounding language.
+* Write in David's voice: casual, first person, contractions, spoken. No AI-sounding language.
 STEP 1: COMPUTE THE WINDOW
 This is a ROLLING window, not a calendar week. It exists so that deals closing on Friday evening and over the weekend are never lost in a gap.
 
@@ -56,8 +56,8 @@ First keep only deals whose offer label is one of:
 * "7K PIF Standard - TTW IC"
 Exclude everything else. Specifically exclude "$8K w/ Guarantee - TTW IC", "$8K Standard - TTW IC", "TTW Special Financing", and "TikTok Premium". Those are financed or other offers and do not belong in this report.
 The offer label is a QUOTED-OFFER field, not a settled-payment field, so the label alone does NOT prove the buyer paid in full. Confirm it with the money: a deal is CONFIRMED PIF only when its balance remaining is 0, meaning the full price has been collected. The number of payments does not matter. Two payments of 3,500 that add up to the full price is paid in full and counts. Treat a residual under 50 dollars as rounding, still confirmed PIF, but note the residual.
-Profile ONLY confirmed PIF buyers in the main body. A deal that carries a PIF label but still has a nonzero balance remaining is NOT confirmed paid in full: do not profile it as a PIF buyer. Instead list those under a short "Labelled PIF, balance still owed" note to Cayden (name, collected vs total, balance owed), so he can see what nearly landed. Never silently drop them and never reclassify them in Pipedrive; Pipedrive stays source of truth for the segment.
-DEDUPE: if the same person (same person_id, or same primary email) has more than one won PIF deal inside the window, count them as ONE buyer, use the earliest won deal as the close date, and flag the duplicate deal ids to Cayden. Never double count a buyer or their cash.
+Profile ONLY confirmed PIF buyers in the main body. A deal that carries a PIF label but still has a nonzero balance remaining is NOT confirmed paid in full: do not profile it as a PIF buyer. Instead list those under a short "Labelled PIF, balance still owed" note to David (name, collected vs total, balance owed), so he can see what nearly landed. Never silently drop them and never reclassify them in Pipedrive; Pipedrive stays source of truth for the segment.
+DEDUPE: if the same person (same person_id, or same primary email) has more than one won PIF deal inside the window, count them as ONE buyer, use the earliest won deal as the close date, and flag the duplicate deal ids to David. Never double count a buyer or their cash.
 Expected volume is roughly 5 to 9 confirmed PIF buyers per week. If the confirmed count exceeds 15, the filter is broken. Flag it and do not send.
 STEP 4: ENRICH FROM PIPEDRIVE PERSON RECORDS
 Call getPersons on the person_id from each qualifying deal.
@@ -117,7 +117,7 @@ Therefore:
 ClarityPay is a real payment method in the WFS system, and nothing flags it on the call record.
 So detect it from the transcript. Scan the transcript verbatim for: ClarityPay, Clarity Pay, Clarity, and any other named lender or funding partner (Affirm, Klarna, Splitit, and so on). Record the exact term used.
 Note the interaction with segmentation: a buyer can be a PIF deal in Pipedrive and still have discussed ClarityPay on the call before landing on paid in full. Capture that. It is useful signal about what nearly happened. A very common winning pattern is: financing (ClarityPay, Affirm, Klarna) is attempted and declined, then the rep offers a paid-in-full discount and the buyer pays in full. Capture that sequence when it appears.
-If a buyer's transcript shows they actually used ClarityPay or financing rather than paying in full outright, this should already be caught by the balance-remaining check in STEP 3. If Pipedrive shows balance 0 but the transcript clearly shows financing was used, FLAG IT to Cayden as a possible tagging error. Do not silently reclassify them. Pipedrive stays the source of truth for the segment, and Cayden decides.
+If a buyer's transcript shows they actually used ClarityPay or financing rather than paying in full outright, this should already be caught by the balance-remaining check in STEP 3. If Pipedrive shows balance 0 but the transcript clearly shows financing was used, FLAG IT to David as a possible tagging error. Do not silently reclassify them. Pipedrive stays the source of truth for the segment, and David decides.
 5f. Rep name resolution
 The rep is identified by the Avoma meeting's organizer email. Resolve that to a human name through the WFS Active Sales Team Roster sheet, or fall back to the Pipedrive deal owner. If you cannot resolve it, write the closer name as UNKNOWN rather than guessing.
 STEP 6: EXTRACT THE PROFILE
@@ -142,13 +142,13 @@ EVIDENCE RULES (this is the accuracy gate)
 * "Reason for buying" and "What flipped them" must be grounded in near-verbatim language. If the call contains no clear answer (for example a payment-only or onboarding call), write NOT STATED. Do not construct a plausible one.
 * Quote no more than a short phrase per lead. Paraphrase everything else.
 STEP 7: APPEND TO THE RUNNING LOG
-Append one row per confirmed PIF buyer to a Google Sheet named "TTW PIF Buyer Profiles — Running Log" in Cayden's Drive. Create the sheet if it does not exist. This sheet is the ONLY write target in this task.
+Append one row per confirmed PIF buyer to a Google Sheet named "TTW PIF Buyer Profiles — Running Log" in David's Drive. Create the sheet if it does not exist. This sheet is the ONLY write target in this task.
 Columns: Week Ending, Name, Won Date, Closer, City, State, Age, Age Source (STATED / CRM / BLANK), Gender (always INFERRED), Occupation, Household, Cash Collected, Offer, ClarityPay Mentioned (term used, or "not mentioned"), Other Lender Mentioned, Lead Source, UTM Source, Campaign, Ad Set, Days Opt-in to Close, Prior Experience, Prior Programs Bought, Primary Pain, Reason For Buying, What Flipped Them, Top Objection, Typeform Obstacle, Typeform Timeline, Typeform Excites, Call Source (AVOMA INDEX / AVOMA LOOKUP / NONE), Meeting UUID, Transcript Status, Confidence.
 Before writing, READ the existing sheet (if more than one file shares this title, read the one with the newest createdTime, it is the most complete superset). You need it to compute the trailing 4-week PIF average and the rolling trend line in the Slack post. Those comparisons must come from real logged history, never invented. On the first run there is no history, so say so plainly instead of making up a comparison.
-KNOWN LIMITATION: the Google Drive connector has no Sheets append/update capability, so you cannot append in place. Append by reading the newest log in full and creating a new file with all prior rows plus this week's. If that inline rewrite is not feasible in the run, write the updated log as a CSV and deliver it to the session for Cayden to drop into Drive, and say so. Do NOT skip logging silently. Publishing the Slack post does NOT depend on the log write succeeding; publish either way.
+KNOWN LIMITATION: the Google Drive connector has no Sheets append/update capability, so you cannot append in place. Append by reading the newest log in full and creating a new file with all prior rows plus this week's. If that inline rewrite is not feasible in the run, write the updated log as a CSV and deliver it to the session for David to drop into Drive, and say so. Do NOT skip logging silently. Publishing the Slack post does NOT depend on the log write succeeding; publish either way.
 STEP 8: BUILD AND SEND THE SLACK POST
 Send via `chat.postMessage` on the workspace bot token to the director's DM (channel = DIRECTOR_SLACK_ID). Use Slack mrkdwn. Structure:
-HEADER: one line of context in Cayden's voice, then the CONFIRMED PIF buyer count (deduped, balance fully collected) and total cash collected from those confirmed buyers, and how that compares to the trailing 4-week PIF average from the running log. In one line, note how many of those buyers had a full call analysis versus how many are CRM-only because no usable transcript was found, and separately note the count of any labelled-PIF-but-balance-owed deals that were held out.
+HEADER: one line of context in David's voice, then the CONFIRMED PIF buyer count (deduped, balance fully collected) and total cash collected from those confirmed buyers, and how that compares to the trailing 4-week PIF average from the running log. In one line, note how many of those buyers had a full call analysis versus how many are CRM-only because no usable transcript was found, and separately note the count of any labelled-PIF-but-balance-owed deals that were held out.
 PER-LEAD BLOCKS, one per buyer, in this exact format:
 [Name] | [City, State] | closed [day] by [Closer] • Who they are: [age if known, occupation, household context] • Came from: [UTM source] / [campaign or webinar cohort] | opted in [X] days before closing • Experience: [beginner / tried and failed / has sold online before] • Pain: [primary pain point, close to their own words] • Why they bought: [reason for buying, near-verbatim] • What flipped them: [the specific proof, reframe, or moment] • Objection they raised first: [top objection]
 For CRM-only buyers with no usable transcript, fill the call-dependent fields with what the typeform gives you (obstacle, timeline, what excites them) and mark the missing ones "no call found this week" so the block is honest about the gap.
@@ -174,7 +174,7 @@ Do not deliver output that has not passed QA.
 7. Confirm the trailing average and rolling read were computed from the running log and are not invented.
 8. Confirm every buyer has a Call Source recorded (AVOMA INDEX / AVOMA LOOKUP / NONE) and that the count of NONE buyers is stated in the run summary and the post. Do NOT hold the report because some buyers have no call: missing transcripts are expected and are a coverage note, not a blocker. When NONE is unusually high (more than half), also add a one-line diagnostic to the DM on the likely cause, distinguishing a recording/timing/phone-channel gap (a record exists but no usable transcript) from a true email-join failure (the Pipedrive email resolves to no record anywhere). Publish either way.
 9. Confirm the ClarityPay scan ran on every available transcript and its result is recorded per buyer, even when the result is "not mentioned". CRM-only buyers with no transcript are recorded as "no transcript to scan".
-10. Confirm no buyer is double counted: each person_id and primary email appears once, and any duplicate won PIF deals were collapsed and flagged to Cayden.
-On a fixable failure, correct it and re-check, up to 3 times. Only a true source or data outage blocks delivery: Pipedrive auth expired, the offer field or balance field missing entirely, or getDeals returning nothing. Incomplete transcript coverage, missing calls, silent recordings, or a few buyers being CRM-only NEVER block delivery: publish what you have and note the gaps. If a real outage does block it, send the specific QA failures to Cayden's DM instead.
+10. Confirm no buyer is double counted: each person_id and primary email appears once, and any duplicate won PIF deals were collapsed and flagged to David.
+On a fixable failure, correct it and re-check, up to 3 times. Only a true source or data outage blocks delivery: Pipedrive auth expired, the offer field or balance field missing entirely, or getDeals returning nothing. Incomplete transcript coverage, missing calls, silent recordings, or a few buyers being CRM-only NEVER block delivery: publish what you have and note the gaps. If a real outage does block it, send the specific QA failures to David's DM instead.
 
 On any QA failure, and on any pass that required one or more fix-and-recheck retries, read the qa-failure-loop skill and append a row to the QA Failure Log sheet in Drive with full specifics (stage, class, exact error or wrong value, retries count, outcome, known-issue match) before sending any failure DM. If the failure matches a Known Issues playbook row, apply that documented fix during the retry cycle and log the match. If a playbook fix fails to resolve the issue, flag that in both the log and the DM, because a rotted workaround is itself a finding. The QA Failure Log is an additional write target for this task.

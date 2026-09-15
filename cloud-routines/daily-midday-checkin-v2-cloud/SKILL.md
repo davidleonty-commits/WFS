@@ -20,7 +20,7 @@ CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules 
 DELIVERY_MODE: TEST
   TEST MARKER (cloud-migration testing only): while DELIVERY_MODE is TEST, the delivered message MUST begin with the emoji 🙌🏽 followed by a space, before all other content. This tags it as the CLOUD task test DM so the owner can compare it against the local task output. The QA gate must verify the marker is present in TEST. When this task is flipped to LIVE, delete this marker rule: the 🙌🏽 must NEVER appear in a live channel post.
   (CLOUD MIGRATION: held at TEST so the local task and this cloud task never double-post - the cloud copy DMs only the owner. Flip to LIVE only after the owner disables the local copy of this task. TEST sends only to TEST_TARGET; LIVE sends to LIVE_TARGET, the reps channel.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID   (Director's DM. The only delivery destination allowed while DELIVERY_MODE is TEST.)
 LIVE_TARGET: #wfs-ttw-sales-reps-dm-external   (Reps channel, includes external members. Used only when DELIVERY_MODE is LIVE.)
 MEMORY_TARGET: DIRECTOR_SLACK_ID   (Director's DM, the single memory surface. Every day's delivered check-in lives here so tomorrow's run can read the last two for anti-repetition. In TEST this equals the delivery target, so delivery doubles as the memory. In LIVE, the check-in is delivered to LIVE_TARGET and one identical copy is also posted here. To move the memory to a dedicated private channel later, change only this value.)

@@ -12,7 +12,7 @@ connectors_required: Avoma_MCP, Slack, Google_Drive
 Run the weekly TikTok Wiz sales call review report.
 
 CONFIG
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567. The completion DM goes here and nowhere else.>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The completion DM goes here and nowhere else.)
 SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 
 Invoke the `ttw-weekly-call-review` skill and follow it end to end. This is an unattended scheduled run: do not stop to ask clarifying questions or wait for confirmation at the skill's normal checkpoints. Make the reasonable call, state the assumption in your final summary, and keep going.
@@ -22,7 +22,7 @@ Reporting window
 - Timezone for all call timestamps is America/Denver.
 
 Standing constraints (these are non-negotiable and carry over from prior runs)
-- Exclude Cayden Johnson's own calls entirely. He is the Sales Director, not a rep under review. Filter them out before any counts, averages, or bucket percentages.
+- Exclude David Leonty's own calls entirely. He is the Sales Director, not a rep under review. Filter them out before any counts, averages, or bucket percentages.
 - Accuracy over speed. Nothing ships on a single grading pass. Single-pass grading on this report has been wrong roughly 30% of the time. Run the full multi-agent review workflow in `references/review-workflow.md`: blind independent reviewers, neutral adjudication, adversarial challenge, then neutral adjudication of the knockdowns. Then run `scripts/qa_gates.py` and do not deliver until all ten gates pass.
 - Verify transcript completeness before grading any call. Many cached transcripts truncate at Avoma chunk 1, before the pricing segment. Follow `references/transcript-integrity.md`: check the chars-per-minute heuristic, paginate on `next_cursor` until `has_more` is false, and never write transcripts to a shared scratch path since parallel agents overwrite each other and silently grade the wrong call.
 - Bucket grading follows `references/bucket-definitions.md` exactly. RED requires an affirmative financial reference in the lead's own words. An unrun application is not evidence of inability. GREY means funding, credit, affordability, and income were never established at all. Watch the Michelle Wilbur failure mode: a constraint on credit access is not the same as a lack of money.
@@ -33,16 +33,16 @@ Data sources
 
 Deliverables
 1. The two-tab workbook (Data + Report) built per `references/report-spec.md`, with full-row bucket color coding, the Bucket Mix by Rep block showing RED % (not GREY %), and the FDQ opportunity-cost model at $6,400 net per deal. Recalculate formulas before shipping.
-2. Send the workbook to Cayden with SendUserFile. Also upload the Report tab to Google Drive as a Sheet if it fits under the connector's size ceiling; if the full data tab is too large, upload the Report tab only and say so.
+2. Send the workbook to David with SendUserFile. Also upload the Report tab to Google Drive as a Sheet if it fits under the connector's size ceiling; if the full data tab is too large, upload the Report tab only and say so.
 3. A DRAFT Slack message summarizing the week for the management team. Write it as plain text with no markdown or asterisks, because Slack's composer does not render pasted markdown. Lead with the FDQ opportunity cost framing, keep it short, and include the report link.
 
-DO NOT SEND THE MANAGEMENT-TEAM SLACK MESSAGE. Cayden sends that one himself. Draft it only and put it in your final response as plain text he can copy.
+DO NOT SEND THE MANAGEMENT-TEAM SLACK MESSAGE. David sends that one himself. Draft it only and put it in your final response as plain text he can copy.
 
-Also: keep any compliance findings out of the Slack draft. Report those separately in your response to Cayden.
+Also: keep any compliance findings out of the Slack draft. Report those separately in your response to David.
 
-Final step, required: DM Cayden on Slack when the run is complete
+Final step, required: DM David on Slack when the run is complete
 - After the report is finished and delivered, send the director a Slack DM with `chat.postMessage`, `channel` = DIRECTOR_SLACK_ID, nothing scheduled so it goes out immediately.
-- This DM is separate from the management-team draft above and IS meant to be sent. It is a completion notice to Cayden only. Do not post it to a channel.
+- This DM is separate from the management-team draft above and IS meant to be sent. It is a completion notice to David only. Do not post it to a channel.
 - Keep it to a few lines: the report is ready, the date window covered, call count and gradeable count, close count and close rate, average rep score, FDQ percentage, the estimated FDQ opportunity cost, the Google Sheet link, and a note that the management-team Slack draft is waiting in the session for him to review and send. Flag any QA gate failure or compliance finding in one line so he knows to open the session.
 - Send this DM even if the run had problems. If the report could not be completed, DM him saying what halted it and how far it got. If `chat.postMessage` fails outright, retry it ONCE after a short pause; there is no second sender.
 - Confirm the DM from the return value only (ok = true, a non-empty ts, and a returned channel matching DIRECTOR_SLACK_ID) and say so in your final summary.

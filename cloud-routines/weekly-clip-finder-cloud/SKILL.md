@@ -10,14 +10,14 @@ connectors_required: Avoma_MCP, Slack, Google_Drive
 ---
 
 SCHEDULED TASK: Weekly Clip Finder
-PURPOSE: Source this week's world-class sales coaching clips from TikTok Wiz consultation calls and deliver the clip list to Cayden's Slack DM.
+PURPOSE: Source this week's world-class sales coaching clips from TikTok Wiz consultation calls and deliver the clip list to David's Slack DM.
 
 CONFIG
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567. The only delivery destination for this task.>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The only delivery destination for this task.)
 SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 Runs as a remote cloud task, fully connector-based, no browser, autonomous — never ask the user questions; the user is not present.
 
-Invoke the `anthropic-skills:ttw-avoma-clip-finder` skill and follow its full workflow: score how reps executed the Decision Leadership Objection Matrix across the week's calls, identify the best teachable moments (Great Demo / objection handling / Missed Opportunity), apply the strict clip eligibility gate and verbatim clip-anchor rule, and hand Caydo exact clip-in and clip-out anchors so each snippet is one click to create.
+Invoke the `anthropic-skills:ttw-avoma-clip-finder` skill and follow its full workflow: score how reps executed the Decision Leadership Objection Matrix across the week's calls, identify the best teachable moments (Great Demo / objection handling / Missed Opportunity), apply the strict clip eligibility gate and verbatim clip-anchor rule, and hand David exact clip-in and clip-out anchors so each snippet is one click to create.
 
 Avoma is the source for all call data (the skill pulls via the Avoma MCP: `list_meetings` over the window, `get_meeting_transcript` per candidate, `get_meeting_notes` when a transcript is unavailable). Cover the past week of calls (the most recent 7 days); all dates/windows in Mountain Time (America/Denver).
 

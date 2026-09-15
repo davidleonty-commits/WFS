@@ -14,7 +14,7 @@ SCHEDULED TASK: Webinar Report Purpose: per-webinar Slack report published on TW
 =====================================================
 DELIVERY BLOCK (one sender: the workspace bot token)
 =====================================================
-DELIVERY_MODE: TEST   TEST MARKER: while DELIVERY_MODE is TEST the delivered message MUST begin with the emoji 🙌🏽 followed by a space, before all other content. QA must verify it. When flipped to LIVE, delete this marker rule: the 🙌🏽 must NEVER appear in a live channel post.   DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>   TEST_TARGET: DIRECTOR_SLACK_ID   (Director's DM. The only destination allowed while in TEST. Address it by member ID: a handle does not resolve through the API. On a transient 503, retry once.) LIVE_TARGET: #wfs-ttw-sales-mgmt-client   (CLIENT-FACING: management and client both see it.) JITTER_MINUTES: 0
+DELIVERY_MODE: TEST   TEST MARKER: while DELIVERY_MODE is TEST the delivered message MUST begin with the emoji 🙌🏽 followed by a space, before all other content. QA must verify it. When flipped to LIVE, delete this marker rule: the 🙌🏽 must NEVER appear in a live channel post.   DIRECTOR_SLACK_ID: U0BUZ6C0C91   TEST_TARGET: DIRECTOR_SLACK_ID   (Director's DM. The only destination allowed while in TEST. Address it by member ID: a handle does not resolve through the API. On a transient 503, retry once.) LIVE_TARGET: #wfs-ttw-sales-mgmt-client   (CLIENT-FACING: management and client both see it.) JITTER_MINUTES: 0
 
 =====================================================
 HARD RULES (never violate)

@@ -1,13 +1,13 @@
 ---
 name: ttw-daily-avoma-report
-description: Automated daily TikTok Wiz call report delivered to Caydo's own Slack DM. Use this whenever the daily call report needs to run on its own, or whenever Caydo says "run the daily call report", "send me today's call report", "run today's calls", "daily DM report", "run the call report", or any request to pull, score, and DM today's sales consultation calls. ALSO trigger this when a scheduled task fires to produce the 6 PM daily report. This skill pulls every Avoma call from the current day that has a recording over 15 minutes, scores each one on the strict evidence-based rubric, formats the summary report, and sends it straight to Caydo's Slack DM with no draft step. Use this skill even when the request sounds simple, because the pull window, the 15-minute floor, the strict scoring, and the DM delivery all have specific rules that protect the report's accuracy.
+description: Automated daily TikTok Wiz call report delivered to David's own Slack DM. Use this whenever the daily call report needs to run on its own, or whenever David says "run the daily call report", "send me today's call report", "run today's calls", "daily DM report", "run the call report", or any request to pull, score, and DM today's sales consultation calls. ALSO trigger this when a scheduled task fires to produce the 6 PM daily report. This skill pulls every Avoma call from the current day that has a recording over 15 minutes, scores each one on the strict evidence-based rubric, formats the summary report, and sends it straight to David's Slack DM with no draft step. Use this skill even when the request sounds simple, because the pull window, the 15-minute floor, the strict scoring, and the DM delivery all have specific rules that protect the report's accuracy.
 ---
 
 # TTW Daily Avoma Report (auto-DM)
 
-This skill runs the full daily TikTok Wiz call review without any manual transcript upload. It pulls the day's calls from Avoma over the MCP, keeps only real consultations over 15 minutes, scores each on the strict rubric using the transcript, builds the summary report, and sends it to Caydo's own Slack DM.
+This skill runs the full daily TikTok Wiz call review without any manual transcript upload. It pulls the day's calls from Avoma over the MCP, keeps only real consultations over 15 minutes, scores each on the strict rubric using the transcript, builds the summary report, and sends it to David's own Slack DM.
 
-This is the automated counterpart to the manual `ttw-daily-call-review` skill. Use this one for scheduled and on-demand daily runs. Use the manual skill only when Caydo uploads a transcript file by hand.
+This is the automated counterpart to the manual `ttw-daily-call-review` skill. Use this one for scheduled and on-demand daily runs. Use the manual skill only when David uploads a transcript file by hand.
 
 The closers are Vidush Rana, Tom Judson, Crue Lindgren, Turok Tarango, and Paul Rasoumoff. The setters are Petros Foustanellas, Antonio Vespa, Aidan Stammers, and Saray Cortes.
 
@@ -16,7 +16,7 @@ The closers are Vidush Rana, Tom Judson, Crue Lindgren, Turok Tarango, and Paul 
 ## Step 1: Establish the day window
 
 1. Call `get_current_datetime` to anchor the run.
-2. Caydo is in Lehi, Utah (Mountain Time). Build the local-day window in UTC: from the target date at 06:00:00Z through the next date at 05:59:59Z. That covers 00:00 to 23:59 local. Adjust by one hour across daylight-saving boundaries.
+2. The director works in Mountain Time (America/Denver). Build the local-day window in UTC: from the target date at 06:00:00Z through the next date at 05:59:59Z. That covers 00:00 to 23:59 local. Adjust by one hour across daylight-saving boundaries.
 
 ## Step 2: List the day's meetings
 
@@ -151,7 +151,7 @@ Build the report in this exact structure. Put `&nbsp;` on its own line between s
 - Decision Maker [n]/5: [spouse status as stated, or "not disclosed"]
 - Timeline [n]/5: [stated commit timing]
 - Intent [n]/5: [commit language or lack of it]
-- Takeaway: [1 to 2 sentences in Caydo's voice, tough but fair, what to do next]
+- Takeaway: [1 to 2 sentences in David's voice, tough but fair, what to do next]
 
 &nbsp;
 
@@ -160,7 +160,7 @@ Build the report in this exact structure. Put `&nbsp;` on its own line between s
 
 ## Tone and voice
 
-- Write the takeaways in Caydo's voice: direct, first person where natural, tough but fair on closers, focused on the next action.
+- Write the takeaways in David's voice: direct, first person where natural, tough but fair on closers, focused on the next action.
 - Be hard on the closer when they folded or skipped a step, fair when the lead was never going to buy.
 - Never use em dashes anywhere. Use commas, periods, or parentheses.
 - Do not put emojis after rep names. Avoid emojis in general.
@@ -171,7 +171,7 @@ Build the report in this exact structure. Put `&nbsp;` on its own line between s
 
 ## Delivery to Slack DM
 
-Send the finished report to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token. Set `channel` to the director's Slack member ID (DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>). The report is private to him and goes to no team or exec channel, so naming a closer in a missed-close line is fine here.
+Send the finished report to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token. Set `channel` to the director's Slack member ID (DIRECTOR_SLACK_ID U0BUZ6C0C91). The report is private to him and goes to no team or exec channel, so naming a closer in a missed-close line is fine here.
 
 **Send, do not draft.** The run pulls, scores, builds, and sends with no approval step. This is the scheduled daily behavior.
 

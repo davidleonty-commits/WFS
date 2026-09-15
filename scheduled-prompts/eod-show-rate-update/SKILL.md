@@ -16,7 +16,7 @@ CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules 
 =====================================================
 DELIVERY_MODE: LIVE
   (TEST sends only to TEST_TARGET, the owner's DM. LIVE sends to LIVE_TARGET. Owner took this task LIVE on 2026-07-09. To pull it back into testing, change this one value to TEST.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
   (Director's DM. The only destination allowed while DELIVERY_MODE is TEST, and ALWAYS the destination for QA FAILURE reports regardless of mode. Addressed by Slack member ID because a handle or an email does not resolve through the API. Pass the ID verbatim as the channel.)
 LIVE_TARGET: #wfs-ttw-sales-mgmt-client

@@ -23,7 +23,7 @@ CONFIG (edit only the values in this block; never edit the rules below.)
 DELIVERY_MODE: TEST
   (CLOUD MIGRATION COMPLETE: flipped from TEST to LIVE on 2026-07-13 after the local copy of this task was confirmed disabled. The cloud task is now the sole publisher of this report. The 🙌🏽 test marker is retired and must NEVER appear on a live channel post.)
   (TEST sends only to TEST_TARGET, the owner's DM. LIVE sends to LIVE_TARGET.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID (address the DM by member ID; a handle does not resolve through the API)
 LIVE_TARGET: #wfs-ttw-sales-mgmt-client
 JITTER_MINUTES: 0
@@ -120,13 +120,13 @@ For each of the two most recent DATED webinars: Closer calls (Pass A Closer), Se
 =====================================================
 STEP 3B: TEAM SYNC RECAP
 =====================================================
-Purpose: append a short recap of today's "TTW - Team Sync" meeting, written in Cayden's own voice, sourced from Avoma. This section is best-effort per HARD RULE 6 — never let it block or delay the OnceHub portion of the report.
+Purpose: append a short recap of today's "TTW - Team Sync" meeting, written in David's own voice, sourced from Avoma. This section is best-effort per HARD RULE 6 — never let it block or delay the OnceHub portion of the report.
 
 FIND THE MEETING: call mcp__Avoma_MCP__get_current_datetime first. Then call mcp__Avoma_MCP__list_meetings with meeting_state=completed and a from_date/to_date window covering today's full ET calendar date (converted to UTC). Find the meeting whose subject contains TEAM_SYNC_SUBJECT_MATCH (case-insensitive) — prefer one organized by TEAM_SYNC_ORGANIZER — and whose start_at, converted to ET, falls on today's ET date. If no such meeting exists (e.g., no sync happened today, or it's still in progress / not yet "completed"), OMIT this entire section — no Team Sync Recap in the report — and note "no completed Team Sync meeting found for [date]" in STEP 6 RECORD.
 
 GET CONTENT: call mcp__Avoma_MCP__get_meeting_notes (output_format markdown) for that meeting's uuid. If notes are ready (the notes field is non-empty and not the placeholder "Notes are not ready yet..."), use the notes/key_points/action_items/decisions as your source facts. If notes are NOT ready, call mcp__Avoma_MCP__get_meeting_transcript and page through with the returned cursor until has_more is false, and derive the summary from the raw dialogue instead. Only use facts actually present in the notes or transcript — never invent numbers, names, or decisions.
 
-WRITE IN CAYDEN'S TONE (not a neutral third-person AI summary): first person, as if Cayden is personally recapping the call to the team. Casual and energetic, but keep language clean for the Slack channel — no profanity even if it appears in the raw call. Name-check specific reps and their concrete numbers/actions where the source material supports it (booking counts, pickup rates, deals in motion, etc.). Focus on outcomes, decisions made, and next actions rather than blow-by-blow minutes. Close with a short one-line rally/motivational beat. Target 3-5 short paragraphs, no bullet points, no sub-headers — plain prose only, under the one bold section header defined in FORMAT RULES.
+WRITE IN CAYDEN'S TONE (not a neutral third-person AI summary): first person, as if David is personally recapping the call to the team. Casual and energetic, but keep language clean for the Slack channel — no profanity even if it appears in the raw call. Name-check specific reps and their concrete numbers/actions where the source material supports it (booking counts, pickup rates, deals in motion, etc.). Focus on outcomes, decisions made, and next actions rather than blow-by-blow minutes. Close with a short one-line rally/motivational beat. Target 3-5 short paragraphs, no bullet points, no sub-headers — plain prose only, under the one bold section header defined in FORMAT RULES.
 
 PLACEMENT: this is the final section of the SAME single Slack message built in STEP 4 (not a separate message or thread reply) — it goes after the STEP 3 webinar comparison block.
 
@@ -161,7 +161,7 @@ Canceled Closer Calls: [n]
 Canceled Setter Calls: [n]
 Total Cancellation rate: [r]%
 Team Sync Recap - [Month DD]:
-[3-5 short plain-text paragraphs, in Cayden's voice, per STEP 3B — omit this entire block (header included) if STEP 3B found no meeting or no usable content]
+[3-5 short plain-text paragraphs, in David's voice, per STEP 3B — omit this entire block (header included) if STEP 3B found no meeting or no usable content]
 
 (No archive step: the Slack report is the deliverable.)
 

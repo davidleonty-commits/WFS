@@ -138,7 +138,7 @@ Steps in this clip:  [every matrix step the rep runs in or around the clip with 
 CLIP IN  (highlight starts here): "[verbatim words]"
 CLIP OUT (highlight ends here):   "[verbatim words]"
 
-SAY THIS FIRST: [two sentences Caydo reads before the clip. Celebrate the full sequence if the
+SAY THIS FIRST: [two sentences David reads before the clip. Celebrate the full sequence if the
                  rep ran multiple steps. If only one step landed, or a missed clip where the rep
                  started right, say they started it right and name the step to EXPAND on next.]
 

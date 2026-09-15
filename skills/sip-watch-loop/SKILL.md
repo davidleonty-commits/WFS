@@ -1,6 +1,6 @@
 ---
 name: sip-watch-loop
-description: Closed-loop coaching outcome tracker for Caydo's closer and setter fleet. Turns one-directional call reviews into an improvement engine by logging every SIP-relevant behavior flagged in a review to a durable SIP Watch Ledger, then auto-checking that rep's next calls for that specific behavior and reporting per-rep status (new, watching, clearing, persistent) until it clears or escalates with an evidence bundle. Use whenever a call review flags a coachable behavior, whenever Caydo says "SIP watch", "SIP status", "is [rep] still doing X", "did the coaching stick", "who is clearing and who is persisting", or "check his last calls for [behavior]", and in any daily or weekly call report, which should carry a SIP Watch section. Also use when Caydo wants escalation evidence for a rep whose flagged behavior is not changing. Composes with closer-call-review, setter-call-review, ttw-daily-call-review, and ttw-daily-avoma-report; it adds the memory layer those reviews lack.
+description: Closed-loop coaching outcome tracker for David's closer and setter fleet. Turns one-directional call reviews into an improvement engine by logging every SIP-relevant behavior flagged in a review to a durable SIP Watch Ledger, then auto-checking that rep's next calls for that specific behavior and reporting per-rep status (new, watching, clearing, persistent) until it clears or escalates with an evidence bundle. Use whenever a call review flags a coachable behavior, whenever David says "SIP watch", "SIP status", "is [rep] still doing X", "did the coaching stick", "who is clearing and who is persisting", or "check his last calls for [behavior]", and in any daily or weekly call report, which should carry a SIP Watch section. Also use when David wants escalation evidence for a rep whose flagged behavior is not changing. Composes with closer-call-review, setter-call-review, ttw-daily-call-review, and ttw-daily-avoma-report; it adds the memory layer those reviews lack.
 ---
 
 # SIP Watch Loop
@@ -17,7 +17,7 @@ Call reviews without follow-through are content, not coaching. This loop closes 
 
 ## The ledger
 
-A Google Sheet named **SIP Watch Ledger** in Caydo's Drive. On first run, search Drive for it; if missing, create it and report the new file. Columns:
+A Google Sheet named **SIP Watch Ledger** in David's Drive. On first run, search Drive for it; if missing, create it and report the new file. Columns:
 
 | Column | Content |
 |---|---|
@@ -59,7 +59,7 @@ Whenever this rep's subsequent calls get processed (daily report, a new single-c
 - **watching to clearing:** the last 3 consecutive situation-relevant calls show correct handling.
 - **clearing to cleared:** 5 consecutive situation-relevant calls clean. Log the clear date. Cleared watches stay in the ledger as history; they are the receipts that coaching works.
 - **watching to persistent:** behavior present in 3 or more of the last 5 situation-relevant calls, or still present in any call more than 14 days after date_flagged with at least 4 calls checked.
-- **persistent to escalated:** only when Caydo says to escalate, or when a persistent watch crosses 21 days. Escalation produces the evidence bundle below; it never fires silently.
+- **persistent to escalated:** only when David says to escalate, or when a persistent watch crosses 21 days. Escalation produces the evidence bundle below; it never fires silently.
 
 A cleared behavior that reappears within 30 days reopens as a new row marked "relapse of [entry_id]" and starts at watching, not new. Relapses are worth calling out plainly.
 
@@ -78,15 +78,15 @@ One line per watch, status plain, trajectory named. Reps with no open watches ge
 
 ### Escalation bundle
 
-When a watch escalates, produce a tight packet to Caydo's DM:
+When a watch escalates, produce a tight packet to David's DM:
 
 - Rep, behavior, date flagged, days open, coaching given (from notes).
 - The evidence table: every checked call, date, present or absent, quote or timestamp.
 - The cost: one or two lines on what this behavior is plausibly costing (a specific lost deal from the checked calls if one exists, otherwise the mechanism).
 - Recommended next step, stated as a recommendation, not an action taken.
 
-The bundle exists so a SIP conversation runs on receipts instead of recollection. Caydo decides what happens with it.
+The bundle exists so a SIP conversation runs on receipts instead of recollection. David decides what happens with it.
 
 ## Weekly hygiene pass
 
-Once a week (or when asked), sweep the ledger: close out anything cleared, flag watches with stale last_checked older than 7 days as needing calls pulled, and give Caydo a two-line fleet summary: how many watches opened, cleared, and persisting this week. The cleared-to-opened ratio over time is the honest measure of whether the coaching system works.
+Once a week (or when asked), sweep the ledger: close out anything cleared, flag watches with stale last_checked older than 7 days as needing calls pulled, and give David a two-line fleet summary: how many watches opened, cleared, and persisting this week. The cleared-to-opened ratio over time is the honest measure of whether the coaching system works.

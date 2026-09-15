@@ -15,7 +15,7 @@ AUTONOMY: Runs fully autonomous with no approval or confirmation prompts. It is 
 CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules below.)
 
 DELIVERY_MODE: LIVE (TEST or LIVE. TEST sends the report only to TEST_TARGET, the owner's DM. LIVE sends it to LIVE_TARGET. Keep TEST until officially out of test mode, then change this one value to LIVE.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID (Director's DM. The only destination allowed while DELIVERY_MODE is TEST.)
 LIVE_TARGET: #wfs-ttw-sales-reps-dm-external (This channel includes external members, so accuracy must be perfect. Used only when DELIVERY_MODE is LIVE.)
 JITTER_MINUTES: 0 (Randomizes the send time within plus or minus this many minutes; 0 sends at a predictable time.)

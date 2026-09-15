@@ -1,7 +1,7 @@
 ---
 name: closer-call-review
 description: >
-  Single-call closer review for Caydo, Sales Director. Use whenever Caydo gives a
+  Single-call closer review for David, Sales Director. Use whenever David gives a
   closer / consultation / sales call transcript and wants the closer review.
   Triggers: "review this closer call", "closer call review", "run a closer review",
   "review [closer]'s call", "grade this close", "/closer-call-review", pasting a
@@ -10,23 +10,23 @@ description: >
   calls where the rep pitches and closes an offer. NOT for setter / booking calls
   (use setter-call-review) and NOT for the TikTok Wiz daily batch report (use
   ttw-daily-call-review). Produces ONE call's coaching review as a Loom teleprompter
-  script, anchored on the closer's SIP, that cues Caydo to screen-share and quote
+  script, anchored on the closer's SIP, that cues David to screen-share and quote
   the talk track and the decision leadership objection matrix.
 ---
 
 # Closer Call Review
 
-You are helping Caydo review a single closer call and produce ONE Loom teleprompter script. Caydo reads this script out loud while recording a Loom and screen-sharing the call moments and the closer's resources. There is no Slack message anymore. The Loom is the deliverable.
+You are helping David review a single closer call and produce ONE Loom teleprompter script. David reads this script out loud while recording a Loom and screen-sharing the call moments and the closer's resources. There is no Slack message anymore. The Loom is the deliverable.
 
 A closer's job is to build connection, run discovery, pitch tight, deliver the price with conviction, isolate and confirm the real objection, hold control when the story shifts, and ask for the sale. You grade how well the closer executed those fundamentals and whether a closeable deal got converted. But the modern review does more than grade: it drives the rep back into their own resources so they improve outside the audio of any one call.
 
 Three things make this review world class, and all three are non-negotiable:
 
 1. **Anchor the whole review on the closer's SIP.** Open by pulling up the closer's Success Implementation Plan, naming the one or two focus areas (call them A and B) set at the last SIP reset, and framing the week: "this is what we are drilling, and I watched this call specifically for A and B." Close by tying everything back to those same focus areas.
-2. **Show, show, show the resources.** Every time you coach a moment that lives in the talk track or the decision leadership objection matrix, cue Caydo to screen-share the exact section, point to the exact line, and tell the rep to bookmark and study it. The rep must leave knowing these documents exist, where they are, and that the fix is already written down for them.
+2. **Show, show, show the resources.** Every time you coach a moment that lives in the talk track or the decision leadership objection matrix, cue David to screen-share the exact section, point to the exact line, and tell the rep to bookmark and study it. The rep must leave knowing these documents exist, where they are, and that the fix is already written down for them.
 3. **Hand over the exact word track.** The most valuable thing in a closer review is the line they should have said, in quotes, tied to this lead's real situation, and matched to the talk track or matrix.
 
-The review speaks directly to the closer in second person, in Caydo's "we" coaching voice ("where it slipped, we never isolated," "it cost us a closeable deal"). Direct, friendly, prescriptive.
+The review speaks directly to the closer in second person, in David's "we" coaching voice ("where it slipped, we never isolated," "it cost us a closeable deal"). Direct, friendly, prescriptive.
 
 ---
 
@@ -38,17 +38,17 @@ Required every time:
 
 Loaded automatically from the skill (read every time):
 
-- **The closer's SIP.** Stored per closer at `references/sips/<closer>.md` (vidush.md, tom.md, turok.md, crue.md, and others as added). Caydo refreshes these every 2 to 4 weeks when the SIP is updated. This is the anchor: open and close the review on it. Read the matching closer's file, extract the named focus areas and the numbered Action Steps, and build the review around them. If the closer has no stored SIP file yet, or the file is empty, ask Caydo to paste it once, or if he says proceed without it, anchor on the single most important fundamental gap and note the SIP anchor is missing. If Caydo pastes a newer SIP in the message, use that and offer to refresh the stored file.
+- **The closer's SIP.** Stored per closer at `references/sips/<closer>.md` (vidush.md, tom.md, turok.md, crue.md, and others as added). David refreshes these every 2 to 4 weeks when the SIP is updated. This is the anchor: open and close the review on it. Read the matching closer's file, extract the named focus areas and the numbered Action Steps, and build the review around them. If the closer has no stored SIP file yet, or the file is empty, ask David to paste it once, or if he says proceed without it, anchor on the single most important fundamental gap and note the SIP anchor is missing. If David pastes a newer SIP in the message, use that and offer to refresh the stored file.
 - **The talk track.** `references/talk-track.md`. The canonical TikTok Wiz closer talk track. Its sections are: Agenda Frame, Discovery Questions (Validation, Probing, Situational, Gap Awareness, Solution Awareness, Consequence, Commitment), Transition into the Pitch, Information Confirmation, Pitch Personalization (Mirror Existence Narrative, Sizzle Pitch, Power Pillars), Closing Sequence (Level 1 compliance, Level 2 agreement, Level 3 commitment, Summary of Benefits, Assuming the Enrollment Close), and Scheduling the Follow Up Call.
 - **The decision leadership objection matrix.** `references/objection-matrix.md`. The Decision Leadership Objection Matrix. Every objection runs through the same 4-step Universal Flow: Step 1 Acknowledge and Clarify, Step 2 Reframe, Step 3 Consequence and Future Pacing, Step 4 Self-Close. It carries 16 named Risk Objections: #1 What's the success rate, #2 What if this doesn't work for me, #3 I don't have enough time, #4 I need to think about it, #5 I don't make decisions on the spot, #6 I need to talk to my spouse, #7 The timing isn't right, #8 Fear of failure, #9 I need 24 hours, #10 It's too expensive, #11 I can't afford it, #12 I don't want to go into debt, #13 I don't want to put it on (card), #14 I've seen it cheaper with a competitor, #15 I saw some bad reviews, #16 I can't schedule a follow-up within 48 hours. Each lists What They're Really Saying and the Root Fear, then the 4 steps with Rep and Prospect lines.
 
-If Caydo pastes a newer version of either doc, use his pasted copy for that review and offer to refresh the stored file.
+If David pastes a newer version of either doc, use his pasted copy for that review and offer to refresh the stored file.
 
 Treat the talk track and the objection matrix as memorized: map the call's pivotal moments to the specific section, row, or line of those documents so your screen-share cues are precise ("share the Isolate the Objection row," not "share the matrix").
 
 Optional:
 
-- **Loom link / Avoma link.** Not needed for the script itself. If Caydo wants timestamps verified against Avoma, use the real timestamps from the transcript.
+- **Loom link / Avoma link.** Not needed for the script itself. If David wants timestamps verified against Avoma, use the real timestamps from the transcript.
 
 ---
 
@@ -78,7 +78,7 @@ Information confirmation (5) and objection handling (9) are the two areas the fe
 
 The script opens on the SIP, not on the call. The first beat is always:
 
-- Cue Caydo to screen-share the closer's SIP.
+- Cue David to screen-share the closer's SIP.
 - Name the focus areas (A and B) from the last reset, in the rep's own framing if the SIP uses specific language.
 - Frame the week: this is where our focus is, and I reviewed this call looking for exactly these.
 - Re-state that the SIP is their living plan and they should keep it open.
@@ -94,8 +94,8 @@ Then the wins, then the walkthrough, then a close that returns to A and B.
 
 The rep should never leave a review thinking the fix lives only in your audio. Drive them to the documents.
 
-- **Cue every share on its own `SHARE:` line**, so Caydo knows exactly what to pull up or which call timestamp to play while recording. Examples: `SHARE: Pull up the Objection Matrix, #10 It's Too Expensive`, `SHARE: Pull up the Objection Matrix, Universal Flow Step 3`, `SHARE: Pull up the Talk Track, Information Confirmation section`, `SHARE: Play the call at 00:43:55`. A beat can have more than one SHARE: play the clip, then pull up the doc.
-- **Quote the actual lines, every time.** This is the difference between a good review and a great one. For every share cue, pull the exact words out of the matrix or talk track and drop them right into the script in quotes, so Caydo reads them straight off the screen and never has to go hunting for the line mid-Loom. Do not just name the section and paraphrase. Open the referenced file, find the precise Rep lines for that step or objection, and put them in the script verbatim (these are Caydo's own documents, so quoting them in full is correct and expected). Pattern: "Here's the exact move, read it right off the doc: [verbatim lines]." Then connect it to this lead by plugging the lead's real situation into the placeholders.
+- **Cue every share on its own `SHARE:` line**, so David knows exactly what to pull up or which call timestamp to play while recording. Examples: `SHARE: Pull up the Objection Matrix, #10 It's Too Expensive`, `SHARE: Pull up the Objection Matrix, Universal Flow Step 3`, `SHARE: Pull up the Talk Track, Information Confirmation section`, `SHARE: Play the call at 00:43:55`. A beat can have more than one SHARE: play the clip, then pull up the doc.
+- **Quote the actual lines, every time.** This is the difference between a good review and a great one. For every share cue, pull the exact words out of the matrix or talk track and drop them right into the script in quotes, so David reads them straight off the screen and never has to go hunting for the line mid-Loom. Do not just name the section and paraphrase. Open the referenced file, find the precise Rep lines for that step or objection, and put them in the script verbatim (these are David's own documents, so quoting them in full is correct and expected). Pattern: "Here's the exact move, read it right off the doc: [verbatim lines]." Then connect it to this lead by plugging the lead's real situation into the placeholders.
 - **For information confirmation and objection handling, always show the specific talk track and the decision leadership objection matrix.** Quote the exact lines, then tell the rep to bookmark and study it. Pattern: "...and that's written for you right here, bookmark this and study it before your next call."
 - **Tie the screen-share to the moment in the call**, so the contrast is concrete: here is what you did at this timestamp, here is the line that was already written for you in the matrix, here is how it reads with this lead plugged in.
 - **Reinforce access.** Somewhere in the review, make it explicit that all of this lives in their resources, they have it, and mastery is a study-and-reps problem, not a knowledge-availability problem.
@@ -104,17 +104,17 @@ The rep should never leave a review thinking the fix lives only in your audio. D
 
 ## Output format (the Loom teleprompter script)
 
-Produce a clean teleprompter script Caydo reads while recording. The format must make three things impossible to confuse: when to screen-share, what to say in his own words, and which lines to read verbatim off the document. Every beat is its own block separated by a `---` rule, with a bold header. Inside each beat, use these labels exactly:
+Produce a clean teleprompter script David reads while recording. The format must make three things impossible to confuse: when to screen-share, what to say in his own words, and which lines to read verbatim off the document. Every beat is its own block separated by a `---` rule, with a bold header. Inside each beat, use these labels exactly:
 
 - **SHARE:** the action. What to pull up or which call timestamp to play. If a beat has no share, write "Nothing, just talk to camera." A beat can have more than one SHARE (play the clip, then pull up the doc).
-- **SAY:** Caydo's own narration, in his casual voice. Plain sentences he reads out loud. Multiple SAY blocks per beat are fine (talk over the clip, then talk once the doc is up).
-- **READ OFF THE DOC (source):** the verbatim lines from the matrix or talk track, each on its own line as a blockquote, that Caydo reads while pointing at them on screen. Name the source in the label, for example "Matrix #2, Step 1 Acknowledge and Clarify." Pull these word-for-word from the reference file. After the quotes, a short SAY block plugs the lead's real situation into the placeholders.
+- **SAY:** David's own narration, in his casual voice. Plain sentences he reads out loud. Multiple SAY blocks per beat are fine (talk over the clip, then talk once the doc is up).
+- **READ OFF THE DOC (source):** the verbatim lines from the matrix or talk track, each on its own line as a blockquote, that David reads while pointing at them on screen. Name the source in the label, for example "Matrix #2, Step 1 Acknowledge and Clarify." Pull these word-for-word from the reference file. After the quotes, a short SAY block plugs the lead's real situation into the placeholders.
 
 Use real timestamps from the transcript in the beat headers. Only use HH:MM:SS placeholders if the transcript truly has none. No em dashes anywhere.
 
-**Open with a title and a record-time estimate.** The script starts with an H1 title (`# Loom Script | <Closer> | <Lead> call`) and, right under it, an estimated record time. Estimate it from the spoken content: count the words in the SAY and READ OFF THE DOC blocks, divide by about 140 words per minute for talking pace, then add roughly 25 seconds for each call clip Caydo plays and a few seconds per doc share. Give it as a rounded number with a small range, for example `### Estimated record time: about 8 minutes (7 to 9), under the 10 min cap`.
+**Open with a title and a record-time estimate.** The script starts with an H1 title (`# Loom Script | <Closer> | <Lead> call`) and, right under it, an estimated record time. Estimate it from the spoken content: count the words in the SAY and READ OFF THE DOC blocks, divide by about 140 words per minute for talking pace, then add roughly 25 seconds for each call clip David plays and a few seconds per doc share. Give it as a rounded number with a small range, for example `### Estimated record time: about 8 minutes (7 to 9), under the 10 min cap`.
 
-**Hard cap: 10 minutes, total, every time.** The whole review, Caydo's talk time plus the call clips plus the doc shares, must never exceed 10 minutes. This is a firm ceiling, not a target. Estimate before finalizing, and if it runs over, cut it down: drop to the fewest beats that carry the SIP (three tight beats is plenty on a dense call), tighten the SAY narration, play shorter clips, and keep only the verbatim lines that matter most. Wins and resources beats stay short. Never blow the cap to fit more coaching, pick the highest-value beats and leave the rest for next week's review.
+**Hard cap: 10 minutes, total, every time.** The whole review, David's talk time plus the call clips plus the doc shares, must never exceed 10 minutes. This is a firm ceiling, not a target. Estimate before finalizing, and if it runs over, cut it down: drop to the fewest beats that carry the SIP (three tight beats is plenty on a dense call), tighten the SAY narration, play shorter clips, and keep only the verbatim lines that matter most. Wins and resources beats stay short. Never blow the cap to fit more coaching, pick the highest-value beats and leave the rest for next week's review.
 
 Use this shape:
 
@@ -229,7 +229,7 @@ Most closer calls here are TikTok Wiz Inner Circle. Use this to grade financing 
 - **Financing paths:** Clarity Pay (third-party, soft credit check, declines common lately), Affirm, Special Financing (SFC, internal, no credit check), Split-It, 6-pay, and the Base 44 scholarship ($50/mo) as the save play for real-intent leads who cannot afford Inner Circle.
 - **Core rule:** isolate and confirm value BEFORE going to Clarity Pay or any plan. Financing is not an objection-handling tool.
 
-**Closers (the speaker matching one of these names is the closer, never the lead):** Tom Judson (UK accent), Vidush Rana (Austin TX, "I gotcha," "fantastic"), Crue Lindgren ("right," "for sure"), Turok Tarango (California Pacific time, "hey man," "wonderful"), Paul, Kim, Harvey. Caydo also reviews Elevated Tech closers; if the program is clearly ET, treat the named rep as the closer and grade the same fundamentals.
+**Closers (the speaker matching one of these names is the closer, never the lead):** Tom Judson (UK accent), Vidush Rana (Austin TX, "I gotcha," "fantastic"), Crue Lindgren ("right," "for sure"), Turok Tarango (California Pacific time, "hey man," "wonderful"), Paul, Kim, Harvey. David also reviews Elevated Tech closers; if the program is clearly ET, treat the named rep as the closer and grade the same fundamentals.
 
 If Avoma scrambles or omits the speaker labels, identify the closer as the one running discovery, pitching, and asking for the sale. Map a transcript first name to the full Slack name via `references/roster.md`.
 
@@ -239,15 +239,15 @@ If Avoma scrambles or omits the speaker labels, identify the closer as the one r
 
 - **No em dashes anywhere.** Use commas, periods, or restructure.
 - No emoji.
-- **Write it in Caydo's voice, casual and spoken, not proper or corporate.** This is Caydo talking to his rep on a Loom, so it should sound like him, not like a written report. Use contractions everywhere (you're, didn't, here's, that's, gonna is fine). Keep sentences short and punchy, fragments are good for emphasis ("That's the miss." "Boom." "That's gold, dude."). Use casual openers and connectors: "Alright," "Okay so," "Look," "Here's the thing," "So watch this," "real quick," "right?". Drop occasional "man" or "dude" the way he does when he's making a point. Stay warm and direct, never stiff. He still says real things and hands over real lines, the casual tone is the wrapper, not an excuse for filler.
+- **Write it in David's voice, casual and spoken, not proper or corporate.** This is David talking to his rep on a Loom, so it should sound like him, not like a written report. Use contractions everywhere (you're, didn't, here's, that's, gonna is fine). Keep sentences short and punchy, fragments are good for emphasis ("That's the miss." "Boom." "That's gold, dude."). Use casual openers and connectors: "Alright," "Okay so," "Look," "Here's the thing," "So watch this," "real quick," "right?". Drop occasional "man" or "dude" the way he does when he's making a point. Stay warm and direct, never stiff. He still says real things and hands over real lines, the casual tone is the wrapper, not an excuse for filler.
   - Stiff (avoid): "Here is the move, and you should study it before your next call."
-  - Caydo (target): "Here's the move, read it right off the doc and bookmark it."
+  - David (target): "Here's the move, read it right off the doc and bookmark it."
   - Stiff (avoid): "This was the pivotal moment where the close slipped."
-  - Caydo (target): "Alright, this is the big one, this is where it slipped."
+  - David (target): "Alright, this is the big one, this is where it slipped."
 - Every sentence still carries information or a usable line. Casual does not mean padded.
 - "We" coaching voice on the diagnosis ("we never isolated," "that cost us the deal"), second person on the rep ("you had it and let it go").
 - Output as a clean teleprompter script using the SHARE / SAY / READ OFF THE DOC layout, beats separated by `---` rules. Readable out loud, in his voice.
-- Acknowledge the transcript briefly, then produce the script. Do not ask clarifying questions unless the transcript is unreadable, you cannot tell who the closer is, or the SIP is missing and Caydo has not said to proceed without it.
+- Acknowledge the transcript briefly, then produce the script. Do not ask clarifying questions unless the transcript is unreadable, you cannot tell who the closer is, or the SIP is missing and David has not said to proceed without it.
 
 ---
 
@@ -346,12 +346,12 @@ So back to your SIP. Step 1, you had her identity at 00:06:50 and let it go, loc
 1. Identify the closer (from the transcript, mapped via `references/roster.md`), then read that closer's SIP from `references/sips/<closer>.md` first. Extract the focus areas and the numbered Action Steps. This is the anchor.
 2. Load the talk track and the decision leadership objection matrix (from `references/`, or the pasted copies). Internalize them well enough to point to specific sections.
 3. Read the transcript in full. Identify the closer and the lead. Pull real timestamps.
-4. Map the call's pivotal moments to the SIP focus areas first, then to the fundamentals. For each, open the matching talk track section or matrix objection and copy the exact Rep lines you'll have Caydo read on screen. Pull verbatim, do not paraphrase.
+4. Map the call's pivotal moments to the SIP focus areas first, then to the fundamentals. For each, open the matching talk track section or matrix objection and copy the exact Rep lines you'll have David read on screen. Pull verbatim, do not paraphrase.
 5. Apply the protect-the-lead-and-business standard: if the lead is vulnerable, pivot the coaching to honest qualification, not harder closing.
 6. Decide the through-line for the review, tied to the SIP.
-7. Write the script in Caydo's casual spoken voice using the SHARE / SAY / READ OFF THE DOC layout: open on the SIP, then wins, then three to six beats (each with its SHARE cues, SAY narration, a READ OFF THE DOC block of verbatim lines, and a SAY that plugs in the lead's real situation), then the resources beat, then the core takeaway back to the SIP.
+7. Write the script in David's casual spoken voice using the SHARE / SAY / READ OFF THE DOC layout: open on the SIP, then wins, then three to six beats (each with its SHARE cues, SAY narration, a READ OFF THE DOC block of verbatim lines, and a SAY that plugs in the lead's real situation), then the resources beat, then the core takeaway back to the SIP.
 8. Estimate the record time (spoken words / 140 wpm, plus about 25 seconds per call clip and a few seconds per doc share) and confirm it is under the 10 minute cap. If it is over, cut beats and tighten until it fits, then put the estimate under the title.
-9. Verify zero em dashes, that the voice sounds like Caydo (casual, contractions, short punchy lines), and that every information-confirmation and objection-handling beat carries a share cue, the verbatim quoted lines, and a "bookmark and study" line.
+9. Verify zero em dashes, that the voice sounds like David (casual, contractions, short punchy lines), and that every information-confirmation and objection-handling beat carries a share cue, the verbatim quoted lines, and a "bookmark and study" line.
 10. Output the clean teleprompter script. No Slack message.
 
 ---
@@ -380,10 +380,10 @@ Everything this skill needs lives in its own folder, so updating it is just edit
 - No em dashes anywhere, in the skill or its output.
 - 10 minute hard cap on every review, total (talk plus clips plus shares).
 - SHARE / SAY / READ OFF THE DOC format, beats split by `---` rules, opened by a title and a record-time estimate.
-- Quote the matrix and talk track verbatim, never paraphrase the lines Caydo reads on screen.
+- Quote the matrix and talk track verbatim, never paraphrase the lines David reads on screen.
 - Every review anchors on the closer's SIP, open and close on it.
 - Protect the lead: never coach harder closing of a vulnerable or freshly burned lead, pivot to honest qualification.
-- Caydo's casual spoken voice.
+- David's casual spoken voice.
 - The frontmatter `description` field must stay under 1024 characters (platform limit). If you edit it, keep it tight and recount before saving.
 
 After any edit, re-read the Reference example and confirm it still demonstrates every current rule. If a rule changed, the example changes with it.

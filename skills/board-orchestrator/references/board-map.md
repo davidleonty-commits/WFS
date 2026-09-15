@@ -83,7 +83,7 @@ leading whitespace (`→ Cayden` vs `→  Cayden`) — compare on the trimmed la
 
 ### Account name — routing context
 
-20 client accounts. **`TikTok Wiz (TTW)` = `1216767762630270`** is the one most of Caydo's
+20 client accounts. **`TikTok Wiz (TTW)` = `1216767762630270`** is the one most of David's
 existing skills are built for (ttw-daily-avoma-report, ttw-dashboard-metrics,
 ttw-avoma-clip-finder, closer/setter reviews). A task tagged TTW routes into that family;
 a task tagged a different account almost certainly does not, even if the words match.

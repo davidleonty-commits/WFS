@@ -9,17 +9,17 @@ created: 2026-08-21
 connectors_required: Slack
 ---
 
-SCHEDULED TASK: End of Week Report reminder for Cayden.
+SCHEDULED TASK: End of Week Report reminder for David.
 
 CONFIG
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567. The only destination this task may ever use.>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The only destination this task may ever use.)
 SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 
 This is a reminder only. Do NOT build the End of Week report. Do NOT invoke the `ttw-eow-report` skill. Do NOT pull KPIs, read Slack history, or gather Avoma metrics. The only action this task takes is sending one Slack DM.
 
-This is an unattended run. Cayden is not present. Never ask questions, never wait for confirmation.
+This is an unattended run. David is not present. Never ask questions, never wait for confirmation.
 
-WHY: the `ttw-eow-report` skill is manual by design because every figure in the report must come from the Closer Sales Dashboard screenshot that Cayden supplies. A scheduled run cannot obtain that screenshot, so this task exists purely to prompt him at the right moment.
+WHY: the `ttw-eow-report` skill is manual by design because every figure in the report must come from the Closer Sales Dashboard screenshot that David supplies. A scheduled run cannot obtain that screenshot, so this task exists purely to prompt him at the right moment.
 
 STEP 1 - compute the window
 The report week runs Sunday through Friday in America/Denver. This task fires Friday at 4:00 PM Mountain. The window is the Sunday of the current week through today (Friday). Compute both dates with bash and format them as "Month Day to Month Day", for example "August 16 to August 21". Do not hyphenate the range, use the word "to".

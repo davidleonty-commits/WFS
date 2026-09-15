@@ -24,7 +24,7 @@ CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules 
 =====================================================
 DELIVERY_MODE: TEST
   (LIVE sends the report body to LIVE_TARGET. TEST_TARGET is still used ONLY for QA FAILURE and RECONCILIATION reports. If the intent is for the client channel to receive the report, this value stays LIVE. Routing follows this literal value and nothing else.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
   (Director's DM. ALWAYS the destination for QA FAILURE and RECONCILIATION reports in either mode. Addressed by Slack member ID because a handle or an email does not resolve through the API. Pass the ID verbatim as the channel.)
 LIVE_TARGET: #wfs-ttw-sales-mgmt-client

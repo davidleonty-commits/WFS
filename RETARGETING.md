@@ -1,40 +1,59 @@
 # Retargeting checklist for the new director
 
-The Section 1A connector swap is done: no prompt or skill in this package calls the retired
-Lovable WFS MCP any more. What is left is IDENTITY. Every task was written with Cayden Johnson
-as the owner, and the values below still point at him or at his machine. Work down this list
-before you enable anything.
+The Section 1A connector swap is done, and the director identity is now David Leonty
+(Slack `U0BUZ6C0C91`, Pipedrive `27299998`). This file tracks what is filled in and what is
+still outstanding.
 
-Nothing here is a code change. Each item is one value to fill in or confirm.
+| Item | Value | Status |
+|---|---|---|
+| Slack member ID (`DIRECTOR_SLACK_ID`) | `U0BUZ6C0C91` | Filled, 39 files |
+| Pipedrive user id (`OWNER_USER_ID`) | `27299998` | Filled, the 2 audit tasks |
+| Director name in voice and identity text | David / David Leonty | Swapped, 36 files |
+| Work Google account | not supplied | **Outstanding** |
+| Avoma account email | not supplied | **Outstanding** |
+| Team Sync organizer | not supplied | **Outstanding** |
+| Browser deviceId (local SIP engines) | not supplied | **Outstanding** |
 
 ---
 
-## 1. Blocking: fill these in or the task cannot run
+## 1. Still outstanding: four values
 
-### `DIRECTOR_SLACK_ID` (39 files)
+Each is one value. Until they are set, the tasks named below either stop on a verification
+step or read the wrong person's data.
 
-Every Slack destination that used to be the outgoing director's DM is now the token
-`DIRECTOR_SLACK_ID`, defined at the top of each prompt as `<fill in: your own Slack member ID,
-for example U01234567>`. Replace that placeholder with your own Slack member ID in every file
-you enable. Find your ID in Slack: click your avatar, View profile, the three-dot menu, Copy
-member ID.
+### Work Google account (8 files)
 
-Find every one of them with:
+`cayden.johnson@thewfsgroup.com` is the WORK Google identity the Salesboard and the SIP docs
+are read and written under. The five local SIP engines and the sixth cloud one verify the
+attached browser is signed into it before touching anything, the leaderboard requires a work
+(not personal) account for the Salesboard read, and `weekly-qa-failure-review` carries it as
+`REQUIRED_GOOGLE_ACCOUNT`. `daily-sales-hype-v3` now carries a `<fill in: your own work Google
+account>` marker where the outgoing director's personal Gmail used to be authorized.
+
+Keep the verification step itself: it is what stops a run editing a personnel record from the
+wrong identity.
 
 ```bash
-grep -rn "fill in: your own Slack member ID" --include='*.md' .
+grep -rn "cayden.johnson@thewfsgroup.com" --include='*.md' .
 ```
 
-Use the member ID, not a handle. Handle resolution was a feature of the retired app; the Slack
-API resolves ids.
+### Avoma account email (1 file)
 
-### `OWNER_USER_ID`, the Pipedrive audit tasks (2 files)
+`skills/ttw-eow-report` reads your own call-review activity from Avoma by account email. The
+outgoing director's was `cayden.johnson@ttwhizprogram.com`.
 
-`scheduled-prompts/pipedrive-director-audit-labeling` and
-`cloud-routines/pipedrive-activity-clearing-cloud` clear the OWNER'S due and overdue Pipedrive
-activities. Their `OWNER_USER_ID` is a fill-in value now, because running either task against
-the outgoing director's id (23815275) would clear a departed user's activities. Put your own
-Pipedrive user id there, and run with `PROCESS_MODE: DRY_RUN` first.
+### Team Sync organizer (1 file)
+
+`cloud-routines/ttw-daily-lead-flow-report-cloud` finds the "TTW - Team Sync" meeting by
+organizer (`TEAM_SYNC_ORGANIZER`). If you now run that meeting, it is your email; if someone
+else does, it is theirs.
+
+### Browser deviceId (the six SIP engines, plus the QA failure review)
+
+`deviceId 2fac653e-7302-41bb-839a-a7b4b18cab1b` was the outgoing director's machine. Replace it
+with your own, or delete the id and let the task fall back to its existing "list connected
+browsers and pick the one signed into the work account" path, which already handles a wrong or
+missing deviceId.
 
 ### Secrets (never in a prompt body)
 
@@ -42,69 +61,42 @@ Store these where your environment stores secrets, per `DATA-ACCESS.md` section 
 `SLACK_BOT_TOKEN`, `ONCEHUB_API_KEY`, `AVOMA_API_KEY`, `PIPEDRIVE_API_TOKEN`, Google OAuth, and
 (only if you keep the `lead_quality` pipeline) `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`.
 
----
-
-## 2. Confirm before enabling
-
-### The work Google account (8 files)
-
-`cayden.johnson@thewfsgroup.com` is the WORK Google identity the Salesboard and the SIP docs are
-read and written under. The five local SIP engines verify the attached browser is signed into
-it before touching anything, and the leaderboard requires the work account for the Salesboard
-read. Replace it with your own work Google account, and keep the verification step: it is what
-stops a run editing a personnel record from the wrong identity.
-
-```bash
-grep -rn "cayden.johnson@thewfsgroup.com" --include='*.md' .
-```
-
-### The director's Avoma account (1 file)
-
-`skills/ttw-eow-report` reads your own call-review activity from Avoma by account email. The
-outgoing director's was `cayden.johnson@ttwhizprogram.com`. Put yours in.
-
-### The browser deviceId (the six SIP engines, plus the QA failure review)
-
-Each SIP engine, and `cloud-routines/weekly-qa-failure-review`, tries to attach to a specific
-Chrome instance (`deviceId 2fac653e-7302-41bb-839a-a7b4b18cab1b`), which was the outgoing
-director's machine. Replace it with your own, or delete the id and let the task fall back to its
-existing "list connected browsers and pick the one signed into the work account" path, which
-already handles a wrong or missing deviceId.
-
-### The roster
-
-As handed off: Closers Vidush Rana, Crue Lindgren, Turok Tarango, Tom Judson, Garrett McKenna,
-Noel Soto, Scott Jose. Setters Antonio Vespa, Petros Foustanellas. The cloud tasks read the WFS
-Active Sales Team Roster sheet (Drive fileId `1qynTKt3Z8JhJK_CkdmwMcfiR5XbD1L0NKkZ4xcImDKo`) at
-step 0 and only rows with `Status = Active` may appear, so that sheet is where you add or remove
-a rep. Two notes after the swap:
-
-- The roster's `Pipedrive Owner ID` column is now the join key for every deal and activity
-  figure, and its `Slack User ID` column is what renders rep mentions. Both must be populated
-  for a rep to appear correctly.
-- The roster's old WFS rep UUID column is dead. Nothing reads it.
-
-The older local prompts (`scheduled-prompts/`) still carry hardcoded rosters. Confirm those
-against the sheet before enabling one, or prefer its cloud twin, which reads the sheet.
+The OnceHub key supplied on 2026-09-15 was never written to this repository. Rotate it in
+OnceHub (Settings, API and Webhooks) since it was shared in a chat transcript, and put the
+replacement in your secret store.
 
 ---
 
-## 3. Voice and name, cosmetic but visible
+## 2. What the name swap did and did not touch
 
-`Cayden` and `Caydo` appear in 46 files, mostly in the voice instructions, mostly as "write this
-the way Caydo would say it". The voice RULES (first names only, no consultant-speak, no hype,
-no em dashes) are what the team is used to and should stay. Swap the NAME where the text is
-about identity, such as the signature of a hype message or "Cayden sends that one himself". The
-heaviest users are the call-review skills and `skills/board-orchestrator`.
+"Cayden" and "Caydo" now read "David" wherever the text is about the sitting director: voice
+instructions, delivery targets, approval gates, and the rules that name the Sales Director
+(including "exclude the Sales Director's own calls" in the weekly call review, which would
+otherwise have excluded the wrong person's calls).
 
-`skills/board-orchestrator` is his personal Asana board runner. It is only useful if you adopt
-the same board; otherwise leave it uploaded and unused, or drop it.
+Five things deliberately still say Cayden, because changing them would falsify a record or
+break a lookup:
+
+- `Went LIVE on 2026-07-02 per Cayden's instruction` and similar dated ledger entries. History.
+- `two "Cayden Johnson"` in the duplicate-name warning. That is a real data-quality fact about
+  the roster, and it is the reason the reports join on ids rather than names.
+- `Work Board - Cayden`, the literal Asana project title, and its GID row in the board map.
+  Rename the board in Asana first if you adopt it, then change this.
+- The `→ Cayden` whitespace example in `board-orchestrator/references/board-map.md`, which is a
+  literal field-label sample.
+- `Assigned to Cayden Johnson` in a board-map example row.
+
+Also corrected while swapping: two skills asserted the director lives in Lehi, Utah. The
+operative fact was the timezone, so they now say Mountain Time without claiming a location.
+
+`skills/board-orchestrator` is still the outgoing director's personal Asana board runner. It is
+only useful if you adopt the same board; otherwise leave it uploaded and unused, or drop it.
 
 ---
 
-## 4. Test order
+## 3. Test order
 
-1. Fill in `DIRECTOR_SLACK_ID` everywhere and connect Slack, Avoma, Pipedrive and Drive.
+1. Connect Slack, Avoma, Pipedrive and Drive, and set the four outstanding values above.
 2. Leave every `DELIVERY_MODE` on TEST. In TEST every task DMs you and nothing reaches a
    channel, a rep, or the client.
 3. Run each task once and compare its Slack output to the message template in its own prompt,

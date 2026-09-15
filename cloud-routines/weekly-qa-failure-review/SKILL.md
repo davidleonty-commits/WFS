@@ -20,7 +20,7 @@ CONFIG (OPERATOR NOTE: edit only the values in this block; never edit the rules 
 =====================================================
 DELIVERY_MODE: TEST
   (TEST or LIVE. TEST sends only to TEST_TARGET, the owner's DM. Keep TEST until officially out of test mode.)
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
 SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 LIVE_TARGET: @cayden

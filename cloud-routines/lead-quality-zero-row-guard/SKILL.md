@@ -12,7 +12,7 @@ connectors_required: Supabase, Avoma_MCP, Slack, Google_Drive
 AUTONOMOUS MONITOR. lead_quality zero-row guard. Runs as a remote cloud task on a schedule; the user is not present; never ask questions. PURPOSE: catch days where the "Daily Call Report Publisher (cloud LIVE)" task failed to write call-quality rows into Supabase, so a silent gap can never go unnoticed again.
 
 CONFIG
-DIRECTOR_SLACK_ID: <fill in: your own Slack member ID, for example U01234567. The only destination this guard may ever use.>
+DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The only destination this guard may ever use.)
 SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
 
 CONNECTORS (load their tool schemas via ToolSearch first): Supabase (mcp__Supabase__execute_sql), Slack (`chat.postMessage` on the bot token above), and Avoma (`mcp__Avoma_MCP__list_meetings`, or `GET https://api.avoma.com/v1/meetings/` with header `Authorization: Bearer $AVOMA_API_KEY` if the MCP is unavailable). If a required connector cannot be loaded, send the alert DM described below stating that the guard could not run and why, then stop.

@@ -2,7 +2,7 @@
 
 Transcript captions often give a first name or a rough spelling. Slack mentions need
 the closer's full display name. Map them here so the review uses the right name. The
-review outputs the Slack display name with a leading @ (e.g. `@Tom Judson`). Caydo
+review outputs the Slack display name with a leading @ (e.g. `@Tom Judson`). David
 converts it to a real mention with one keystroke when he pastes into Slack.
 
 If a closer is not listed, the review uses the name as it appears in the transcript.

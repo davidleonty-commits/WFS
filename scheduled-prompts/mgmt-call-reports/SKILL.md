@@ -26,7 +26,7 @@ IF THE SUMMARY SPLIT: if the thread read shows the summary posted as two or more
 AUTHORIZATION: TEST-phase sends to the operator's own Slack self-DM are FULLY PRE-AUTHORIZED. Never ask for sign-off, never ask permission. The ONLY question this task may ask is the LIVE-phase "commit" confirmation.
 STOP CONDITION: Monday through Friday only.
 PHASE: TEST or LIVE.
-- TEST: destination is the director's self-DM (channel = DIRECTOR_SLACK_ID <fill in: your own Slack member ID, for example U01234567>). Unattended, pre-authorized.
+- TEST: destination is the director's self-DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91). Unattended, pre-authorized.
 - LIVE: destination is #wfs-ttw-sales-mgmt-client. ALWAYS requires the operator to reply "commit" in chat before anything posts.
 DATE: Use today's actual system date everywhere.
 

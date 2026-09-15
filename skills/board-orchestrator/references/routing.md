@@ -50,7 +50,7 @@ funnel review, and they route three different places.
 4. **High stakes → wrap in `fable-mode`.** Money, compliance, numbers from source systems,
    anything a third party will read.
 5. **Ambiguous → don't pick.** Two plausible skills with no specificity gap, or a task
-   whose real requirement you can't state in one sentence, is a flag to Caydo — not a
+   whose real requirement you can't state in one sentence, is a flag to David — not a
    coin flip.
 
 ## What "no match" looks like
