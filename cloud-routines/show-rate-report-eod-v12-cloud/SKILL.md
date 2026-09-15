@@ -274,7 +274,7 @@ Compare the three sources for TODAY. Trigger the DM if ANY of:
   - any rep with >=1 closed deal in Pipedrive today has ZERO rows in the Salesboard today (this is the check that would have caught Noel Soto's missing month on day one)
   - ANY possible missed deal surfaces from the STEP 2D named-customer completeness check (a Slack-signaled customer with no matching Pipedrive deal today) — this triggers regardless of the count/dollar thresholds above, because a single missed deal is worth a look even if the aggregate numbers look fine
   - any unresolved owner_id, any surviving person_id duplicate, any invariant violation, or any source recorded UNAVAILABLE
-If triggered, send ONE short DM to TEST_TARGET via the WFS connector giving: the three sides side by side (Pipedrive / Salesboard / Slack counts and dollars), the specific reps or deals causing the gap, any possible missed deals by name with their source and time, and any warnings. Keep it under about 15 lines. If nothing diverges, send NOTHING; silence means the three agree.
+If triggered, send ONE short DM to TEST_TARGET via `chat.postMessage` giving: the three sides side by side (Pipedrive / Salesboard / Slack counts and dollars), the specific reps or deals causing the gap, any possible missed deals by name with their source and time, and any warnings. Keep it under about 15 lines. If nothing diverges, send NOTHING; silence means the three agree.
 This DM is permitted by HARD RULE 1(b) and does not consume the QA FAILURE DM allowance.
 
 =====================================================
