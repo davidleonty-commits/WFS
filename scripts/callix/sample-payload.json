@@ -1,0 +1,24 @@
+{
+  "call": {
+    "id": "wfs-callix-webhook-test-001",
+    "title": "QA TEST - Callix webhook check - DO NOT USE",
+    "duration": 1920,
+    "recording_url": "https://example.invalid/recordings/wfs-callix-webhook-test-001",
+    "started_at": "2026-09-15T21:00:00Z",
+    "attendees": [
+      { "name": "QA Test Rep", "email": "qa.test.rep@thewfsgroup.invalid", "role": "rep" },
+      { "name": "QA Test Prospect", "email": "qa.test.prospect@example.invalid", "role": "prospect" }
+    ]
+  },
+  "rep": {
+    "name": "QA Test Rep",
+    "email": "qa.test.rep@thewfsgroup.invalid"
+  },
+  "contact": {
+    "email": "qa.test.prospect@example.invalid",
+    "phone": "+15555550123"
+  },
+  "transcript": {
+    "text": "QA Test Rep: This is a synthetic transcript used to verify the Callix webhook mapping. Nothing here is a real call.\nQA Test Prospect: Understood. I am a test record.\nQA Test Rep: Confirming the fields land: transcript, attendees, duration, started_at, external id.\nQA Test Prospect: If you are reading this in a report, the test payload leaked into production data."
+  }
+}
