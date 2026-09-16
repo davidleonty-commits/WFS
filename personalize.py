@@ -49,7 +49,17 @@ RESIDUE = re.compile(r"cayden|caydo|U092C85GA4D|D092C868SPP|23815275|2fac653e-73
 SUPABASE_RESIDUE = re.compile(r"apdwbbocldfsklvcwaqd")
 
 # Any remaining mention of the client channel must be a READ (e.g. the EOW skill reads it), never a send destination.
+# Hardened 2026-09-16: the first version only flagged lines containing a send VERB, and so passed clean while five
+# real cases still directed a send there ("LIVE MUST be #wfs-...", "Destination = ... (LIVE after commit)", and
+# lessons-ledger entries asserting the report posts there). For a standing prohibition the safe bias is to flag
+# EVERY mention and require it to be visibly a read or a prohibition, so the burden is on the line to prove itself.
 CLIENT_CHANNEL = re.compile(r"wfs-ttw-sales-mgmt-client|C098J2VG41E")
+CLIENT_OK = re.compile(
+    r"OFF LIMITS|never post|NEVER a destination|not a destination|is not allowed|forbidden"
+    r"|SUPERSEDED|NOT #wfs-ttw-sales-mgmt-client|CHANNEL PROHIBITION"
+    r"|\bRead\b|\breads\b|\breading\b|read-only|read only",
+    re.I,
+)
 
 # Not identity, but must be gone before the tasks can run (see README Section 1A and TROUBLESHOOTING-REPLY.md).
 CONNECTOR_RESIDUE = re.compile(r"Lovable[ _]WFS|WFS_MCP_TOKEN|REP_WFS_ID|commandcenter\.aiautomating\.com|mcp__scheduled-tasks__update_scheduled_task", re.I)
@@ -94,7 +104,7 @@ def check(verbose=True):
                     print(f"IDENTITY  {f.relative_to(ROOT)}:{n}: {line.strip()[:140]}")
             if SUPABASE_RESIDUE.search(line):
                 supa += 1
-            if CLIENT_CHANNEL.search(line) and re.search(r"LIVE_TARGET|deliver|send|post", line, re.I) and not re.search(r"OFF LIMITS|never post|read", line, re.I):
+            if CLIENT_CHANNEL.search(line) and not CLIENT_OK.search(line):
                 client.append(f"{f.relative_to(ROOT)}:{n}: {line.strip()[:140]}")
             if CONNECTOR_RESIDUE.search(line):
                 conn += 1
