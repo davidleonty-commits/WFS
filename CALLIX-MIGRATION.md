@@ -2,6 +2,41 @@
 
 Status: **design only, nothing rewritten yet.** Four answers are needed first (section 5).
 
+## 0. SUPERSEDED IN PART, 2026-09-16
+
+`REPLY-2-CALLIX.md` answers the open question and overtakes the analysis below.
+
+**Avoma and Callix, both, for now.** WFS is mid-cutover. Avoma was confirmed still recording TTW
+consultation calls on September 14 (full timestamped transcripts, four closers), so the Avoma
+layer already built is not wasted: it is the comparison baseline. Callix is the destination.
+
+**The conclusion below that "the blocker is enumeration" is wrong, and usefully so.** It was
+correct about the webhook screen, which ingests rather than emits. But Callix has an API and an
+MCP (`@callixorg/mcp-server`) with `list_calls`, `get_call`, `get_deal_analysis`,
+`list_deal_analyses`, `get_rep_performance` and `get_current_time`. Enumeration exists. The
+webhook was the wrong door, not a closed building.
+
+What stands from the analysis below: the pull/push distinction, the idempotency requirement on
+any redelivery, and the point that Callix's own deal analysis is its rubric and not the WFS
+rubric, so the transcript is what the prompts consume and Callix scores are cross-checks only.
+
+What changes: no receiver, no Supabase landing zone, no hosting. Cloud routines `curl` the
+Callix REST API with `CALLIX_API_KEY` set as an environment variable on the claude.ai Code
+environment; local tasks can use the npx MCP. Do not rebuild the retired app.
+
+**Hard rule to carry into every prompt when the Callix layer is built:** Callix is READ-ONLY.
+`create_prospect`, `update_prospect`, `log_event`, `record_payment` and `manage_webhooks` write
+straight to the account and are forbidden. The only writes in this package remain the Pipedrive
+audit's label-and-mark-done and each SIP engine's one Google Doc.
+
+**Six capabilities to verify on the first real call**, per REPLY-2 section 3: the date-window
+parameter and its timezone, what identifies a rep, how a TTW consultation is identified, the
+duration unit and how "no recording" is represented, whether transcripts carry per-line speakers
+and timestamps, and the stable call id. The consultation-identity question is the highest-risk
+one: get it wrong and the show-rate numerator is silently wrong.
+
+---
+
 ## 1. Why this is not a find-and-replace
 
 Avoma was a **pull** source: a task woke at 6:30 PM and asked "what calls happened today?"

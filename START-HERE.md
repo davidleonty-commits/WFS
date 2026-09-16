@@ -6,6 +6,20 @@ Rule for the whole procedure: **never guess or invent a value.** Every replaceme
 
 ---
 
+## Step 0. What replaces the WFS connector: two API keys and one connector
+
+The old "Lovable WFS" connector was one plug doing three jobs. It is replaced by three plugs, all of which Claude Code already knows how to use. No app, no proxy, no hosting.
+
+| Job the connector did | Replacement | How to plug it in |
+|---|---|---|
+| Call data (`calls_list`, `calls_get_analysis`, `calls_find_review_candidates`) | **Callix MCP** | `claude mcp add callix -e CALLIX_API_KEY=<key> -- npx -y @callixorg/mcp-server` (local). Cloud routines: `curl` against the Callix REST API with `CALLIX_API_KEY` set on the cloud environment. See REPLY-2-CALLIX.md. While Avoma is still live, the Avoma claude.ai connector also works as the comparison baseline. |
+| Bookings (`oncehub_booking_counts`, `oncehub_list_bookings`, `oncehub_get_master_page`) | **OnceHub REST API v2** via `curl` | `export ONCEHUB_API_KEY=<key>` in the shell (local) or on the cloud environment. The OnceHub MCP is NOT this; it only books meetings. See TROUBLESHOOTING-REPLY.md section D for the exact endpoints. |
+| Slack (`slack_schedule_message`, `slack_read_channel`) | **claude.ai Slack connector** | Connect Slack in claude.ai under the director's account. Posts as the director, which is how the old connector posted as the previous director. See section E. |
+
+Two things the connector did that are now sentences in the prompts, not a service: matching a call to its OnceHub booking to decide whether it is a consultation, and mapping reps to a stable identifier. The replies spell both out.
+
+Keys go in environment variables or connector settings, never in a prompt file.
+
 ## Step 1. Ask the director for these values, in these words
 
 Ask all of them in one message so the director can answer once. Copy this block into the chat:

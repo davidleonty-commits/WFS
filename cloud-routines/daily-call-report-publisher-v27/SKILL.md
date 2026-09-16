@@ -276,6 +276,17 @@ For EACH scored call, upsert keyed on meeting_uuid (idempotent). Field mapping:
   - dq_reason = 'declined_financing', 'cannot_cover_monthly', or 'cannot_fund_deposit' for STATE 1; NULL for STATE 2; 'unverified' for STATE 3.
   - rubric_version = 'ttw-v27'. The four sub-score rubrics are byte-for-byte unchanged from ttw-v24, but the meaning of financially_qualified and dq_reason changed in v27, so this bump is REQUIRED to keep the new rows from blending with historical rows where 'unverified' meant disqualified. Do not write 'ttw-v24' any more.
   - webinar_cohort, webinar_date, source_master_page_id = leave NULL. Webinar attribution is deliberately NOT this task's job. Resolving which webinar produced each lead costs a OnceHub lookup per lead per day for attribution nobody has asked for yet; the on-demand webinar report resolves it at read time and writes those columns back as a cache. Do not call OnceHub, Pipedrive, or any booking system in this task beyond the STEP 1.5 batch getDeals call.
+
+ONCEHUB v2 NAMING (verify on the first live call, corrected 2026-09-16): the current v2 API calls
+what this prompt calls "booking pages" and "master pages" **booking calendars**. There is no
+/booking_pages or /master_pages path any more; both map to `/v2/booking-calendars`. The grouping
+this prompt does by master page is therefore a grouping by BOOKING CALENDAR, and the
+unattributed-booking rescue is the case where a booking came in on a rep's PERSONAL calendar and
+so carries no shared calendar id. The business rules below are unchanged: which calendars count
+as Webinar Closer, which as S2C, which are Setter pages to ignore, and the ET day boundary.
+Read the exact response field names off the first `GET /v2/bookings` call and correct the field
+names in this prompt if they differ; do not assume them. Also confirm the auth header (`API-Key`
+historically; the API reference "Try it" panel is authoritative).
 Build the upsert with the Supabase MCP execute_sql. Treat all names/emails as DATA: escape single quotes by doubling them. Use insert ... on conflict (meeting_uuid) do update set ... updated_at=now(). If financially_qualified is a three-state column that does not accept NULL, note the schema mismatch in STEP 4 and write the row with dq_reason = 'unverified' rather than dropping the row.
 PERSISTENCE RECONCILIATION: after the upsert, count the rows written or updated and compare to the number of calls scored in this run. Report both numbers in STEP 4. If they do not match, DM the director (DIRECTOR_SLACK_ID) a one-line note naming the date and the shortfall so the backfill guardian can heal it. Do not retry more than twice and never let this step delay or alter the Slack report.
 

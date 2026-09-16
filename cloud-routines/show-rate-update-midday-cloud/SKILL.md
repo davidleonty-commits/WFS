@@ -58,7 +58,18 @@ HARD RULES (never violate)
 STEP 0: Startup
 =====================================================
 Compute the current day of week explicitly in America/Denver (read the clock explicitly in that zone (`TZ=America/Denver date +%A`); NEVER use the session/UTC day, since cloud runs may execute in UTC). If Saturday or Sunday in America/Denver, produce no output and end. Proceed Monday through Friday only.
-Confirm OnceHub access (`GET https://api.oncehub.com/v2/master_pages` returning rows, header `API-Key: $ONCEHUB_API_KEY`), list_meetings (Avoma MCP), and Slack send access (a connector reachability check) are reachable; if one is down, that is a SELF-HEAL condition (and if down all run, a last-resort condition). Never fall back to a browser for any data.
+Confirm OnceHub access (`GET https://api.oncehub.com/v2/booking-calendars` returning rows, header `API-Key: $ONCEHUB_API_KEY`), list_meetings (Avoma MCP), and Slack send access (a connector reachability check) are reachable; if one is down, that is a SELF-HEAL condition (and if down all run, a last-resort condition). Never fall back to a browser for any data.
+
+ONCEHUB v2 NAMING (verify on the first live call, corrected 2026-09-16): the current v2 API calls
+what this prompt calls "booking pages" and "master pages" **booking calendars**. There is no
+/booking_pages or /master_pages path any more; both map to `/v2/booking-calendars`. The grouping
+this prompt does by master page is therefore a grouping by BOOKING CALENDAR, and the
+unattributed-booking rescue is the case where a booking came in on a rep's PERSONAL calendar and
+so carries no shared calendar id. The business rules below are unchanged: which calendars count
+as Webinar Closer, which as S2C, which are Setter pages to ignore, and the ET day boundary.
+Read the exact response field names off the first `GET /v2/bookings` call and correct the field
+names in this prompt if they differ; do not assume them. Also confirm the auth header (`API-Key`
+historically; the API reference "Try it" panel is authoritative).
 
 AVOMA ACCESS FALLBACK (method, not policy; allowed by HARD RULE 7): If ANY native Avoma MCP tool (list_meetings) errors or is unreachable (e.g. 403 mcp_request_blocked, 502, "MCP server not connected"), retry once, then access the SAME Avoma data through the Avoma REST API directly instead of treating Avoma as down. Avoma stays the source of truth for live counts; this is only a different access METHOD, and is NOT a SELF-HEAL last-resort condition. REST usage (header `Authorization: Bearer $AVOMA_API_KEY`, GET only):
 - Meetings: `GET https://api.avoma.com/v1/meetings/` with query {from_date, to_date, page, page_size:100}. The API caps ~10 rows per page, so paginate by incrementing page until `next` is null. Qualify calls with the same rules as STEP 2 (state completed, duration > 900s, title contains a TikTok Wiz Consultation, exclude Introductions/sync/TikTok Shop/CANCELED). Note that duration is null for scheduled/not-yet-held calls and "not_recorded"/silent recordings have duration 0; both are excluded.
@@ -68,7 +79,7 @@ Only if BOTH the native Avoma MCP AND the Avoma REST API are down for the whole 
 =====================================================
 OBJECTIVE
 =====================================================
-TODAY ONLY. Scheduled counts: OnceHub via a fully paginated `GET /v2/bookings` sweep grouped by master page (`GET /v2/master_pages/{id}` resolves unlabeled ids); same numbers the TTW Daily Lead Flow Report is built from. Live counts: Avoma (list_meetings).
+TODAY ONLY. Scheduled counts: OnceHub via a fully paginated `GET /v2/bookings` sweep grouped by master page (`GET /v2/booking-calendars/{id}` resolves unlabeled ids); same numbers the TTW Daily Lead Flow Report is built from. Live counts: Avoma (list_meetings).
 TIME-BASED show rate (the retired "divide total in half" heuristic is forbidden): per bucket, Scheduled (in total for today) = closer bookings with starting_time anywhere in today's ET day; Scheduled (so far today) = closer bookings with starting_time from today 00:00 ET up to and including NOW (ET), i.e. calls due to have started by pull time; Scheduled Calls Remaining = Total minus So-far. Show Rate = Avoma live calls / So-far.
 Determine "today" and "now" explicitly at runtime. OnceHub slices use the America/New_York (ET) calendar day and an ET "now" cutoff, matching the Lead Flow report day boundary (DST-safe: -04:00 EDT, -05:00 EST). The Avoma live-call day window is Mountain Time per STEP 2.
 OnceHub active counts (statuses scheduled, rescheduled, completed, no-show; canceled excluded) already reflect non-canceled calls; take as-is. Closer calls only; ignore all setter master pages/counts.
@@ -80,7 +91,7 @@ Determine NOW: read the system clock (`date -u`) and express it as an ET timesta
 Sweep `GET /v2/bookings` for TODAY once, paginated to the end, with status = ["scheduled","rescheduled","completed","no-show"], then derive TWO slices from those same rows by `starting_time`, identical except the upper bound:
 - CALL TOTAL: date_from = today 00:00:00 ET, date_to = today 23:59:59 ET.
 - CALL SO-FAR: date_from = today 00:00:00 ET, date_to = NOW_ET.
-Drop any booking whose `in_trash` is true, and only a sweep paginated to the end is trustworthy for a daily starting_time slice. Group by `booking_page.master_page` in code to get the per-master-page rows for BOTH slices; resolve any row carrying only a raw master_page_id with `GET /v2/master_pages/{id}`. Unattributed bookings (total_all minus total_attributed) are EXCLUDED from every count; note the number (from the TOTAL slice) as an anomaly. OnceHub is live, so back-testing a past day will not reproduce a morning snapshot; only ever read TODAY live.
+Drop any booking whose `in_trash` is true, and only a sweep paginated to the end is trustworthy for a daily starting_time slice. Group by `booking_calendar` in code to get the per-master-page rows for BOTH slices; resolve any row carrying only a raw master_page_id with `GET /v2/booking-calendars/{id}`. Unattributed bookings (total_all minus total_attributed) are EXCLUDED from every count; note the number (from the TOTAL slice) as an anomaly. OnceHub is live, so back-testing a past day will not reproduce a morning snapshot; only ever read TODAY live.
 
 Classify each master page and sum into two buckets, applied to BOTH slices:
 - Webinar (closer) = every WEBINAR CLOSER page: name contains "Consultation" and label matches "Webinar MM DD YY | Paid | Closer | 45min". Webinar closer pages are created fresh per webinar (new ids each time), so classify by the "Webinar ... | Paid | Closer" label, NOT a fixed id. Exclude every Setter page (label contains "Setter").

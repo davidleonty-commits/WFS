@@ -108,7 +108,18 @@ Capture: every OnceHub sweep (per-master-page rows, labels, counts per slice, pa
 STEP 1: Today's scheduled closer calls (OnceHub, READ-ONLY)
 =====================================================
 ONE fully paginated `GET https://api.oncehub.com/v2/bookings` sweep (header `API-Key: $ONCEHUB_API_KEY`), sliced on starting_time from today 00:00:00 ET to today 23:59:59 ET (correct ET offset), status = ["scheduled","rescheduled","completed","no-show"] (excludes canceled), `in_trash` dropped, then grouped by master page in code.
-Build the counts per master page from `booking_page.master_page`. Resolve any row carrying only a raw master page id via `GET /v2/master_pages/{id}` or the ID REFERENCE below. Unattributed bookings (total_all minus total_attributed) are EXCLUDED from every count; note the number as a run-output flag.
+
+ONCEHUB v2 NAMING (verify on the first live call, corrected 2026-09-16): the current v2 API calls
+what this prompt calls "booking pages" and "master pages" **booking calendars**. There is no
+/booking_pages or /master_pages path any more; both map to `/v2/booking-calendars`. The grouping
+this prompt does by master page is therefore a grouping by BOOKING CALENDAR, and the
+unattributed-booking rescue is the case where a booking came in on a rep's PERSONAL calendar and
+so carries no shared calendar id. The business rules below are unchanged: which calendars count
+as Webinar Closer, which as S2C, which are Setter pages to ignore, and the ET day boundary.
+Read the exact response field names off the first `GET /v2/bookings` call and correct the field
+names in this prompt if they differ; do not assume them. Also confirm the auth header (`API-Key`
+historically; the API reference "Try it" panel is authoritative).
+Build the counts per master page from `booking_calendar`. Resolve any row carrying only a raw master page id via `GET /v2/booking-calendars/{id}` or the ID REFERENCE below. Unattributed bookings (total_all minus total_attributed) are EXCLUDED from every count; note the number as a run-output flag.
 
 Classify each master page by its label/name into two buckets:
 - Webinar closer pages: name contains "Consultation" and label matches "Webinar MM DD YY | Paid | Closer | 45min", i.e. the label carries a DATE and the word "Paid". These are created fresh per webinar (new ids each time), so classify by label, NOT a fixed id. Exclude every Setter page (label contains "Setter").

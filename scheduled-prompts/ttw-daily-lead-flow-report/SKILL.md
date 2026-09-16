@@ -7,7 +7,18 @@ SCHEDULED TASK: TTW Daily Lead Flow Report (OnceHub API edition — no browser s
 =====================================================
 ACCESS
 =====================================================
-ONCEHUB (read-only): `GET https://api.oncehub.com/v2/<resource>` with header `API-Key: $ONCEHUB_API_KEY`. Endpoints used here: `/v2/bookings`, `/v2/master_pages`, `/v2/booking_pages/{id}`. Every list endpoint is cursor-paginated: follow `next` until it is null.
+ONCEHUB (read-only): `GET https://api.oncehub.com/v2/<resource>` with header `API-Key: $ONCEHUB_API_KEY`. Endpoints used here: `/v2/bookings`, `/v2/booking-calendars`, `/v2/booking-calendars/{id}`. Every list endpoint is cursor-paginated: follow `next` until it is null.
+
+ONCEHUB v2 NAMING (verify on the first live call, corrected 2026-09-16): the current v2 API calls
+what this prompt calls "booking pages" and "master pages" **booking calendars**. There is no
+/booking_pages or /master_pages path any more; both map to `/v2/booking-calendars`. The grouping
+this prompt does by master page is therefore a grouping by BOOKING CALENDAR, and the
+unattributed-booking rescue is the case where a booking came in on a rep's PERSONAL calendar and
+so carries no shared calendar id. The business rules below are unchanged: which calendars count
+as Webinar Closer, which as S2C, which are Setter pages to ignore, and the ET day boundary.
+Read the exact response field names off the first `GET /v2/bookings` call and correct the field
+names in this prompt if they differ; do not assume them. Also confirm the auth header (`API-Key`
+historically; the API reference "Try it" panel is authoritative).
 SLACK (send): `slack_send_message` on the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 =====================================================
 CONFIG (edit only the values in this block; never edit the rules below.)
@@ -33,7 +44,7 @@ HARD RULES
 =====================================================
 STEP 0: STARTUP
 =====================================================
-Confirm OnceHub access (a `GET /v2/master_pages` returning rows) and Slack send access (a connector reachability check). If the OnceHub key is missing or every OnceHub call errors, STOP and report — do NOT fall back to the browser for data.
+Confirm OnceHub access (a `GET /v2/booking-calendars` returning rows) and Slack send access (a connector reachability check). If the OnceHub key is missing or every OnceHub call errors, STOP and report — do NOT fall back to the browser for data.
 This task is FULLY AUTONOMOUS and, for the data + delivery path, connector-only (no browser, no local machine dependency for the numbers). "Stop and report" is only for genuine errors (OnceHub unreachable or unauthorized, Slack unreachable or unauthorized, the archive doc missing).
 NOTE ON THE ARCHIVE DOC (STEP 5): writing the Google Doc archive is the one step that still uses the browser (no Docs connector yet). It is BEST-EFFORT and must NOT block delivery: if the browser/doc is unavailable, skip it, note it in STEP 9, and still complete QA + Slack delivery. The Slack report is the primary deliverable.
 =====================================================
@@ -70,9 +81,9 @@ DAILY SLICES (today & tomorrow, by MEETING time): one full `GET /v2/bookings` sw
 - Today active: `starting_time` within TODAY (ET, apply the -04:00/-05:00 offset in effect), statuses = scheduled, rescheduled, completed, no-show.
 - Today canceled: same range, status = canceled.
 - Tomorrow active / canceled: same for TOMORROW (ET).
-Build the per-master-page rows yourself: one row per `booking_page.master_page` with its count. An unlabeled master page id is resolved with `GET /v2/master_pages/{id}`. total_all (every booking in the window) minus total_attributed (those carrying a master page) = unattributed (excluded here, but report the number in STEP 9).
+Build the per-master-page rows yourself: one row per `booking_calendar` with its count. An unlabeled master page id is resolved with `GET /v2/booking-calendars/{id}`. total_all (every booking in the window) minus total_attributed (those carrying a master page) = unattributed (excluded here, but report the number in STEP 9).
 
-WEBINAR SLICES (two most recent webinars that have already occurred, by CREATION date): from `GET /v2/master_pages` (paginated to the end), find the two most recent webinar dates that have already occurred (a webinar scheduled for tonight that has not run is not counted). For each webinar's Closer and Setter master page, call `GET /v2/bookings` with `master_page` = that page id, limit 100, following the cursor until the page returns fewer than 100 or `next` is null. Large responses are saved to a file — count with Grep on the file (multiline pattern over the status / in_trash / creation_time lines) rather than reading it. Keep bookings whose creation_time (converted to ET) is within [webinar date 00:00 ET … webinar date +3 days end-of-day], capping the end at end-of-today if in the future (note "window still maturing" if capped). Exclude in_trash true. Pass A = all statuses in-window (that page's Closer/Setter total); Pass B = the canceled subset. Cancellation rate = canceled-Closer / PassA-Closer, whole percent, Closer only.
+WEBINAR SLICES (two most recent webinars that have already occurred, by CREATION date): from `GET /v2/booking-calendars` (paginated to the end), find the two most recent webinar dates that have already occurred (a webinar scheduled for tonight that has not run is not counted). For each webinar's Closer and Setter master page, call `GET /v2/bookings` with `master_page` = that page id, limit 100, following the cursor until the page returns fewer than 100 or `next` is null. Large responses are saved to a file — count with Grep on the file (multiline pattern over the status / in_trash / creation_time lines) rather than reading it. Keep bookings whose creation_time (converted to ET) is within [webinar date 00:00 ET … webinar date +3 days end-of-day], capping the end at end-of-today if in the future (note "window still maturing" if capped). Exclude in_trash true. Pass A = all statuses in-window (that page's Closer/Setter total); Pass B = the canceled subset. Cancellation rate = canceled-Closer / PassA-Closer, whole percent, Closer only.
 =====================================================
 STEP 1: TODAY — daily section
 =====================================================

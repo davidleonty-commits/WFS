@@ -38,6 +38,8 @@ Facts you need:
 
 ## C. Call data: the source is Avoma, and it is a standard claude.ai connector
 
+**Superseded by `REPLY-2-CALLIX.md`.** WFS is moving from Avoma to Callix; Avoma was still recording on September 14, so this section stays valid only for as long as Avoma runs, as the comparison baseline. Build against Callix per REPLY-2.
+
 The Lovable connector's `calls_list`, `calls_get_analysis`, `calls_find_review_candidates`, and `avoma_api` were all thin wrappers over **Avoma**. Avoma has an official MCP at `https://mcp.avoma.com/mcp` that is available as a claude.ai connector with no custom key. Cayden's cloud routines had it attached as `Avoma_MCP` alongside the Lovable connector; the Lovable tools were only preferred because they pre-filtered by rep.
 
 What the new director must do: get an Avoma seat in the WFS Group Avoma workspace (an admin adds them), then connect the Avoma connector in claude.ai. The recordings are workspace-wide, so once they have a seat they see every rep's calls.
@@ -55,22 +57,27 @@ Rep identity: replace every `REP_WFS_ID` (the UUIDs in the SIP engine CONFIG blo
 
 The "minimum 5 calls verified by transcript" gate in the SIP engines is satisfiable once Avoma is connected. Do not relax it.
 
-## D. OnceHub: use the REST API, not the MCP
+## D. OnceHub: use the REST API, not the MCP (corrected September 16)
 
-Your read is right. The OnceHub MCP is a scheduling server with a write tool, and four prompts forbid OnceHub writes. Do not attach it to any task.
+Your read is right. The OnceHub MCP (`https://mcp.oncehub.com/sse`) is a scheduling server with exactly two tools, `get_booking_time_slots` (read availability) and `schedule_meeting` (write). Confirmed from OnceHub's own docs. It cannot list bookings, and four prompts forbid OnceHub writes. **Connecting it was not wrong, it is just the wrong door.** Do not attach it to any task. The previous director's connector never used it; it called the REST API below.
 
-The Lovable `oncehub_*` tools were wrappers over the OnceHub REST API v2. Replace them with direct calls (a Bash `curl` inside the routine works fine in the cloud sandbox):
+The Lovable `oncehub_*` tools were wrappers over the OnceHub REST API v2. Replace them with direct calls (`curl` inside the cloud routine, key in an environment variable, no proxy; see REPLY-2 section 4 for the same pattern with Callix):
 
 - Base: `https://api.oncehub.com/v2`
-- Auth header: `API-Key: <key>` (OnceHub account, Settings, API and Webhooks. The new director needs admin on the WFS OnceHub account to generate one, or an admin generates it for them.)
-- `oncehub_list_bookings` = `GET /bookings?starting_time.gt=<iso>&starting_time.lt=<iso>&status=<scheduled|rescheduled|canceled>` (paginate with `after`).
-- `oncehub_booking_counts(master_page, status, day)` = the same call, then group the rows by `master_page` id yourself. Apply the exact ET day boundary and status filter the prompt describes. Keep the "unattributed booking rescue" rule: bookings on a rep's personal booking page return `master_page = null` and must be bucketed by the booking page name (for example "Vidush Rana | DLF | Closer").
-- `oncehub_get_master_page`, `oncehub_list_master_pages` = `GET /master_pages/{id}`, `GET /master_pages`.
-- `oncehub_get_booking_page` = `GET /booking_pages/{id}`.
-- `oncehub_find_bookings_by_attendee` = `GET /bookings?email=<attendee email>`.
-- `oncehub_get_booking` = `GET /bookings/{id}`.
+- Auth: the API key in a request header. OnceHub's header name has historically been `API-Key`; confirm on the first call against the "Try it" panel in the API reference (https://help.oncehub.com/developers/api/). The key comes from a OnceHub admin (Settings, API and Webhooks).
+- **Naming change to know about:** the current v2 API calls what the prompts call "booking pages" and "master pages" **booking calendars**. There is no `/booking_pages` or `/master_pages` path in the current reference. The connector's `oncehub_get_master_page` and `oncehub_list_master_pages` were wrapping the older naming. Map them to `/booking-calendars`.
 
-With Avoma (numerator) and OnceHub REST (denominator) both wired, the two show-rate reports produce a number again.
+| Lovable tool | REST v2 call |
+|---|---|
+| `oncehub_list_bookings` | `GET /bookings?starting_time.gt=<iso>&starting_time.lt=<iso>&status=<scheduled|rescheduled|canceled>&limit=100`, page with `after` |
+| `oncehub_booking_counts(master_page, status, day)` | the same `GET /bookings` call for the ET day window, then group rows by `booking_calendar` yourself. Keep the "unattributed booking rescue" rule: bookings on a rep's personal calendar come back without a shared calendar id and must be bucketed by the calendar name (for example "Vidush Rana | DLF | Closer"). |
+| `oncehub_get_booking` | `GET /bookings/{id}` |
+| `oncehub_find_bookings_by_attendee` | `GET /bookings?contact=<email>` (confirm the `contact` filter accepts an email; otherwise list the window and filter locally) |
+| `oncehub_get_master_page`, `oncehub_get_booking_page` | `GET /booking-calendars/{id}` |
+| `oncehub_list_master_pages` | `GET /booking-calendars` (filter `host`) |
+| `oncehub_api` | the raw endpoint it names |
+
+With the call source (Avoma while it lasts, then Callix; see REPLY-2) as the numerator and OnceHub REST as the denominator, the two show-rate reports produce a number again.
 
 ## E. Slack: no bot token is needed
 

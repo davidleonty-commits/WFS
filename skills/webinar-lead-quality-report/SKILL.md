@@ -48,7 +48,18 @@ Capture per deal: deal id, title (the lead's full name), person name, status (op
 
 Never blend other funnels into a dated webinar's numbers. `Webinar S2C | Demo | Closer | 45min` is the setter-routed funnel, `Automated Webinar | Paid | Closer | 45min` is the evergreen funnel, and labels like `Youtube | Organic | Closer | 45min` are separate sources entirely. Each is its own cohort, run only when David names it.
 
-If the search returns nothing, the label is probably wrong. Do not guess a nearby date. Read the exact label text from OnceHub (`GET https://api.oncehub.com/v2/master_pages` with header `API-Key: $ONCEHUB_API_KEY`, paginated to the end), since spacing in these labels is occasionally inconsistent, then retry once with the corrected string.
+If the search returns nothing, the label is probably wrong. Do not guess a nearby date. Read the exact label text from OnceHub (`GET https://api.oncehub.com/v2/booking-calendars` with header `API-Key: $ONCEHUB_API_KEY`, paginated to the end), since spacing in these labels is occasionally inconsistent, then retry once with the corrected string.
+
+ONCEHUB v2 NAMING (verify on the first live call, corrected 2026-09-16): the current v2 API calls
+what this prompt calls "booking pages" and "master pages" **booking calendars**. There is no
+/booking_pages or /master_pages path any more; both map to `/v2/booking-calendars`. The grouping
+this prompt does by master page is therefore a grouping by BOOKING CALENDAR, and the
+unattributed-booking rescue is the case where a booking came in on a rep's PERSONAL calendar and
+so carries no shared calendar id. The business rules below are unchanged: which calendars count
+as Webinar Closer, which as S2C, which are Setter pages to ignore, and the ET day boundary.
+Read the exact response field names off the first `GET /v2/bookings` call and correct the field
+names in this prompt if they differ; do not assume them. Also confirm the auth header (`API-Key`
+historically; the API reference "Try it" panel is authoritative).
 
 ## Step 3: Establish the call window
 

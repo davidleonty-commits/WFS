@@ -12,7 +12,18 @@ connectors_required: Slack
 SCHEDULED TASK: TTW Daily Lead Flow Report (OnceHub API edition)
 
 ACCESS
-ONCEHUB (read-only): `GET https://api.oncehub.com/v2/<resource>` with header `API-Key: $ONCEHUB_API_KEY`. Endpoints used here: `/v2/bookings`, `/v2/master_pages`, `/v2/booking_pages/{id}`. Every list endpoint is cursor-paginated: follow `next` until it is null.
+ONCEHUB (read-only): `GET https://api.oncehub.com/v2/<resource>` with header `API-Key: $ONCEHUB_API_KEY`. Endpoints used here: `/v2/bookings`, `/v2/booking-calendars`, `/v2/booking-calendars/{id}`. Every list endpoint is cursor-paginated: follow `next` until it is null.
+
+ONCEHUB v2 NAMING (verify on the first live call, corrected 2026-09-16): the current v2 API calls
+what this prompt calls "booking pages" and "master pages" **booking calendars**. There is no
+/booking_pages or /master_pages path any more; both map to `/v2/booking-calendars`. The grouping
+this prompt does by master page is therefore a grouping by BOOKING CALENDAR, and the
+unattributed-booking rescue is the case where a booking came in on a rep's PERSONAL calendar and
+so carries no shared calendar id. The business rules below are unchanged: which calendars count
+as Webinar Closer, which as S2C, which are Setter pages to ignore, and the ET day boundary.
+Read the exact response field names off the first `GET /v2/bookings` call and correct the field
+names in this prompt if they differ; do not assume them. Also confirm the auth header (`API-Key`
+historically; the API reference "Try it" panel is authoritative).
 SLACK (send): `slack_send_message` on the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 Purpose: daily Slack report of today/tomorrow OnceHub booking counts per master page plus the two most recent webinars' booking totals and cancellation rates, plus a Team Sync recap.
 Runs as a remote cloud task, fully connector-based, no browser, autonomous — never ask the user questions; the user is not present.
@@ -52,7 +63,7 @@ FORMAT RULES (canonical — the only bold/formatting spec in this task)
 =====================================================
 STEP 0: STARTUP AND RUN GATE
 =====================================================
-Confirm OnceHub access (a `GET /v2/master_pages` returning rows) and Slack send access (a connector reachability check). If the OnceHub key is missing or every OnceHub call errors, STOP and report — never fall back to any other data source.
+Confirm OnceHub access (a `GET /v2/booking-calendars` returning rows) and Slack send access (a connector reachability check). If the OnceHub key is missing or every OnceHub call errors, STOP and report — never fall back to any other data source.
 Also confirm the Avoma MCP tools are available for STEP 3B (Team Sync Recap). If Avoma tools are unavailable, that only skips STEP 3B per HARD RULE 6 — it never blocks or stops the rest of the run.
 RUN GATE (timezone-safe): compute the current day of week in America/New_York (ET) — never the session/UTC day. If the ET day is Saturday or Sunday, produce no output and end. Only run Monday–Friday (ET).
 
@@ -73,7 +84,7 @@ MASTER-PAGE NAMING MAP (apply to each master-page label for the report label):
 - THE TWO S2C DEMO PAGES ARE SEPARATE PAGES AND MUST NEVER BE MERGED, SWAPPED, OR COLLAPSED INTO ONE LINE. They are different lead sources: one is the standing S2C demo funnel, the other is the S2C demo booked off a webinar. Match on master_page_id FIRST (authoritative); the label is only a fallback.
     * BP-B0F8QC4ELN — name "TikTok Wiz, Consultation S2C", label "S2C | Demo | Closer | 45min", url go.oncehub.com/ttwdemoset
         report line: "S2C Demo Closer:"
-        NOTE: this page frequently comes back with no readable master-page label, just the raw id "BP-B0F8QC4ELN". That raw id IS this page. Map it directly; no `GET /v2/master_pages/{id}` lookup is needed to resolve it.
+        NOTE: this page frequently comes back with no readable master-page label, just the raw id "BP-B0F8QC4ELN". That raw id IS this page. Map it directly; no `GET /v2/booking-calendars/{id}` lookup is needed to resolve it.
     * BP-WLVYAHDJCN — name "TikTok Wiz, Consultation Webinar S2C", label "Webinar S2C | Demo | Closer | 45min", url go.oncehub.com/ttwdemosetwebinar
         report line: "Webinar S2C Demo Closer:"
         NOTE: this is an UNDATED page. Despite starting with the word "Webinar" it is NOT a dated webinar page: it takes NO "calls" suffix, and it is NEVER eligible as one of the two most recent webinars in STEP 3.
@@ -96,9 +107,9 @@ DAILY SLICES (today & tomorrow, by MEETING time): one full `GET /v2/bookings` sw
 - Today active: `starting_time` within TODAY (ET, apply the -04:00/-05:00 offset in effect), statuses = scheduled, rescheduled, completed, no-show.
 - Today canceled: same range, status = canceled.
 - Tomorrow active / canceled: same for TOMORROW (ET).
-Build the per-master-page rows yourself: one row per `booking_page.master_page` with its count. An unlabeled master page id is resolved with `GET /v2/master_pages/{id}` (except BP-B0F8QC4ELN, already mapped above). total_all (every booking in the window) minus total_attributed (those carrying a master page) = unattributed (excluded, but report the number in STEP 6).
+Build the per-master-page rows yourself: one row per `booking_calendar` with its count. An unlabeled master page id is resolved with `GET /v2/booking-calendars/{id}` (except BP-B0F8QC4ELN, already mapped above). total_all (every booking in the window) minus total_attributed (those carrying a master page) = unattributed (excluded, but report the number in STEP 6).
 
-WEBINAR SLICES (two most recent webinars that have already occurred, by CREATION date): from `GET /v2/master_pages` (paginated to the end), find the two most recent DATED webinar pages ("Webinar MM DD YY") whose date has already passed (a webinar scheduled for tonight that has not run is not counted). BP-WLVYAHDJCN ("Webinar S2C") and any other undated page are NEVER candidates here. For each webinar's Closer and Setter master page, call `GET /v2/bookings` with `master_page` = that page id, limit 100, following the cursor until the page returns fewer than 100 or `next` is null. Save large responses to a file and count with Grep on the file rather than reading it. Keep bookings whose creation_time (converted to ET) is within [webinar date 00:00 ET … webinar date +3 days end-of-day], capping the end at end-of-today if in the future (note "window still maturing" if capped). Exclude in_trash true. Pass A = all statuses in-window (that page's Closer/Setter total); Pass B = the canceled subset. Cancellation rate = canceled-Closer / PassA-Closer, whole percent, Closer only.
+WEBINAR SLICES (two most recent webinars that have already occurred, by CREATION date): from `GET /v2/booking-calendars` (paginated to the end), find the two most recent DATED webinar pages ("Webinar MM DD YY") whose date has already passed (a webinar scheduled for tonight that has not run is not counted). BP-WLVYAHDJCN ("Webinar S2C") and any other undated page are NEVER candidates here. For each webinar's Closer and Setter master page, call `GET /v2/bookings` with `master_page` = that page id, limit 100, following the cursor until the page returns fewer than 100 or `next` is null. Save large responses to a file and count with Grep on the file rather than reading it. Keep bookings whose creation_time (converted to ET) is within [webinar date 00:00 ET … webinar date +3 days end-of-day], capping the end at end-of-today if in the future (note "window still maturing" if capped). Exclude in_trash true. Pass A = all statuses in-window (that page's Closer/Setter total); Pass B = the canceled subset. Cancellation rate = canceled-Closer / PassA-Closer, whole percent, Closer only.
 
 EVIDENCE CAPTURE (for STEP 5 QA): as you build, keep the raw source values — each daily sweep's per-master-page rows with total_all and total_attributed and the number of pages read, the saved webinar-pagination files with their Grep counts, and every metric input (numerators, denominators, rounding). QA verifies against this captured evidence; it does not re-pull clean data.
 
