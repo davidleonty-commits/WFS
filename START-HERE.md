@@ -59,7 +59,7 @@ Read the output. It lists every file that will change. Then:
 python3 personalize.py replacements.json
 ```
 
-The script replaces every occurrence of the previous director's name (Cayden, Caydo, Cayden Johnson, all possessive and uppercase forms), Slack handle, Slack user ID, self-DM channel ID, both Google emails, Pipedrive user ID, Asana board name, and Supabase project ID across every prompt and skill. It then runs a residue check and refuses to report success while any trace remains.
+The script also rewrites every `LIVE_TARGET: #wfs-ttw-sales-mgmt-client` to the director's own DM, because nothing automated may post to the client channel, and flags any remaining send to it. It replaces every occurrence of the previous director's name (Cayden, Caydo, Cayden Johnson, all possessive and uppercase forms), Slack handle, Slack user ID, self-DM channel ID, both Google emails, Pipedrive user ID, Asana board name, and Supabase project ID across every prompt and skill. It then runs a residue check and refuses to report success while any trace remains.
 
 Expected outcome after a correct run: `0 identity residue line(s)`, except for lines containing the previous director's browser `deviceId` in the six SIP engines, which are removed in Step 5.
 

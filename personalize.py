@@ -36,6 +36,9 @@ PREVIOUS = [
     ("23815275",                         "PIPEDRIVE_USER_ID"),
     ("apdwbbocldfsklvcwaqd",             "SUPABASE_PROJECT_ID"),
     ("2fac653e-7302-41bb-839a-a7b4b18cab1b", "BROWSER_DEVICE_ID"),
+    # The client-facing channel is OFF LIMITS as a send destination under the new director. Every LIVE_TARGET that
+    # pointed at it becomes the director's own DM; the director forwards by hand if the client needs it.
+    ("LIVE_TARGET: #wfs-ttw-sales-mgmt-client", "CLIENT_LIVE_TARGET_REPLACEMENT"),
 ]
 OPTIONAL = {"SUPABASE_PROJECT_ID", "ASANA_BOARD_NAME", "BROWSER_DEVICE_ID"}
 
@@ -44,6 +47,9 @@ RESIDUE = re.compile(r"cayden|caydo|U092C85GA4D|D092C868SPP|23815275|2fac653e-73
 
 # Previous director's Supabase project. Either replaced with the new project id or the Supabase steps are deleted (TROUBLESHOOTING-REPLY.md section J).
 SUPABASE_RESIDUE = re.compile(r"apdwbbocldfsklvcwaqd")
+
+# Any remaining mention of the client channel must be a READ (e.g. the EOW skill reads it), never a send destination.
+CLIENT_CHANNEL = re.compile(r"wfs-ttw-sales-mgmt-client|C098J2VG41E")
 
 # Not identity, but must be gone before the tasks can run (see README Section 1A and TROUBLESHOOTING-REPLY.md).
 CONNECTOR_RESIDUE = re.compile(r"Lovable[ _]WFS|WFS_MCP_TOKEN|REP_WFS_ID|commandcenter\.aiautomating\.com|mcp__scheduled-tasks__update_scheduled_task", re.I)
@@ -68,6 +74,7 @@ def derive(answers):
     out["FIRST_NAME_UPPER"] = first.upper()
     out["FIRST_NAME_POSSESSIVE_UPPER"] = first.upper() + "'S"
     out["FIRST_NAME_LOWER"] = first.lower()
+    out["CLIENT_LIVE_TARGET_REPLACEMENT"] = f"LIVE_TARGET: {handle} (the director's own DM. The client channel #wfs-ttw-sales-mgmt-client is OFF LIMITS as a destination; never post there.)"
     if not out.get("TTW_EMAIL", "").strip():
         out["TTW_EMAIL"] = out["WFS_EMAIL"]
     return out
@@ -77,6 +84,7 @@ def check(verbose=True):
     hits = 0
     conn = 0
     supa = 0
+    client = []
     for f in files():
         t = f.read_text(encoding="utf-8")
         for n, line in enumerate(t.splitlines(), 1):
@@ -86,9 +94,14 @@ def check(verbose=True):
                     print(f"IDENTITY  {f.relative_to(ROOT)}:{n}: {line.strip()[:140]}")
             if SUPABASE_RESIDUE.search(line):
                 supa += 1
+            if CLIENT_CHANNEL.search(line) and re.search(r"LIVE_TARGET|deliver|send|post", line, re.I) and not re.search(r"OFF LIMITS|never post|read", line, re.I):
+                client.append(f"{f.relative_to(ROOT)}:{n}: {line.strip()[:140]}")
             if CONNECTOR_RESIDUE.search(line):
                 conn += 1
     print(f"\n{hits} identity residue line(s), {supa} Supabase residue line(s), {conn} connector residue line(s) across {sum(1 for _ in files())} files.")
+    if client:
+        print(f"\nCLIENT CHANNEL: {len(client)} line(s) still look like a SEND to #wfs-ttw-sales-mgmt-client. Reads are fine; sends are forbidden. Confirm each is a read or rewrite it:")
+        for c in client: print("  ", c)
     if supa:
         print(f"Supabase decision pending on {supa} line(s): either set SUPABASE_PROJECT_ID to the new project or delete those Supabase steps (TROUBLESHOOTING-REPLY.md section J).")
     if hits:
@@ -97,7 +110,7 @@ def check(verbose=True):
         print("Identity scrub complete: no trace of the previous director remains.")
     if conn:
         print(f"Connector swap still pending on {conn} line(s): run the Section 1A rewrite (Lovable WFS tools, REP_WFS_ID, WFS_MCP_TOKEN, update_scheduled_task). Use --check-connector to list them.")
-    return hits == 0
+    return hits == 0 and not client
 
 
 def check_connector():

@@ -27,7 +27,7 @@ AUTHORIZATION: TEST-phase sends to the operator's own Slack self-DM are FULLY PR
 STOP CONDITION: Monday through Friday only.
 PHASE: TEST or LIVE.
 - TEST: destination is the director's self-DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91). Unattended, pre-authorized.
-- LIVE: destination is #wfs-ttw-sales-mgmt-client. ALWAYS requires the operator to reply "commit" in chat before anything posts.
+- LIVE: destination is the director's own DM. The client channel #wfs-ttw-sales-mgmt-client is OFF LIMITS as a destination; never post there. ALWAYS requires the operator to reply "commit" in chat before anything posts.
 DATE: Use today's actual system date everywhere.
 
 STEP 0, KICKOFF: State the run is starting, today's date, and the phase.
@@ -65,7 +65,7 @@ Spawn an independent QA subagent (use a strong model) that audits the draft agai
 STRUCTURE CHECK: Title, Day Summary, Lead Quality Trends, and numbered per-call analyses all present; if malformed, STOP and report.
 
 STEP 3, SLACK (Slack connector; summary standalone + call reviews as threaded comments via the DELIVERY STRUCTURE above):
-  Follow the GLOBAL FORMATTING RULE and the SLACK LENGTH CAP. Destination = DIRECTOR_SLACK_ID (TEST) or "#wfs-ttw-sales-mgmt-client" (LIVE after commit), sent immediately.
+  Follow the GLOBAL FORMATTING RULE and the SLACK LENGTH CAP. Destination = DIRECTOR_SLACK_ID in BOTH modes, sent immediately. The client channel is OFF LIMITS as a destination.
   Message 1 (standalone) = Title + Day Summary + Lead Quality Trends, and MUST be under 3000 characters. Verify the character count before sending. If it will not fit after tightening, apply the SLACK LENGTH CAP fallback: Message 1 becomes Title + Day Summary only, and Lead Quality Trends becomes the first threaded comment.
   Comments 2..N (channel + thread_ts per the DELIVERY STRUCTURE) = per-call reviews, each under 3000 characters, packed to as FEW comments as possible, splitting ONLY at a call boundary. Each comment contains ONLY numbered call blocks: no header line, no "Call reviews (k of N)", no "Not scored today" line, no excluded-calls list, nothing after the last call block.
   BEFORE SENDING: read the destination with `slack_read_channel` (limit 20) and scan EVERY returned body, not just the newest; if today's report already appears, do NOT duplicate, report "existing message found" and stop, UNLESS the operator explicitly asked for a resend in chat.

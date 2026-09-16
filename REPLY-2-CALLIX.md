@@ -2,7 +2,11 @@
 
 From Cayden, September 16, 2026. For the new director's Claude Code. Everything in TROUBLESHOOTING-REPLY.md still holds except section C (Avoma), which this file replaces. Section D (OnceHub) was corrected in place; the corrected version is what is in the package now.
 
-**Changes since your last report (so you do not need to re-audit):** prompts and skills are still byte-identical to the first package. Section E of TROUBLESHOOTING-REPLY.md now states plainly that the claude.ai Slack connector is the sender for everything, TEST and LIVE, which matches what you already rewrote; it adds one check (send a test to the director's DM and look at how the "via Claude" attribution renders before anything goes LIVE). `CALL-SHEET.md` is new and is for the humans: it walks Cayden and the director through collecting every input you are waiting on in one sitting. Section 8 below is updated.
+**Changes since your last report (so you do not need to re-audit):** prompts and skills are still byte-identical to the first package. Section E of TROUBLESHOOTING-REPLY.md now states plainly that the claude.ai Slack connector is the sender for everything, TEST and LIVE, which matches what you already rewrote; it adds one check (send a test to the director's DM and look at how the "via Claude" attribution renders before anything goes LIVE). `CALL-SHEET.md` is new and is for the humans: it walks Cayden and the director through collecting every input you are waiting on in one sitting. Section 8 below is updated. **New in this version:** the client channel is off limits (section 0), and capability 3 (is it a consultation) is now a concrete rule, not a verify-and-see (section 3).
+
+## 0. The client channel is off limits
+
+Nothing automated may post to `#wfs-ttw-sales-mgmt-client` under the new director. The client reads that channel. The five tasks that used it as LIVE_TARGET (lead flow, midday show rate, EOD show rate, webinar report, PIF buyer report) now deliver to the director's own DM; the director forwards to the client by hand if and when they choose. `personalize.py` rewrites those `LIVE_TARGET` lines and flags any remaining sentence that still reads like a send to that channel; rewrite each one (the PIF report's inline mode text, the two task descriptions, the local `mgmt-call-reports` twin). Reading the channel is fine; the EOW skill does.
 
 ## 1. Your open question: Avoma or Callix
 
@@ -38,7 +42,7 @@ Callix is `callix.io` (prospects, payments, deal analyses), not the `callix.ai` 
 |---|---|---|---|
 | 1. List calls in a date window | `calls_list(from, to)` | `list_calls`; call `get_current_time` first for relative windows, as the prompts already do | Date range parameter? Timezone of timestamps? Pagination and page cap? |
 | 2. Filter to one rep | `calls_list(rep_id=...)` | `list_calls` rep filter | What identifies a rep: email, Callix user id, or name? Build a roster map and put it in each SIP engine CONFIG where `REP_WFS_ID` was. |
-| 3. Identify a TTW consultation | title contains "TikTok Wiz Consultation"; `is_consultation`; `call_type` | Unknown. Try in order: (a) a call type or outcome field on `list_calls`; (b) prospect stage via `get_prospect`; (c) the OnceHub join: match the call to a booking by lead email and start time and classify by the booking calendar name. (c) is how the old connector computed `is_consultation`. | Whether Callix carries the Zoom meeting title at all. If not, rewrite every "title contains" rule to the field you find and say so in the prompt. **Highest-risk rewrite in the package**: get it wrong and the show-rate numerator is silently wrong. |
+| 3. Identify a TTW consultation | title contains "TikTok Wiz Consultation"; `is_consultation`; `call_type` | **Do not use the Callix call title for this.** Classify by joining each call to its OnceHub booking; the rule is spelled out under "Consultation classification" below. It is deterministic, needs no Callix field beyond lead email and start time, and is exactly how the old connector computed `is_consultation` and `call_type`. | Only that `list_calls` returns a lead email (or phone) and a start time per call. |
 | 4. Duration for the 15-minute floor | `duration_seconds`, null when no recording | whatever `get_call` returns for length | Unit, and how "no recording" is represented (null, 0, absent). The floor treats no recording as not live. |
 | 5. Transcript with speakers and timestamps | `calls_get_analysis(id).transcript` as `[mm:ss] Speaker: line` | `get_call` ("including its full transcript") or `list_calls` with transcripts on | Timestamps and speaker names per line? The clip finder's clip-in/clip-out anchors need timestamps; without them that skill quotes lines without times and the prompt must say so. |
 | 6. Stable call id | `id` (uuid) | the id `list_calls` returns and `get_call` accepts | Rename any `meeting_uuid` you create to `call_id`. |
@@ -50,6 +54,24 @@ id, title ("Sara M Jamison - TikTok Wiz Consultation"), source (the OnceHub book
 call_type (webinar_closer | s2c_closer | setter_intro | consultation | sync | other), is_consultation, started_at, ended_at,
 duration_seconds (null = no recording), rep_id, lead_email, state (completed | canceled | not_recorded), transcript ("[mm:ss] Speaker: line")
 ```
+
+### Consultation classification: the fix for the numerator
+
+The show-rate reports, the daily call report, the clip finder, and the SIP engines all need to know which calls are TTW consultations and of which kind. The old prompts keyed on the Zoom meeting title. Callix may not carry that title, and guessing a Callix field would be the failure mode where the report still prints a plausible number. So the source of truth for "what kind of call was this" becomes the **OnceHub booking**, which every consultation was scheduled through. This is what the old connector did internally: its `source` field was the OnceHub booking calendar name and `call_type` was derived from it.
+
+Put this block into every call-dependent prompt in place of the title rule:
+
+1. **Pull the day's bookings from OnceHub** (`GET /v2/bookings`, all statuses, the ET day window). Keep per booking: booking calendar name, lead email, start time, status.
+2. **Pull the day's calls from Callix** (`list_calls`, same window). Keep per call: id, rep, lead email (or phone), start time, duration, transcript.
+3. **Match** a call to a booking when the lead email matches (case-insensitive, trimmed) and the start times are within 30 minutes. If Callix has no lead email on a call, match on lead name plus rep plus start time within 30 minutes, and flag the match as name-based in the anomaly notes.
+4. **Derive `call_type` from the booking calendar name**, case-insensitive: contains "Webinar" = `webinar_closer`; contains "S2C" = `s2c_closer`; contains "Setter" or "15min" or "Introduction" = `setter_intro`; contains "Closer" without Webinar or S2C (a rep's personal calendar such as "Vidush Rana | DLF | Closer") = `consultation`; anything else = `other`. `is_consultation` = call_type in {`webinar_closer`, `s2c_closer`, `consultation`}.
+5. **Live** = matched AND duration at or above 900 seconds. Duration null or missing = not live.
+6. **Unmatched Callix call** (no booking with that lead) = `other`; list it in the anomaly notes with its lead and rep, never count it as a consultation. **Unmatched OnceHub booking** (no Callix call) = scheduled, did not go live. That is the show-rate denominator working as designed, not an error.
+7. **Reconcile once per run:** the count of matched consultations must not exceed the count of consultation bookings for the day. If it does, that is a QA FAIL (same rule as the existing "show rate above 100%" gate).
+
+This removes the title dependency entirely, keeps the S2C versus Webinar split the reports need, preserves the unattributed-booking rescue (personal calendars classify as `consultation`), and works identically whether the call platform is Avoma, Callix, or anything else. The only thing Callix must supply is a lead email (or name) and a start time per call; verify those two on the first `list_calls`.
+
+If Callix turns out not to have the Zoom consultation calls at all (it records phone calls, the consultations happen on Zoom), then no classification rule helps: the numerator is missing and Avoma must stay until Callix or another recorder captures them. That is what the WFS admin question in section 1 settles.
 
 ### Analysis and scoreboard tools
 

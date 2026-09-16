@@ -35,7 +35,7 @@ Have a WFS Slack admin add him if any are private. **Done when:** he can open al
 
 ## 3. Slack: one test message (2 minutes)
 
-David already has the claude.ai Slack connector connected to WFS. Nothing to create. Have his Claude send one short message to his own DM and look at it together in the WFS workspace: is there a "via Claude" attribution, and how does it render? David decides whether that is acceptable in the reps channel and the client channel. Everything stays in TEST (his DM) until he says so, which is the plan regardless.
+David already has the claude.ai Slack connector connected to WFS. Nothing to create. Have his Claude send one short message to his own DM and look at it together in the WFS workspace: is there a "via Claude" attribution, and how does it render? David decides whether that is acceptable in the reps channel. **The client channel `#wfs-ttw-sales-mgmt-client` is off limits regardless**: the five tasks that used to post there (lead flow, midday and EOD show rate, webinar report, PIF buyer report) now deliver to David's DM and he forwards to the client by hand if needed. Everything stays in TEST (his DM) until he says so.
 
 **Done when:** the message lands in his DM and he has seen the attribution.
 
@@ -101,7 +101,7 @@ Once 1 through 7 are in, his Claude can recreate the first task. Suggest the ord
 4. `daily-call-report-publisher-v27` (Callix or Avoma; proves the call layer)
 5. the two show-rate reports (OnceHub plus calls together)
 
-Everything to David's DM. Two clean days per task, message matches its template line for line, then LIVE one task at a time, client-facing channels last.
+Everything to David's DM. Two clean days per task, message matches its template line for line, then LIVE one task at a time. The only LIVE channel is the reps channel; the client channel is never a destination.
 
 ## What you can answer on the call that his Claude cannot
 

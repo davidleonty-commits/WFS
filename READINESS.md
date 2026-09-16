@@ -185,6 +185,24 @@ having happened at all. Decide explicitly whether you are keeping that pipeline.
 
 ---
 
+## Update 2026-09-16: the client channel is closed
+
+`REPLY-2-CALLIX.md` section 0 removes `#wfs-ttw-sales-mgmt-client` as a destination entirely.
+Nothing automated posts there under the new director. The five tasks that used it as
+LIVE_TARGET (lead flow, midday show rate, EOD show rate, webinar report, PIF buyer report) now
+deliver to the director's DM, and the director forwards to the client by hand if they choose.
+Reading the channel is still fine; the EOW skill does it.
+
+That retires P0 item 1's sharpest edge: a double-post to a channel the client reads is no
+longer possible, because no task targets that channel at all. The twin double-post risk itself
+still stands for the reps channel, so recreate only the cloud edition of each pair.
+
+Applied across 12 lines. Note that `personalize.py --check` returned clean on the client
+channel BEFORE five of those lines were fixed: its heuristic looks for send verbs, and missed
+`LIVE MUST be #wfs-ttw-sales-mgmt-client` in two DELIVERY VERIFICATION blocks, a
+`Destination = ... (LIVE after commit)` line, and two lessons-ledger entries asserting the
+report posts there. The check is necessary and not sufficient; read the remaining mentions.
+
 ## Suggested order
 
 1. Set `PROCESS_MODE: DRY_RUN` on both Pipedrive audit tasks. Before anything else.

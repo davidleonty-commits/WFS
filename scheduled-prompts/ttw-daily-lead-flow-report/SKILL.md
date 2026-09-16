@@ -1,6 +1,6 @@
 ---
 name: ttw-daily-lead-flow-report
-description: Weekday TTW Daily Lead Flow Report: pull OnceHub via its REST API (no browser scraping), compute the report, QA-gate, and deliver with the Slack workspace Slack connector (LIVE: #wfs-ttw-sales-mgmt-client).
+description: Weekday TTW Daily Lead Flow Report: pull OnceHub via its REST API (no browser scraping), compute the report, QA-gate, and deliver with the Slack workspace Slack connector (LIVE: the director's DM; the client channel is OFF LIMITS).
 ---
 
 SCHEDULED TASK: TTW Daily Lead Flow Report (OnceHub API edition — no browser scraping)
@@ -27,7 +27,7 @@ DELIVERY_MODE: LIVE
   (TEST sends only to TEST_TARGET, the owner's DM. LIVE sends to LIVE_TARGET. Went LIVE on 2026-07-02 per Cayden's instruction.)
 DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
-LIVE_TARGET: #wfs-ttw-sales-mgmt-client
+LIVE_TARGET: DIRECTOR_SLACK_ID (the director's own DM. The client channel #wfs-ttw-sales-mgmt-client is OFF LIMITS as a destination under the new director; never post there. The director forwards to the client by hand if they choose.)
 JITTER_MINUTES: 0
 CLOSER_CAPACITY: 40
   (Closer Capacity New Calls. Only source is here. If blank or [SET ME], STOP and ask the operator.)

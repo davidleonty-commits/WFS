@@ -246,6 +246,7 @@ The closer skills ship with `references/`: the talk track, the objection matrix,
 
 These are the rules the prompts enforce. Keep them when you edit.
 
+- **Never post to `#wfs-ttw-sales-mgmt-client`.** The client reads that channel. Under the new director nothing automated lands there. Every task that used it as LIVE_TARGET (lead flow, midday and EOD show rate, webinar report, PIF buyer report) now delivers to the director's own DM; the director forwards by hand if the client needs it. `personalize.py` rewrites those LIVE_TARGET lines and flags any remaining send to that channel. Reading the channel (the EOW skill does) is fine.
 - **One Slack sender only.** The prompts say "the Lovable WFS connector, never the native Slack connector" because two senders would race. After the swap: the claude.ai Slack connector, as the director, every time. Never a second sender.
 - **Never enter credentials, never complete a CAPTCHA, never download files.** Auth is server-side in the connectors.
 - **No emojis in report bodies, no em dashes, no en dashes.** Single asterisks for bold. Plain hyphens, commas, periods.

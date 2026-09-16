@@ -21,7 +21,7 @@ DELIVERY_MODE: LIVE
 DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
   (Director's DM; the only destination allowed in TEST. Address it by member ID: a handle does not resolve through the API. On a transient 503, retry once.)
-LIVE_TARGET: #wfs-ttw-sales-mgmt-client
+LIVE_TARGET: DIRECTOR_SLACK_ID (the director's own DM. The client channel #wfs-ttw-sales-mgmt-client is OFF LIMITS as a destination under the new director; never post there. The director forwards to the client by hand if they choose.)
   (Channel when live. CLIENT-FACING: management AND the client see it. Never used while TEST, and per HARD RULE 9 never used when the collective show rate is below 40%.)
 JITTER_MINUTES: 0
   (Randomizes send time within plus or minus this many minutes; 0 is predictable.)

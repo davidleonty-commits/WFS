@@ -15,8 +15,8 @@ Profile every TikTok Wiz deal that closed PAID IN FULL during the past week, and
 Accuracy beats completeness. A blank field is acceptable. A fabricated field is a task failure. ALWAYS publish the confirmed paid-in-full buyers you have this week, even if some are missing a call and even if only a couple qualify. Note what is missing rather than holding the report. Confirmed paid in full is defined by the money: the balance remaining is fully collected, no matter how many payments it took.
 MODE
 TEST MODE is currently active. Deliver only to the director's Slack DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91).
-LIVE MODE target, once David explicitly declares this task out of test phase: post to the Slack channel #wfs-ttw-sales-mgmt-client with `slack_send_message` on the Slack connector.
-Do NOT post to #wfs-ttw-sales-mgmt-client until David has explicitly said this task is live. If you are unsure which mode you are in, default to TEST and send to the DM.
+LIVE MODE target, once David explicitly declares this task out of test phase: the director's own DM with `slack_send_message` on the Slack connector. The client channel #wfs-ttw-sales-mgmt-client is OFF LIMITS as a destination; never post there. The director forwards to the client by hand if they choose.
+Never post to #wfs-ttw-sales-mgmt-client at all; it is OFF LIMITS as a destination. If you are unsure which mode you are in, default to TEST and send to the DM.
 STANDING RULES
 
 * Fully autonomous. No approval or confirmation prompts.

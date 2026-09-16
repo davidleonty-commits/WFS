@@ -22,7 +22,7 @@ DELIVERY_MODE: TEST
 DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
   (Director's DM. The only destination allowed while DELIVERY_MODE is TEST. Address it by member ID: a handle does not resolve through the API. On a transient 503, retry once.)
-LIVE_TARGET: #wfs-ttw-sales-mgmt-client
+LIVE_TARGET: DIRECTOR_SLACK_ID (the director's own DM. The client channel #wfs-ttw-sales-mgmt-client is OFF LIMITS as a destination under the new director; never post there. The director forwards to the client by hand if they choose.)
   (The channel this task posts to when live. CLIENT-FACING: management AND the client see it. Never used while DELIVERY_MODE is TEST. Also never used when the LOW-SHOW ROUTING override fires, i.e. collective show rate below 40%.)
 LOW_SHOW_THRESHOLD_PCT: 40
   (Owner-directed 2026-07-14. If the collective show rate is strictly below this percent, delivery is forced to the owner's DM (TEST_TARGET) regardless of DELIVERY_MODE. See HARD RULE 10 and STEP 7.)
