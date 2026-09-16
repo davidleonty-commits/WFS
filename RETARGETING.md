@@ -99,6 +99,12 @@ only useful if you adopt the same board; otherwise leave it uploaded and unused,
 1. Connect Slack, Avoma, Pipedrive and Drive, and set the four outstanding values above.
 2. Leave every `DELIVERY_MODE` on TEST. In TEST every task DMs you and nothing reaches a
    channel, a rep, or the client.
+2a. **Look at how a sent message renders before anything goes LIVE.** Every send now goes out
+   through the claude.ai Slack connector as YOU, and a message sent that way may carry a small
+   "via Claude" attribution in Slack. Send one test message to your own DM and look at it in the
+   WFS workspace. You decide whether that attribution is acceptable in the reps channel and,
+   especially, in the client-facing channel. This is a judgment only you can make, and it is
+   worth making before two weeks of TEST runs rather than after.
 3. Run each task once and compare its Slack output to the message template in its own prompt,
    line for line. The templates did not change in the swap, so a drift is a real finding.
 4. Flip to LIVE one task at a time. Hold the two client-facing reports

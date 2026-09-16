@@ -193,4 +193,6 @@ having happened at all. Decide explicitly whether you are keeping that pipeline.
 4. Confirm Drive access to all fifteen resources and the Pipedrive label.
 5. Resolve the Callix read path. Until then, hold every call-dependent task, and know that the
    two client-facing show-rate reports cannot run at all.
-6. Then start the TEST runs described in `RETARGETING.md` section 3.
+6. Send one Slack test to your own DM and check the "via Claude" attribution renders
+   acceptably, before committing to the client-facing channels (RETARGETING.md step 2a).
+7. Then start the TEST runs described in `RETARGETING.md` section 3.

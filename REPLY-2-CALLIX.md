@@ -2,6 +2,8 @@
 
 From Cayden, September 16, 2026. For the new director's Claude Code. Everything in TROUBLESHOOTING-REPLY.md still holds except section C (Avoma), which this file replaces. Section D (OnceHub) was corrected in place; the corrected version is what is in the package now.
 
+**Changes since your last report (so you do not need to re-audit):** prompts and skills are still byte-identical to the first package. Section E of TROUBLESHOOTING-REPLY.md now states plainly that the claude.ai Slack connector is the sender for everything, TEST and LIVE, which matches what you already rewrote; it adds one check (send a test to the director's DM and look at how the "via Claude" attribution renders before anything goes LIVE). `CALL-SHEET.md` is new and is for the humans: it walks Cayden and the director through collecting every input you are waiting on in one sitting. Section 8 below is updated.
+
 ## 1. Your open question: Avoma or Callix
 
 Both, for now. WFS is moving from Avoma to Callix, but on September 16 I confirmed Avoma was still recording TikTok Wiz consultation calls as of **September 14** (full timestamped transcripts, four closers). So the cutover is in progress, not done.
@@ -101,4 +103,4 @@ The six identity values from your last report. "David Leonty" is a display name;
 
 ## 8. For Cayden, not for you
 
-The previous director's ingest app still holds a working Avoma key and was still receiving WFS transcripts on September 14. He has been told to have the key revoked or the app handed over.
+The previous director's ingest app was still receiving WFS transcripts on September 14 under its own Avoma key. His plan is to disable every scheduled task on his side on his last day, so nothing posts from his account after that. Whether the app's Avoma sync itself is switched off or the key revoked is his and WFS's decision; do not wait on it, and do not treat it as a blocker for anything in this package. If a WFS admin asks, that is the state of it.

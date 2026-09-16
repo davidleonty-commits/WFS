@@ -79,27 +79,27 @@ The Lovable `oncehub_*` tools were wrappers over the OnceHub REST API v2. Replac
 
 With the call source (Avoma while it lasts, then Callix; see REPLY-2) as the numerator and OnceHub REST as the denominator, the two show-rate reports produce a number again.
 
-## E. Slack: no bot token is needed
+## E. Slack: the claude.ai Slack connector, for everything
 
-This one simplifies. The Lovable connector's `slack_schedule_message` posted **as Cayden himself**, not as a bot. The purge task in his routines confirms it: the connector's `slack_auth_whoami` was expected to return `user cayden.johnson, user_id U092C85GA4D, bot_id null`. So the exact equivalent for the new director is the standard **claude.ai Slack connector** (`https://mcp.slack.com/mcp`), which also posts as the connected user. Cayden's routines already had it attached alongside the Lovable one.
-
-The rule "never the native Slack connector" existed only so two senders would not race each other. Under the new setup the native connector IS the single sender. Delete the lock, keep the discipline.
+The Lovable connector's `slack_schedule_message` posted as Cayden himself (its `slack_auth_whoami` returned `bot_id null, user cayden.johnson`). The claude.ai Slack connector David already has connected to the WFS workspace also posts as the connected user. That is the replacement, for reads and for every send, TEST and LIVE. No Slack app to create, no token to store.
 
 Tool mapping:
 
-| Lovable tool | claude.ai Slack connector tool |
+| Lovable tool | claude.ai Slack connector |
 |---|---|
-| `slack_schedule_message(text, channel, jitter_minutes, send_at_mt, thread_ts)` | `slack_send_message` for immediate sends (pass `thread_ts` to reply in a thread); `slack_schedule_message` when the prompt sets `send_at_mt`. Delivery proof = the returned `ts`. There is no `jitter_minutes`; ignore it (it was always 0). |
+| `slack_schedule_message(text, channel, jitter_minutes, send_at_mt, thread_ts)` | `slack_send_message` for immediate sends (pass `thread_ts` to reply in a thread); `slack_schedule_message` when the prompt sets `send_at_mt`. Delivery proof = the returned `ts`. Drop `jitter_minutes` (it was always 0). |
 | `slack_list_pending`, `slack_cancel_message` | Drop them. The prompts already say `slack_list_pending` is never a delivery test. |
-| `slack_read_channel`, `slack_read_thread` | Same names exist on the Slack connector. |
-| `mentions` parameter | Does not exist. Mentions are inline `<@USERID>` tokens in the text, which is what every prompt already does. |
+| `slack_read_channel`, `slack_read_thread` | Same names on the connector. |
+| `mentions` parameter | Does not exist. Mentions are inline `<@USERID>` tokens in the text, which every prompt already does. |
 
-Channels the new director's Slack user must be a member of (the connector posts as them, so they need to be in the channel, no bot invite required):
+One thing to know: messages sent through the connector may carry a small "via Claude" attribution in Slack. Send one test message to the director's own DM first and look at how it renders in the WFS workspace. The director decides whether that is acceptable in the reps channel and the client channel before any task goes LIVE; until then everything stays in TEST (DM only), which is the plan anyway.
+
+Channels the director's Slack user must be a member of (the connector posts as them, so membership is the whole requirement; there is no bot to invite):
 - `#wfs-ttw-sales-reps-dm-external` (C09ADJS1V6H), reps channel with external members
 - `#wfs-ttw-sales-mgmt-client` (C098J2VG41E), client-facing management channel
-- `#payments` (C07PVHXGD38), read only, the payments automation posts here
+- `#payments` (C07PVHXGD38), read only
 
-The "memory DM" pattern (the midday check-in reads its own last two posts back from the owner's self-DM) works unchanged once `D092C868SPP` is replaced with the new director's own self-DM channel id, which is section H.
+The "memory DM" pattern (the midday check-in reads its own last two posts back from the director's self-DM) works unchanged once `D092C868SPP` is replaced with the director's own self-DM channel id (section H).
 
 ## F. SIP engines without a browser
 
