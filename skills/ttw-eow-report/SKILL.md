@@ -152,9 +152,9 @@ The **Sales Rep Table View**: one column per rep, bold team total column on the 
 
 Read every figure **exactly as shown**. Do not recompute, round, or correct. Blank cells shown as a dash mean zero. If per rep values do not sum to the printed team total, use the printed team total and flag it. Team total column feeds Team KPIs, per rep columns feed the prose Rep summary.
 
-## Avoma call review activity
+## Callix call review activity
 
-`list_team_usage_metrics`, from_date = Sunday 06:00Z, to_date = Saturday 06:00Z (MT midnight boundaries). On 403, fall back to the Avoma REST API directly: `GET https://api.avoma.com/v1/engagement/` with the same dates and header `Authorization: Bearer $AVOMA_API_KEY`. Row = the director's own call-platform account email: `david.leonty@ttwhizprogram.com` (the outgoing director's was `cayden.johnson@ttwhizprogram.com`, kept here only so an old row can still be recognised). Duration as hours and minutes, never raw seconds.
+`get_rep_performance`, from_date = Sunday 06:00Z, to_date = Saturday 06:00Z (MT midnight boundaries). On 403, fall back to the Callix REST API directly: `GET $CALLIX_API_BASE/rep-performance` with the same dates and header `Authorization: Bearer $CALLIX_API_KEY`. Row = the director's own call-platform account email: `david.leonty@ttwhizprogram.com` (the outgoing director's was `cayden.johnson@ttwhizprogram.com`, kept here only so an old row can still be recognised). Duration as hours and minutes, never raw seconds.
 
 ## QA gate, before every send
 
@@ -170,3 +170,6 @@ Read every figure **exactly as shown**. Do not recompute, round, or correct. Bla
 10. David's extra talking points, if he gave any, are in the report.
 
 Never send a fabricated or estimated number. Leave the field blank and say why.
+
+
+CALLIX REST PATHS ARE UNVERIFIED. `$CALLIX_API_BASE` and every path under it above are placeholders: Callix's MCP tool names are documented (REPLY-2-CALLIX.md section 3) but its REST base URL, paths, query parameter names and response field names are NOT, and this environment cannot reach `callix.io` to check (the network policy answers 403). Use the Callix MCP tools as the primary and only path. If they are unavailable, STOP and report that — do NOT call a guessed URL. A guessed path does not fail loudly; it 404s or returns a differently-shaped body, and the report is then silently wrong. Fill these in only after a live call confirms them, then delete this paragraph.

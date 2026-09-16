@@ -11,7 +11,7 @@ description: >
   setter-call-review) and NOT for the TikTok Wiz daily batch report (use
   ttw-daily-call-review). Produces ONE call's review as a Loom teleprompter script in
   David's real spoken voice, readable word for word, anchored on the closer's SIP, with
-  Avoma clip windows (start and stop timestamps) for when to play the call, and
+  Callix clip windows (start and stop timestamps) for when to play the call, and
   screen-share cues quoting the talk track and objection matrix verbatim.
 ---
 
@@ -36,7 +36,7 @@ The review speaks directly to the closer in second person, in David's "we" coach
 
 Required every time:
 
-- **Call transcript.** Raw Avoma transcript or VTT of the consultation. Read it in full.
+- **Call transcript.** Raw Callix transcript or VTT of the consultation. Read it in full.
 
 Loaded automatically from the skill (read every time):
 
@@ -50,7 +50,7 @@ Treat the talk track and the objection matrix as memorized: map the call's pivot
 
 Optional:
 
-- **Loom link / Avoma link.** Not needed for the script itself. If David wants timestamps verified against Avoma, use the real timestamps from the transcript.
+- **Loom link / Callix link.** Not needed for the script itself. If David wants timestamps verified against Callix, use the real timestamps from the transcript.
 
 ---
 
@@ -96,7 +96,7 @@ Then the wins, then the walkthrough, then a close that returns to A and B.
 
 The rep should never leave a review thinking the fix lives only in your audio. Drive them to the documents.
 
-- **Cue every share on its own `SHARE:` line**, so David knows exactly what document to pull up while recording. Examples: `SHARE: Pull up the Objection Matrix, #10 It's Too Expensive`, `SHARE: Pull up the Objection Matrix, Universal Flow Step 3`, `SHARE: Pull up the Talk Track, Information Confirmation section`, `SHARE: Pull up Turok's SIP, Action Steps 1 and 2`. `SHARE:` is for documents only. Playing call audio has its own label, `PLAY IN AVOMA:`, covered in the next section. A beat can have both: play the clip, then pull up the doc.
+- **Cue every share on its own `SHARE:` line**, so David knows exactly what document to pull up while recording. Examples: `SHARE: Pull up the Objection Matrix, #10 It's Too Expensive`, `SHARE: Pull up the Objection Matrix, Universal Flow Step 3`, `SHARE: Pull up the Talk Track, Information Confirmation section`, `SHARE: Pull up Turok's SIP, Action Steps 1 and 2`. `SHARE:` is for documents only. Playing call audio has its own label, `PLAY IN CALLIX:`, covered in the next section. A beat can have both: play the clip, then pull up the doc.
 - **Quote the actual lines, every time.** This is the difference between a good review and a great one. For every share cue, pull the exact words out of the matrix or talk track and drop them right into the script in quotes, so David reads them straight off the screen and never has to go hunting for the line mid-Loom. Do not just name the section and paraphrase. Open the referenced file, find the precise Rep lines for that step or objection, and put them in the script verbatim (these are David's own documents, so quoting them in full is correct and expected). Pattern: "Here's the exact move, read it right off the doc: [verbatim lines]." Then connect it to this lead by plugging the lead's real situation into the placeholders.
 - **For information confirmation and objection handling, always show the specific talk track and the decision leadership objection matrix.** Quote the exact lines, then tell the rep to bookmark and study it. Pattern: "...and that's written for you right here, bookmark this and study it before your next call."
 - **Tie the screen-share to the moment in the call**, so the contrast is concrete: here is what you did at this timestamp, here is the line that was already written for you in the matrix, here is how it reads with this lead plugged in.
@@ -104,12 +104,12 @@ The rep should never leave a review thinking the fix lives only in your audio. D
 
 ---
 
-## Playing the call in Avoma (clip cues)
+## Playing the call in Callix (clip cues)
 
-David pulls the call up in Avoma and plays the moment on screen. He needs to know exactly where to drag the playhead, exactly where to stop, and what he's pointing at, before he hits play. So every clip gets its own two-line cue:
+David pulls the call up in Callix and plays the moment on screen. He needs to know exactly where to drag the playhead, exactly where to stop, and what he's pointing at, before he hits play. So every clip gets its own two-line cue:
 
 ```
-**PLAY IN AVOMA:** 00:30:11 to 00:31:05 (about 54 seconds)
+**PLAY IN CALLIX:** 00:30:11 to 00:31:05 (about 54 seconds)
 
 **LISTEN FOR:** She admits she got burned by a near identical program, then listen to what he does with it.
 ```
@@ -130,9 +130,9 @@ Rules for clip cues:
 
 ## Output format (the Loom teleprompter script)
 
-Produce a clean teleprompter script David reads while recording. The format must make four things impossible to confuse: when to play the call in Avoma and where to start and stop it, when to screen-share a document, what to say in his own words, and which lines to read verbatim off the document. Every beat is its own block separated by a `---` rule, with a bold header. Inside each beat, use these labels exactly:
+Produce a clean teleprompter script David reads while recording. The format must make four things impossible to confuse: when to play the call in Callix and where to start and stop it, when to screen-share a document, what to say in his own words, and which lines to read verbatim off the document. Every beat is its own block separated by a `---` rule, with a bold header. Inside each beat, use these labels exactly:
 
-- **PLAY IN AVOMA:** the clip window, start to stop, with the length in parentheses. Only for call audio. Always followed by a **LISTEN FOR:** line. See the clip cue rules above.
+- **PLAY IN CALLIX:** the clip window, start to stop, with the length in parentheses. Only for call audio. Always followed by a **LISTEN FOR:** line. See the clip cue rules above.
 - **LISTEN FOR:** one sentence, max two, telling David what the rep is supposed to catch in that clip.
 - **SHARE:** the document to pull up (the SIP, the matrix, the talk track). If a beat has no document and no clip, write "Nothing, just talk to camera."
 - **SAY:** David's own narration, written the way he actually talks out loud. Multiple SAY blocks per beat are fine and encouraged (react to the clip, then talk once the doc is up).
@@ -140,7 +140,7 @@ Produce a clean teleprompter script David reads while recording. The format must
 
 Use real timestamps from the transcript in the beat headers and in every clip window. Only use HH:MM:SS placeholders if the transcript truly has none. No em dashes anywhere.
 
-**Open with a title and a record-time estimate.** The script starts with an H1 title (`# Loom Script | <Closer> | <Lead> call`) and, right under it, an estimated record time. Estimate it from the spoken content: count the words in the SAY and READ OFF THE DOC blocks, divide by about 130 words per minute (this voice is slower than a clean read because of the pauses and restarts), then add the actual clip seconds from every `PLAY IN AVOMA:` window and a few seconds per doc share. Give it as a rounded number with a small range and call out the clip time separately, for example `### Estimated record time: about 8 minutes (7 to 9), including about 2 min of call clips. Under the 10 min cap.`
+**Open with a title and a record-time estimate.** The script starts with an H1 title (`# Loom Script | <Closer> | <Lead> call`) and, right under it, an estimated record time. Estimate it from the spoken content: count the words in the SAY and READ OFF THE DOC blocks, divide by about 130 words per minute (this voice is slower than a clean read because of the pauses and restarts), then add the actual clip seconds from every `PLAY IN CALLIX:` window and a few seconds per doc share. Give it as a rounded number with a small range and call out the clip time separately, for example `### Estimated record time: about 8 minutes (7 to 9), including about 2 min of call clips. Under the 10 min cap.`
 
 **Hard cap: 10 minutes, total, every time.** The whole review, David's talk time plus the call clips plus the doc shares, must never exceed 10 minutes. This is a firm ceiling, not a target. Estimate before finalizing, and if it runs over, cut it down: drop to the fewest beats that carry the SIP (three tight beats is plenty on a dense call), tighten the SAY narration, play shorter clips, and keep only the verbatim lines that matter most. Wins and resources beats stay short. Never blow the cap to fit more coaching, pick the highest-value beats and leave the rest for next week's review.
 
@@ -170,7 +170,7 @@ Use this shape:
 
 ## BEAT 1 | HH:MM:SS | [casual label, the way he'd title it if he were talking]
 
-**PLAY IN AVOMA:** HH:MM:SS to HH:MM:SS (about N seconds)
+**PLAY IN CALLIX:** HH:MM:SS to HH:MM:SS (about N seconds)
 
 **LISTEN FOR:** [one sentence, max two, what the rep is supposed to catch]
 
@@ -192,7 +192,7 @@ Use this shape:
 
 ---
 
-[more beats, three to six total, three or four of them carrying an Avoma clip]
+[more beats, three to six total, three or four of them carrying an Callix clip]
 
 ---
 
@@ -218,7 +218,7 @@ Notes:
 - **Lead with wins**, then the pivotal slip, then the fixes.
 - **The pivotal miss** still gets named plainly, in his voice ("Okay. So. This is where it slipped").
 - **Every objection-handling or information-confirmation beat** carries a SHARE cue to the doc, a READ OFF THE DOC block with the verbatim lines, and a "bookmark this" line.
-- **Every coaching beat that hinges on something the rep actually said or missed carries an Avoma clip.** Don't describe a moment you could just play.
+- **Every coaching beat that hinges on something the rep actually said or missed carries an Callix clip.** Don't describe a moment you could just play.
 - **Scale the beats to the call**, roughly three to six, but the 10 minute cap wins. On a dense call, three tight beats is the right call. Quality over coverage, always.
 - **Readable out loud, in his voice.** This is a teleprompter, not an essay. Every SAY block gets the read-aloud test in "The voice" below.
 
@@ -245,7 +245,7 @@ When it is genuinely between two reads, go with the harder one and let the wins 
 - **Talk time.** On a quiet lead the closer pulls them open, not fills the air.
 - **Price-drop discipline.** Deliver the number, then stop talking. Credit the silence when used.
 - **Product knowledge.** The offer must be explained correctly. See Program context.
-- **Real timestamps.** Pull actual timestamps from the transcript for the beat headers and for both ends of every Avoma clip window. Never invent a timestamp; use a placeholder only if the transcript has none.
+- **Real timestamps.** Pull actual timestamps from the transcript for the beat headers and for both ends of every Callix clip window. Never invent a timestamp; use a placeholder only if the transcript has none.
 - **Protect the lead and the business.** Credit genuine closing skill, but do not coach harder closing of a vulnerable lead: clear inability to afford it, unstable or very low income, a lender decline, a freshly burned buyer, a language barrier that blocks real understanding, or any sign of a minor. For those, the coaching pivots to honest affordability qualification, confirming comprehension, slowing down, involving the real decision maker, or disqualifying. This protects the lead and it protects TTW from refunds, chargebacks, complaints, and reputational and legal risk, consistent with our own financial qualification standards. This is a strength to coach, not a soft spot to apologize for.
 
 ---
@@ -262,7 +262,7 @@ Most closer calls here are TikTok Wiz Inner Circle. Use this to grade financing 
 
 **Closers (the speaker matching one of these names is the closer, never the lead):** Tom Judson (UK accent), Vidush Rana (Austin TX, "I gotcha," "fantastic"), Crue Lindgren ("right," "for sure"), Turok Tarango (California Pacific time, "hey man," "wonderful"), Garrett McKenna (very long calls, screen-share heavy, "keep me in the loop," "text me if you need anything"), Noel Soto, Scott Jose, Paul, Kim, Harvey. David also reviews Elevated Tech closers; if the program is clearly ET, treat the named rep as the closer and grade the same fundamentals.
 
-If Avoma scrambles or omits the speaker labels, identify the closer as the one running discovery, pitching, and asking for the sale. Map a transcript first name to the full Slack name via `references/roster.md`.
+If Callix scrambles or omits the speaker labels, identify the closer as the one running discovery, pitching, and asking for the sale. Map a transcript first name to the full Slack name via `references/roster.md`.
 
 ---
 
@@ -315,14 +315,14 @@ These are the tells. Never use them in a SAY block: "Additionally," "Furthermore
 
 - **No em dashes anywhere.** Use commas, periods, or restructure.
 - No emoji.
-- Output as a clean teleprompter script using the PLAY IN AVOMA / LISTEN FOR / SHARE / SAY / READ OFF THE DOC layout, beats separated by `---` rules.
+- Output as a clean teleprompter script using the PLAY IN CALLIX / LISTEN FOR / SHARE / SAY / READ OFF THE DOC layout, beats separated by `---` rules.
 - Acknowledge the transcript briefly, then produce the script. Do not ask clarifying questions unless the transcript is unreadable, you cannot tell who the closer is, or the SIP is missing and David has not said to proceed without it.
 
 ---
 
 ## Reference example (the target)
 
-Match this structure, voice, density, the SIP anchor, the Avoma clip cues, the share cues, and the use of scripts. Read the SAY blocks out loud, that's the bar. (Closer and lead names are illustrative.)
+Match this structure, voice, density, the SIP anchor, the Callix clip cues, the share cues, and the use of scripts. Read the SAY blocks out loud, that's the bar. (Closer and lead names are illustrative.)
 
 ```
 # Loom Script | Turok | Mabel call
@@ -348,7 +348,7 @@ Okay so, two wins, and honestly the first one's straight off your SIP so I'm hap
 
 ## BEAT 1 | 00:06:50 | you HAD the identity, you just didn't lock it
 
-**PLAY IN AVOMA:** 00:06:44 to 00:07:19 (about 35 seconds)
+**PLAY IN CALLIX:** 00:06:44 to 00:07:19 (about 35 seconds)
 
 **LISTEN FOR:** Mabel says she's getting older and wants out from behind the chair. That's the identity, handed over for free, and it goes right past him.
 
@@ -374,7 +374,7 @@ So with Mabel that's, uh, "twelve months from now you're not behind the chair an
 
 ## BEAT 2 | 00:30:17 | the burn, this is the big one
 
-**PLAY IN AVOMA:** 00:30:11 to 00:31:05 (about 54 seconds)
+**PLAY IN CALLIX:** 00:30:11 to 00:31:05 (about 54 seconds)
 
 **LISTEN FOR:** she admits she got burned by a near identical program, and then listen to what he does with it.
 
@@ -400,7 +400,7 @@ That last line is, that's her. Word for word that's Mabel. You acknowledge the b
 
 ## BEAT 3 | 00:43:55 | financing before isolation
 
-**PLAY IN AVOMA:** 00:43:48 to 00:44:22 (about 34 seconds)
+**PLAY IN CALLIX:** 00:43:48 to 00:44:22 (about 34 seconds)
 
 **LISTEN FOR:** she says it's a lot of money, and Clarity Pay comes out of his mouth about four seconds later.
 
@@ -449,12 +449,12 @@ Okay so back to your SIP. Step 1, you had her identity at six fifty and you let 
 
 1. Identify the closer (from the transcript, mapped via `references/roster.md`), then read that closer's SIP from `references/sips/<closer>.md` first. Extract the focus areas and the numbered Action Steps. This is the anchor.
 2. Load the talk track and the decision leadership objection matrix (from `references/`, or the pasted copies). Internalize them well enough to point to specific sections.
-3. Read the transcript in full. Identify the closer and the lead. Pull real timestamps, and for every moment you might coach, note both the in point and the out point so you can build the Avoma clip window later.
+3. Read the transcript in full. Identify the closer and the lead. Pull real timestamps, and for every moment you might coach, note both the in point and the out point so you can build the Callix clip window later.
 4. Map the call's pivotal moments to the SIP focus areas first, then to the fundamentals. For each, open the matching talk track section or matrix objection and copy the exact Rep lines you'll have David read on screen. Pull verbatim, do not paraphrase.
 5. Apply the protect-the-lead-and-business standard: if the lead is vulnerable, pivot the coaching to honest qualification, not harder closing.
 6. Decide the through-line for the review, tied to the SIP.
-7. Build the Avoma clip windows. For each beat that hinges on something the rep said or missed, set a start timestamp 5 to 10 seconds before the moment, a stop timestamp at the natural end of the exchange, keep it 20 to 60 seconds, and write the one-line LISTEN FOR. Three or four clips total.
-8. Write the script using the PLAY IN AVOMA / LISTEN FOR / SHARE / SAY / READ OFF THE DOC layout: open on the SIP, then wins, then three to six beats (each with its clip cue, SAY narration that reacts to what was just heard, the doc SHARE, a READ OFF THE DOC block of verbatim lines, and a SAY that plugs in the lead's real situation), then the resources beat, then the core takeaway back to the SIP.
+7. Build the Callix clip windows. For each beat that hinges on something the rep said or missed, set a start timestamp 5 to 10 seconds before the moment, a stop timestamp at the natural end of the exchange, keep it 20 to 60 seconds, and write the one-line LISTEN FOR. Three or four clips total.
+8. Write the script using the PLAY IN CALLIX / LISTEN FOR / SHARE / SAY / READ OFF THE DOC layout: open on the SIP, then wins, then three to six beats (each with its clip cue, SAY narration that reacts to what was just heard, the doc SHARE, a READ OFF THE DOC block of verbatim lines, and a SAY that plugs in the lead's real situation), then the resources beat, then the core takeaway back to the SIP.
 9. Now do the voice pass. Go back through every SAY block and read it out loud in your head against "The voice" section. Add the filler, the restarts, the trailing thoughts, the rhythm breaks, the rep's name, the human aside. Cut anything from the banned-phrasing list. If a SAY block still reads like it could be an email, rewrite it. Do not skip this step, a first draft is always too clean.
 10. Estimate the record time (spoken words / 130 wpm, plus the actual clip seconds and a few seconds per doc share) and confirm it is under the 10 minute cap. If it is over, cut beats and shorten clips until it fits, then put the estimate under the title.
 11. Verify zero em dashes, that no filler leaked into a READ OFF THE DOC block or a LISTEN FOR line, that every clip cue has both a start and a stop, and that every information-confirmation and objection-handling beat carries a share cue, the verbatim quoted lines, and a "bookmark and study" line.
@@ -486,8 +486,8 @@ Everything this skill needs lives in its own folder, so updating it is just edit
 
 - No em dashes anywhere, in the skill or its output.
 - 10 minute hard cap on every review, total (talk plus clips plus shares).
-- PLAY IN AVOMA / LISTEN FOR / SHARE / SAY / READ OFF THE DOC format, beats split by `---` rules, opened by a title and a record-time estimate.
-- Every Avoma clip cue carries a start timestamp, a stop timestamp, the length in parentheses, and a LISTEN FOR line. Never a bare start timestamp.
+- PLAY IN CALLIX / LISTEN FOR / SHARE / SAY / READ OFF THE DOC format, beats split by `---` rules, opened by a title and a record-time estimate.
+- Every Callix clip cue carries a start timestamp, a stop timestamp, the length in parentheses, and a LISTEN FOR line. Never a bare start timestamp.
 - Quote the matrix and talk track verbatim, never paraphrase the lines David reads on screen.
 - Every review anchors on the closer's SIP, open and close on it.
 - Protect the lead: never coach harder closing of a vulnerable or freshly burned lead, pivot to honest qualification.

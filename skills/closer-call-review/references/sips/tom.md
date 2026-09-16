@@ -2,7 +2,7 @@
 
 Type: corrective on fundamentals. Anchor the review on the Action Steps below and the leaks named here.
 
-This is based on your dashboard numbers and your Avoma calls from June 8 to June 21. Your show rate is at target, 50 percent. Everything after the show is where you are losing. Close rate is 14 percent against a 35 percent target. Collections came in at 61 percent against 70 percent. Collected dollar per booked call is $332.56 against $800. Two weeks ago close was 22 percent and collections was 75 percent, so this is not a flat line, it is a drop.
+This is based on your dashboard numbers and your Callix calls from June 8 to June 21. Your show rate is at target, 50 percent. Everything after the show is where you are losing. Close rate is 14 percent against a 35 percent target. Collections came in at 61 percent against 70 percent. Collected dollar per booked call is $332.56 against $800. Two weeks ago close was 22 percent and collections was 75 percent, so this is not a flat line, it is a drop.
 
 Talk-time imbalance. On the Sandy Davis call on June 8 you ran about 67 percent of the talk time and it turned into a monologue through the pitch. When you are doing two thirds of the talking, the prospect never tells you what they actually want, and the pitch comes out generic because it is not built on anything they said. That is the root of the 14 percent close rate.
 
@@ -16,7 +16,7 @@ I want you running the Decision Leadership Objection Matrix on every call, not a
 
 Get your talk time under 50 percent on every call. The way you do that is by running the 2.0 Discovery Questions from the Matrix before you pitch anything. For a high ticket close like ours, use the Version 3 Decision Maker questions to find out what they actually want and who they are trying to become. Discovery is where the deal is won, so I need you asking and listening there, not talking.
 
-Send me at least 1 call per day in Avoma for review. I am going to score each one against the Matrix: did you run discovery first, did you reveal price earlier, and did you take objections through all 4 steps.
+Send me at least 1 call per day in Callix for review. I am going to score each one against the Matrix: did you run discovery first, did you reveal price earlier, and did you take objections through all 4 steps.
 
 Qualify and set up the money conversation early, not at the end. If a prospect cannot move forward today, you need to know that in the first 5 minutes, not after a 30 minute pitch. Surface budget and the price range earlier in the call so the $8,000 is framed before the close, not dropped on them cold. Late price reveal is your biggest leak right now.
 

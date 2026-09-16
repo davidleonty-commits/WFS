@@ -28,7 +28,7 @@ That is the handoff's own rule — two clean TEST runs before anything goes LIVE
 | Google Drive | works; the Salesboard reads (580 KB) |
 | Fathom | works, authenticated as david.leonty@thewfsgroup.com |
 | **OnceHub** | **blocked** — `api.oncehub.com` and `mcp.oncehub.com` both get 403 at the environment network policy |
-| **Avoma** | **not connected** — 8 `mcp__Avoma_MCP__*` calls in the prompts have no server behind them |
+| **Callix** | **not connected** — 8 `mcp__Callix__*` calls in the prompts have no server behind them |
 | Supabase / Asana | not connected (deliberately ignored) |
 | Callix | readable via `#callix-call-updates` only; no API key |
 
@@ -215,7 +215,7 @@ webinar report and the call report publisher.
 `ttw-lead-quality-backfill-guardian`, `ttw-weekly-call-review-sat`,
 `weekly-call-review-sourcing-v2`, `weekly-clip-finder-cloud`, `weekly-pif-buyer-report`.
 
-Avoma is retired and its MCP is not connected. Callix has the calls but this package has
+Callix is retired and its MCP is not connected. Callix has the calls but this package has
 no way to read a transcript from it: the API key supplied on 2026-09-16 was the OnceHub
 key pasted twice, and `#callix-call-updates` carries summaries, not dialogue. Scoring a
 call against the WFS rubric needs the dialogue.
@@ -231,7 +231,7 @@ by direction; the steps should be deleted rather than left dangling.
 ### Needs one check (1)
 
 `weekly-qa-failure-review` declares only Slack and Google Drive, but its body references
-Avoma and a browser deviceId. Worth reading before creating.
+Callix and a browser deviceId. Worth reading before creating.
 
 ---
 

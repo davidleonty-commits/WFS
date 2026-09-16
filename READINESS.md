@@ -50,11 +50,11 @@ only then flip ONE of them to EXECUTE.
 
 ### 3. Call data has no source (25 files)
 
-Avoma is retired and Callix has no read path yet. Detail in `CALLIX-MIGRATION.md`. Effect by
+Callix is retired and Callix has no read path yet. Detail in `CALLIX-MIGRATION.md`. Effect by
 task family:
 
 - **Both show-rate reports cannot produce a number at all.** OnceHub still supplies the
-  scheduled denominator, but the live-call numerator came from Avoma. A show rate with no
+  scheduled denominator, but the live-call numerator came from Callix. A show rate with no
   numerator is not degraded, it is absent.
 - The daily call publisher, the clip finder sweep, review sourcing, and the PIF buyer report
   have no window to read.
@@ -84,7 +84,7 @@ interactive Claude Code, or the connector settings on claude.ai.
 | Value | Files | Effect if not set |
 |---|---|---|
 | Work Google account | 8 | Six SIP engines STOP at the browser account check; the leaderboard refuses the Salesboard read |
-| Avoma/Callix account email | 2 | EOW report cannot read your own call-review activity |
+| Callix/Callix account email | 2 | EOW report cannot read your own call-review activity |
 | `TEAM_SYNC_ORGANIZER` | 1 | Lead flow report's Team Sync recap finds the wrong meeting or none |
 | Browser `deviceId` | 7 | Falls back to scanning connected browsers; works, but the fallback needs the work account set first |
 
@@ -234,7 +234,7 @@ no bot to add; membership is the director's own, because the connector posts as 
 analyzed TTW consultation, posted by an external Callix Slack bot. Enumeration, outcome, lead
 score and signal are readable through the Slack connector today, with no Callix credential.
 See CALLIX-MIGRATION.md section 0b for the field table and, more importantly, the four things
-it does not give — above all transcripts, without which call *scoring* cannot move off Avoma.
+it does not give — above all transcripts, without which call *scoring* cannot move off Callix.
 
 So item 3 splits: the reporting half has a source now; the scoring half still does not.
 

@@ -2,7 +2,7 @@
 
 Type: corrective on fundamentals. Anchor the review on the Action Steps below and the leaks named here.
 
-This is based on what I'm seeing in your Avoma calls from the last 2 weeks. Here is what is driving the gap between where you are and where you need to be.
+This is based on what I'm seeing in your Callix calls from the last 2 weeks. Here is what is driving the gap between where you are and where you need to be.
 
 Talk-time imbalance. You're doing 60 to 70 percent of the talking on most calls, which doesn't leave the prospect room to share what they actually need. That's why the pitch lands generic and the close rate sits at 5 percent.
 
@@ -16,7 +16,7 @@ To close the performance gap and meet the required standards, here's what I need
 
 Get talk time under 50 percent on every call. Right now you're carrying most of the conversation, which kills discovery and means you're pitching without enough context and buy-in.
 
-Send me a minimum of 1 call per day in Avoma for review and feedback.
+Send me a minimum of 1 call per day in Callix for review and feedback.
 
 Pre-qualify every lead before going into pitch mode. If they can't actually move forward today, you need to know that in the first 5 minutes, not at the end of a 30 minute call.
 

@@ -1,6 +1,6 @@
 ---
 name: sip-watch-loop
-description: Closed-loop coaching outcome tracker for David's closer and setter fleet. Turns one-directional call reviews into an improvement engine by logging every SIP-relevant behavior flagged in a review to a durable SIP Watch Ledger, then auto-checking that rep's next calls for that specific behavior and reporting per-rep status (new, watching, clearing, persistent) until it clears or escalates with an evidence bundle. Use whenever a call review flags a coachable behavior, whenever David says "SIP watch", "SIP status", "is [rep] still doing X", "did the coaching stick", "who is clearing and who is persisting", or "check his last calls for [behavior]", and in any daily or weekly call report, which should carry a SIP Watch section. Also use when David wants escalation evidence for a rep whose flagged behavior is not changing. Composes with closer-call-review, setter-call-review, ttw-daily-call-review, and ttw-daily-avoma-report; it adds the memory layer those reviews lack.
+description: Closed-loop coaching outcome tracker for David's closer and setter fleet. Turns one-directional call reviews into an improvement engine by logging every SIP-relevant behavior flagged in a review to a durable SIP Watch Ledger, then auto-checking that rep's next calls for that specific behavior and reporting per-rep status (new, watching, clearing, persistent) until it clears or escalates with an evidence bundle. Use whenever a call review flags a coachable behavior, whenever David says "SIP watch", "SIP status", "is [rep] still doing X", "did the coaching stick", "who is clearing and who is persisting", or "check his last calls for [behavior]", and in any daily or weekly call report, which should carry a SIP Watch section. Also use when David wants escalation evidence for a rep whose flagged behavior is not changing. Composes with closer-call-review, setter-call-review, ttw-daily-call-review, and ttw-daily-call-report; it adds the memory layer those reviews lack.
 ---
 
 # SIP Watch Loop
@@ -26,7 +26,7 @@ A Google Sheet named **SIP Watch Ledger** in David's Drive. On first run, search
 | rep | closer or setter name |
 | behavior | the specific behavior, stated as the observable action, not a vibe. "Drops price before pinning the budget question" not "weak on money talk" |
 | sip_link | whether this maps to an item on the rep's current SIP, and which |
-| source_call | call ID or Avoma link plus timestamp of the flagged moment |
+| source_call | call ID or Callix link plus timestamp of the flagged moment |
 | evidence_quote | verbatim line from the source call |
 | status | new / watching / clearing / cleared / persistent / escalated |
 | calls_checked | running count of subsequent calls checked |

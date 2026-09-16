@@ -9,7 +9,7 @@ Treat this as a data-quality gate, not a nicety.
 Primary route, always try first:
 
 ```
-mcp__Avoma_MCP__get_meeting_transcript  uuid: <meeting_uuid>
+mcp__Callix__get_call  uuid: <call_id>
 ```
 
 **Pagination is mandatory**: loop on `next_cursor`, passing it back unchanged, until `has_more` is false. A single call truncates by 20 to 25 percent, and the close is at the end.
@@ -22,7 +22,7 @@ python3 -c "
 import json
 raw=json.load(open('<PERSISTED_PATH>'))
 d=json.loads(raw[0]['text']) if isinstance(raw,list) else raw
-print('uuid', d.get('meeting_uuid') or d.get('uuid'))
+print('uuid', d.get('call_id') or d.get('uuid'))
 open('<scratch>/<TAG>/<CALL_ID>.txt','w').write(d.get('transcript') or '')
 print('tlen', len(d.get('transcript') or ''))
 "
@@ -32,16 +32,16 @@ print('tlen', len(d.get('transcript') or ''))
 
 ## When the MCP transcript is unavailable
 
-The Avoma MCP is intermittently blocked (403) and some meetings return notes before the transcript finishes processing.
+The Callix MCP is intermittently blocked (403) and some meetings return notes before the transcript finishes processing.
 
 Fallback order:
 
-1. Retry `get_meeting_transcript` once; a transcript that was still processing often lands on the second attempt.
+1. Retry `get_call` once; a transcript that was still processing often lands on the second attempt.
 2. If the tool is unavailable or returns 403, call the REST API directly:
-   `GET https://api.avoma.com/v1/transcriptions/` with `from_date` and `to_date`, header `Authorization: Bearer $AVOMA_API_KEY`.
-   **Its `meeting` filter is silently ignored.** Narrow the date window to the call, page through, and match on `meeting_uuid` yourself.
+   `GET $CALLIX_API_BASE/calls/<call_id>` with `from_date` and `to_date`, header `Authorization: Bearer $CALLIX_API_KEY`.
+   **Its `meeting` filter is silently ignored.** Narrow the date window to the call, page through, and match on `call_id` yourself.
 
-If neither route has it, mark the row NA with `data_quality: "no transcript in Avoma"` and exclude it from bucket rates. Say so in the report rather than guessing.
+If neither route has it, mark the row NA with `data_quality: "no transcript in Callix"` and exclude it from bucket rates. Say so in the report rather than guessing.
 
 ## The completeness check
 
@@ -54,7 +54,7 @@ Run this on every transcript before grading. A transcript is suspect if any of t
 
 Density is a screen, not a verdict. Low density can be legitimate: dead air while a lead fills in a loan application, a long rep monologue merged into one block, or a genuinely quiet call. Check the ending and the timestamp span before concluding truncation. Equally, a transcript that starts late (say at 58:41) may simply be where the recording begins.
 
-**Known trap:** several caches on this project were saved from only the first Avoma chunk. They look complete, end cleanly, and contain no price. If a call of 60+ minutes has no price anywhere, assume truncation and re-pull with pagination before concluding GREY.
+**Known trap:** several caches on this project were saved from only the first Callix chunk. They look complete, end cleanly, and contain no price. If a call of 60+ minutes has no price anywhere, assume truncation and re-pull with pagination before concluding GREY.
 
 Also note that price is often spoken without a dollar sign, as "8 k" or "8 g's" or "we will bring it out to 8". Searching for `$8,000` will falsely suggest the price is missing.
 
@@ -68,13 +68,13 @@ Common patterns seen:
 - **Device names**: the lead appears as "iPhone", "Zoom user", "Samsung SM-S938U", or an email handle.
 - **Merged blocks**: one timestamped block containing both speakers, sometimes covering twenty minutes including the whole pricing segment.
 - **Third parties absorbed**: a spouse's or sibling's lines attributed to the named lead. Check whose words the decisive quote actually is.
-- **Avoma display names**: a lead may appear under an unrelated stored contact name. That is not necessarily a swap.
+- **Callix display names**: a lead may appear under an unrelated stored contact name. That is not necessarily a swap.
 
 Record any label problem in the row's `data_quality` so the next reader is not misled.
 
 ## Mangled figures
 
-Avoma routinely mangles numbers. Read for meaning and resolve from the rep's restatement where possible:
+Callix routinely mangles numbers. Read for meaning and resolve from the rep's restatement where possible:
 
 | Transcript | Actual |
 |---|---|
@@ -94,3 +94,6 @@ A mangled line proves nothing on its own. Never let a garbled figure decide a bu
 Save every verified transcript to a per-batch scratch directory named for the call_id. **Never write to a shared path like `/tmp/t.txt`** — parallel agents overwrite each other and silently grade the wrong call. This has happened and produced a whole batch of wrong rows.
 
 When reusing a cache from an earlier run, re-verify completeness. Some cached files on this project were abridged by a previous reader, with elisions or summarised parentheticals replacing real dialogue.
+
+
+CALLIX REST PATHS ARE UNVERIFIED. `$CALLIX_API_BASE` and every path under it above are placeholders: Callix's MCP tool names are documented (REPLY-2-CALLIX.md section 3) but its REST base URL, paths, query parameter names and response field names are NOT, and this environment cannot reach `callix.io` to check (the network policy answers 403). Use the Callix MCP tools as the primary and only path. If they are unavailable, STOP and report that — do NOT call a guessed URL. A guessed path does not fail loudly; it 404s or returns a differently-shaped body, and the report is then silently wrong. Fill these in only after a live call confirms them, then delete this paragraph.

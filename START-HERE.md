@@ -12,7 +12,7 @@ The old "Lovable WFS" connector was one plug doing three jobs. It is replaced by
 
 | Job the connector did | Replacement | How to plug it in |
 |---|---|---|
-| Call data (`calls_list`, `calls_get_analysis`, `calls_find_review_candidates`) | **Callix MCP** | `claude mcp add callix -e CALLIX_API_KEY=<key> -- npx -y @callixorg/mcp-server` (local). Cloud routines: `curl` against the Callix REST API with `CALLIX_API_KEY` set on the cloud environment. See REPLY-2-CALLIX.md. While Avoma is still live, the Avoma claude.ai connector also works as the comparison baseline. |
+| Call data (`calls_list`, `calls_get_analysis`, `calls_find_review_candidates`) | **Callix MCP** | `claude mcp add callix -e CALLIX_API_KEY=<key> -- npx -y @callixorg/mcp-server` (local). Cloud routines: `curl` against the Callix REST API with `CALLIX_API_KEY` set on the cloud environment. See REPLY-2-CALLIX.md. While Callix is still live, the Callix claude.ai connector also works as the comparison baseline. |
 | Bookings (`oncehub_booking_counts`, `oncehub_list_bookings`, `oncehub_get_master_page`) | **OnceHub REST API v2** via `curl` | `export ONCEHUB_API_KEY=<key>` in the shell (local) or on the cloud environment. The OnceHub MCP is NOT this; it only books meetings. See TROUBLESHOOTING-REPLY.md section D for the exact endpoints. |
 | Slack (`slack_schedule_message`, `slack_read_channel`) | **claude.ai Slack connector** (already connected) | Reads and every send, TEST and LIVE, as the director. Send one test to the director's DM first to see how the "via Claude" attribution renders; the director signs off before anything goes LIVE. See TROUBLESHOOTING-REPLY.md section E. |
 
@@ -37,7 +37,7 @@ Ask all of them in one message so the director can answer once. Copy this block 
 > 9. **Are you using an Asana board** for your own work? If yes, its exact name. If no, say "none" and I will skip the board-orchestrator skill.
 > 10. **Do you want lead-quality history in Supabase?** The previous setup is paused and nothing live depends on it. If no, say "none" and I will remove the Supabase steps. If yes, give me the new Supabase project ID once it exists.
 >
-> Separately, and NOT in this chat if you would rather not paste keys here: I will also need you to connect, under your own account, the Slack, Avoma, Pipedrive, and Google Drive connectors in claude.ai, and to obtain an OnceHub API key from a OnceHub admin. Those are credentials and they never go into a prompt file.
+> Separately, and NOT in this chat if you would rather not paste keys here: I will also need you to connect, under your own account, the Slack, Callix, Pipedrive, and Google Drive connectors in claude.ai, and to obtain an OnceHub API key from a OnceHub admin. Those are credentials and they never go into a prompt file.
 
 Wait for the answers. Do not proceed on partial answers.
 
@@ -79,7 +79,7 @@ This catches the class of error where a label was changed but the ID next to it 
 
 Follow README Section 1A and `TROUBLESHOOTING-REPLY.md` sections C, D, E, F, and G. In short:
 
-- Replace every `Lovable WFS` / `Lovable_WFS_Slack` tool call with the mapped Avoma, OnceHub REST, Slack connector, or Pipedrive call.
+- Replace every `Lovable WFS` / `Lovable_WFS_Slack` tool call with the mapped Callix, OnceHub REST, Slack connector, or Pipedrive call.
 - Delete every `REP_WFS_ID` value; use the rep's email.
 - Delete every `WFS_MCP_TOKEN` error-handling line.
 - Delete the browser-attach block in all six SIP engines and replace the Google Doc edit with the Drive connector write.
@@ -100,7 +100,7 @@ Follow `TROUBLESHOOTING-REPLY.md` sections A, B, and K. Recreate only the `cloud
 
 ## What the director still owes you after this
 
-- Connecting Slack, Avoma, Pipedrive, and Google Drive in claude.ai under their own account.
+- Connecting Slack, Callix, Pipedrive, and Google Drive in claude.ai under their own account.
 - An OnceHub API key from an admin, stored as a secret, never in a file.
 - Membership in `#wfs-ttw-sales-reps-dm-external`, `#wfs-ttw-sales-mgmt-client`, and `#payments`.
 - Confirmation that the previous director has shared the 14 Google Drive files listed in `TROUBLESHOOTING-REPLY.md` section I.

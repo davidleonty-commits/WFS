@@ -1,11 +1,11 @@
 ---
-name: ttw-daily-avoma-report
-description: Automated daily TikTok Wiz call report delivered to David's own Slack DM. Use this whenever the daily call report needs to run on its own, or whenever David says "run the daily call report", "send me today's call report", "run today's calls", "daily DM report", "run the call report", or any request to pull, score, and DM today's sales consultation calls. ALSO trigger this when a scheduled task fires to produce the 6 PM daily report. This skill pulls every Avoma call from the current day that has a recording over 15 minutes, scores each one on the strict evidence-based rubric, formats the summary report, and sends it straight to David's Slack DM with no draft step. Use this skill even when the request sounds simple, because the pull window, the 15-minute floor, the strict scoring, and the DM delivery all have specific rules that protect the report's accuracy.
+name: ttw-daily-call-report
+description: Automated daily TikTok Wiz call report delivered to David's own Slack DM. Use this whenever the daily call report needs to run on its own, or whenever David says "run the daily call report", "send me today's call report", "run today's calls", "daily DM report", "run the call report", or any request to pull, score, and DM today's sales consultation calls. ALSO trigger this when a scheduled task fires to produce the 6 PM daily report. This skill pulls every Callix call from the current day that has a recording over 15 minutes, scores each one on the strict evidence-based rubric, formats the summary report, and sends it straight to David's Slack DM with no draft step. Use this skill even when the request sounds simple, because the pull window, the 15-minute floor, the strict scoring, and the DM delivery all have specific rules that protect the report's accuracy.
 ---
 
-# TTW Daily Avoma Report (auto-DM)
+# TTW Daily Callix Report (auto-DM)
 
-This skill runs the full daily TikTok Wiz call review without any manual transcript upload. It pulls the day's calls from Avoma over the MCP, keeps only real consultations over 15 minutes, scores each on the strict rubric using the transcript, builds the summary report, and sends it to David's own Slack DM.
+This skill runs the full daily TikTok Wiz call review without any manual transcript upload. It pulls the day's calls from Callix over the MCP, keeps only real consultations over 15 minutes, scores each on the strict rubric using the transcript, builds the summary report, and sends it to David's own Slack DM.
 
 This is the automated counterpart to the manual `ttw-daily-call-review` skill. Use this one for scheduled and on-demand daily runs. Use the manual skill only when David uploads a transcript file by hand.
 
@@ -20,7 +20,7 @@ The closers are Vidush Rana, Tom Judson, Crue Lindgren, Turok Tarango, and Paul 
 
 ## Step 2: List the day's meetings
 
-1. Call `list_meetings` with `meeting_state=completed`, `page_size=100`, and the day window.
+1. Call `list_calls` with `meeting_state=completed`, `page_size=100`, and the day window.
 2. Paginate (`page=2`, `page=3`, ...) until `next` is null. Do not stop at page 1, a normal day has 20 to 30 meetings across multiple pages.
 
 ## Step 3: Filter to reportable calls (STRICT)
@@ -36,7 +36,7 @@ Keep a short operator list of what got dropped and why (under 15 min, no recordi
 
 ## Step 4: Pull the FULL TRANSCRIPT for every reportable call
 
-For each reportable call, call `get_meeting_transcript` with the meeting `uuid`. Always score from the transcript, not the notes. The structured notes summarize outcomes and flatten the exact things this report grades on: hesitation, tone, whether the closer asked for the close or folded, and the precise affordability and timeline language. Notes may be used only as a cross-check.
+For each reportable call, call `get_call` with the meeting `uuid`. Always score from the transcript, not the notes. The structured notes summarize outcomes and flatten the exact things this report grades on: hesitation, tone, whether the closer asked for the close or folded, and the precise affordability and timeline language. Notes may be used only as a cross-check.
 
 Because these calls run 25 to 95 minutes, pull and score them one at a time. Do not try to hold the whole day's transcripts at once.
 
@@ -44,8 +44,8 @@ Because these calls run 25 to 95 minutes, pull and score them one at a time. Do 
 
 ## Step 5: Reliability and the incomplete-day rule
 
-The Avoma MCP times out and throws execution errors intermittently. For every pull:
-- Retry a failed or timed-out pull at least twice before giving up. The same `uuid` often succeeds on a retry. If the `avoma:` prefixed tool keeps failing, try the `Avoma MCP:` prefixed tool, and vice versa.
+The Callix MCP times out and throws execution errors intermittently. For every pull:
+- Retry a failed or timed-out pull at least twice before giving up. The same `uuid` often succeeds on a retry. If the `callix:` prefixed tool keeps failing, try the `Callix MCP:` prefixed tool, and vice versa.
 - If a transcript still cannot be pulled after retries, the day is INCOMPLETE for that call.
 
 Never silently drop a reportable call. If any reportable call's transcript could not be pulled, still send the report on time, but prepend the incomplete-day header (see Delivery).
@@ -54,7 +54,7 @@ Never silently drop a reportable call. If any reportable call's transcript could
 
 The MCP returns clean participant metadata with org tags, so identify the closer from the participant list first. Use these as backup and as a tie-breaker:
 - **Name match:** any speaker whose name matches a known closer (Vidush, Tom, Crue, Turok, Paul) is the closer. No lead has ever shared a name with a closer.
-- **Speaker-label scrambling:** Avoma sometimes swaps the labels, putting the closer's name on the lead's lines and vice versa. If the person sharing the screen and running the pitch is labeled as the lead, the labels are swapped. Read it with the labels corrected and note it.
+- **Speaker-label scrambling:** Callix sometimes swaps the labels, putting the closer's name on the lead's lines and vice versa. If the person sharing the screen and running the pitch is labeled as the lead, the labels are swapped. Read it with the labels corrected and note it.
 - **Voice and style cues:** UK phrasing ("no worries at all", "fair enough") is Tom. "I gotcha", "fantastic", Austin or Texas references are Vidush. "Hey man", "wonderful", Pacific time are Turok. Repeated "right" and "for sure" are Crue.
 
 ## Step 7: S2C versus webinar (controls setter callouts)
@@ -196,6 +196,9 @@ This guarantees an on-time report that shows exactly what is missing rather than
 
 When the scheduled task fires, run Steps 1 through 7, score on the strict rubric, build the report, and deliver per the Delivery rules above, all unattended.
 
-**6 PM timing caveat:** only calls that have finished and finished processing in Avoma by 6 PM will have a ready transcript. A late-afternoon call may still be processing and will show `transcript_ready=false`. If a call clearly happened but is not yet processed, list it under the incomplete-day header rather than omitting it.
+**6 PM timing caveat:** only calls that have finished and finished processing in Callix by 6 PM will have a ready transcript. A late-afternoon call may still be processing and will show `transcript_ready=false`. If a call clearly happened but is not yet processed, list it under the incomplete-day header rather than omitting it.
 
-**Connector access:** the scheduled run needs the Avoma and Slack connectors authorized in the task's context. If a run returns no meetings or cannot send, surface that as the failure rather than sending an empty report.
+**Connector access:** the scheduled run needs the Callix and Slack connectors authorized in the task's context. If a run returns no meetings or cannot send, surface that as the failure rather than sending an empty report.
+
+
+CALLIX FIELD NAMES UNVERIFIED. This prompt still filters and reads on `is_internal`, `meeting_state`, `transcript_ready`. Those are the OLD call platform's parameter and response field names, carried over unchanged by the Callix swap because Callix's equivalents have never been seen: this environment cannot reach `callix.io` to check (the network policy answers 403), and REPLY-2-CALLIX.md section 3 lists them as open questions. They were NOT renamed to guesses — a wrong field name does not error, it silently matches nothing, and the report then reads zero calls and looks like a quiet day. BEFORE the first real run: call `get_current_time` then `list_calls` for yesterday with no filters, read the raw first row, map each name above to its Callix equivalent, apply it here, and delete this paragraph. Until that is done, if any filter above returns zero rows for a window that should have calls, treat it as a QA FAILURE and report it — never publish it as zero.

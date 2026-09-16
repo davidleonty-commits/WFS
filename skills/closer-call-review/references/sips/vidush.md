@@ -2,7 +2,7 @@
 
 Type: development plan. Anchor the review on the Action Steps below and the close-blockers named here.
 
-This is still a development plan, not a corrective one. Your front half is strong. The close is where we're leaving money on the table right now. Here's what I'm seeing in your Avoma calls from June 8 to June 21 that's costing you those deals.
+This is still a development plan, not a corrective one. Your front half is strong. The close is where we're leaving money on the table right now. Here's what I'm seeing in your Callix calls from June 8 to June 21 that's costing you those deals.
 
 The partner conversation is your number one close-blocker. Prospects rate you an 8 to 10 on interest, then ask to talk it over with a spouse or partner the second price lands. On June 8 Shailee got a record $2.65 a month financing offer and still asked to talk to her partner first, and the deal stayed open. You sometimes ask early if a partner needs to be on the call, but not every time. When you skip it, the objection shows up at the worst moment.
 
@@ -16,7 +16,7 @@ To turn good performance into great performance, here's what I need you to lock 
 
 Run the 2.0 Discovery Questions from the Decision Leadership Framework on every call, and use the Identity Anchor to find who the prospect wants to become, not just what they want to buy. Lock the emotional driver early so you can reconnect every later objection back to it. As part of that discovery, ask up front whether a partner needs to be on the call, every time.
 
-Share a minimum of 1 call per day in Avoma for review and feedback.
+Share a minimum of 1 call per day in Callix for review and feedback.
 
 Same-call close on high-intent leads using the Self-Close step from the framework's Universal Flow. When a prospect is showing buying signals, let them talk themselves into the decision and ask for the commitment on the call. Don't book a follow-up for someone who is ready. Follow-ups are for the ones who genuinely need to think.
 

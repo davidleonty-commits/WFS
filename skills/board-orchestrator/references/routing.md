@@ -13,9 +13,9 @@ funnel review, and they route three different places.
 | Reviewing one **closer** call, producing the Loom teleprompter | `closer-call-review-script` | "script to film", teleprompter, timestamps |
 | Reviewing one **setter/booking** call → written post | `setter-call-review-slack` | Qualification, pre-call sell, show rate |
 | Reviewing one **setter** call → film script | `setter-call-review-script` | Same, but "script"/"loom" |
-| The **daily** batch of TTW calls, DM'd to Slack | `ttw-daily-avoma-report` | "today's calls", scheduled daily report |
-| Daily batch from an **uploaded transcript file** | `ttw-daily-call-review` | Attachment on the card is an Avoma export |
-| Weekly **coaching clips** with clip-in/out anchors | `ttw-avoma-clip-finder` | "find clips", objection handling |
+| The **daily** batch of TTW calls, DM'd to Slack | `ttw-daily-call-report` | "today's calls", scheduled daily report |
+| Daily batch from an **uploaded transcript file** | `ttw-daily-call-review` | Attachment on the card is an Callix export |
+| Weekly **coaching clips** with clip-in/out anchors | `ttw-callix-clip-finder` | "find clips", objection handling |
 | Any **TTW sales number** (show rate, close rate, collections, CDPBC…) | `ttw-dashboard-metrics` | Any KPI. Never re-derive these. |
 | Lead quality for a **specific webinar date** | `webinar-lead-quality-report` | A webinar date + lead scoring |
 | A flagged **compliance** issue, or "is this a pattern" | `compliance-trend-loop` | Income coaching, guarantee language |

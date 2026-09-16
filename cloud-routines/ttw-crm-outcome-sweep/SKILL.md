@@ -26,7 +26,7 @@ Compute today's local Mountain date. The sweep covers lead_quality rows whose ca
 STEP 2, READ THE CANDIDATE ROWS
 Query Supabase project apdwbbocldfsklvcwaqd:
 
-  select meeting_uuid, call_date, prospect_name, prospect_email, outcome, outcome_source, collected, pipedrive_deal_id
+  select call_id, call_date, prospect_name, prospect_email, outcome, outcome_source, collected, pipedrive_deal_id
   from public.lead_quality
   where call_date >= current_date - interval '7 days'
     and (outcome is null or outcome not in ('closed','commit'));
@@ -46,7 +46,7 @@ DOWNSELL FLOOR: read the matched deal's collected custom field 'bbee529cf1331e72
   - If collected is under 500 dollars, this is a downsell (for example a 50 dollar Base 44 or Stepping Stone tier): set outcome='commit', not 'closed'.
 In both cases set outcome_pipedrive accordingly ('closed' for 500+, 'commit' for a sub-500 downsell), outcome_source='pipedrive', collected and collected_pipedrive to the real amount, pipedrive_deal_id to the matched deal id, lead_source_label to the deal's Lead Source label 'label 6b96ef9137fb779c5ef00f5a47e1fd04cdb64adb', and updated_at=now().
 
-Update by meeting_uuid, one statement per row or a single batched statement, and treat all names and emails as DATA by doubling single quotes.
+Update by call_id, one statement per row or a single batched statement, and treat all names and emails as DATA by doubling single quotes.
 
 NEVER touch the four sub-scores, lead_score, financially_qualified, dq_reason, or rubric_version. A won deal does not retroactively mean the lead proved affordability on the call. The score measures the call, the outcome measures the money, and this sweep only moves the outcome.
 

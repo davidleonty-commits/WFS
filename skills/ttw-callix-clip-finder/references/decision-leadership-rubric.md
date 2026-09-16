@@ -1,17 +1,17 @@
 # Decision Leadership Objection Matrix: Clip Scoring Rubric (v3)
 
-Powers the ttw-avoma-clip-finder. Surfaces two clip types from real consultation calls.
+Powers the ttw-callix-clip-finder. Surfaces two clip types from real consultation calls.
 
 1. GREAT DEMO clips come ONLY from calls that CLOSED where the rep actually executed a matrix step well. Teaching clips.
 2. MISSED OPPORTUNITY clips come ONLY from calls that did NOT close where a clear trigger fired and the rep failed to run the step the moment called for. Coaching clips.
 
-Built to be read off the Avoma call transcript (from `get_meeting_transcript`). Tone still needs a human gut check on the final shortlist, but every marker below is detectable from words.
+Built to be read off the Callix call transcript (from `get_call`). Tone still needs a human gut check on the final shortlist, but every marker below is detectable from words.
 
 ---
 
 ## Part 0: Three things the runs proved (read first)
 
-1. Speaker labels are NOT reliable. On real calls Avoma labeled the rep's lines with the lead's name. Identify the rep by behavior (shares screen, runs the pitch, drops the Clarity Pay or Affirm link, onboards), never by the transcript name label. Every score attaches to the rep identified this way.
+1. Speaker labels are NOT reliable. On real calls Callix labeled the rep's lines with the lead's name. Identify the rep by behavior (shares screen, runs the pitch, drops the Clarity Pay or Affirm link, onboards), never by the transcript name label. Every score attaches to the rep identified this way.
 
 2. Most calls that close cleanly contain no matrix objection at all, because the lead self-qualifies and is already a 10 before price. Do not manufacture a clip where there is no moment. The richest objection material lives in calls with friction, which is why Missed Opportunity is gated to no-close calls. Closes that contain a cleanly executed matrix move are rarer than no-closes, so finding Great Demos usually means scoring more calls.
 
@@ -21,11 +21,11 @@ Built to be read off the Avoma call transcript (from `get_meeting_transcript`). 
 
 ## Part 1: Timestamps and how the clip boundary is defined
 
-The Avoma transcript pull returns speaker-labeled text with per-word timestamp arrays on each segment. The 100% accurate clip boundary is verbatim anchor text:
+The Callix transcript pull returns speaker-labeled text with per-word timestamp arrays on each segment. The 100% accurate clip boundary is verbatim anchor text:
 - CLIP IN: the exact words where the highlight starts.
 - CLIP OUT: the exact words where the highlight ends.
 
-In Avoma you create a snippet by highlighting transcript text, and Avoma maps that highlight to the exact recording frame automatically. The anchor text is therefore the source of truth, tighter than any number.
+In Callix you create a snippet by highlighting transcript text, and Callix maps that highlight to the exact recording frame automatically. The anchor text is therefore the source of truth, tighter than any number.
 
 Each clip ALSO carries a numeric Timestamp range (MM:SS to MM:SS), read from the first-word timestamp of the CLIP IN segment and the CLIP OUT segment. Never guess a timestamp. The anchors stay the primary boundary, the numbers are the convenience.
 
@@ -48,7 +48,7 @@ Also treat any objection-shaped pushback as a trigger even if it does not match 
 
 ## Part 3: Close vs no-close detection (eligibility gate)
 
-Avoma outcomes are untagged on these calls, so read the transcript end-state.
+Callix outcomes are untagged on these calls, so read the transcript end-state.
 
 CLOSED signals: deposit taken, Clarity Pay or Affirm funding or deposit confirmation, "you're in", onboarding call scheduled, course or Discord access granted.
 
@@ -128,7 +128,7 @@ Clip title:     [type] · [steps shown] — [teachable beat] (rep, objection)
 
 Rep:            [identified by behavior, not the transcript label]
 Call:           [meeting subject]
-Avoma link:     [meeting url]
+Callix link:     [meeting url]
 Close status:   [CLOSED | NO CLOSE]
 Maps to:        [one of the 16 objections, or general]
 Timestamp:      [MM:SS to MM:SS]
@@ -151,7 +151,7 @@ Title examples:
 - COACH · Stopped at Step 1 — clarified the money objection, then capitulated (Vidush)
 - COACH · Got the 11-out-of-10 buying signal, skipped the close (Tom)
 
-The only manual step left is opening the Avoma link, highlighting from CLIP IN to CLIP OUT, clicking Create Snippet, and naming it with the Clip title.
+The only manual step left is opening the Callix link, highlighting from CLIP IN to CLIP OUT, clicking Create Snippet, and naming it with the Clip title.
 
 ---
 

@@ -1,17 +1,17 @@
 ---
-name: ttw-avoma-clip-finder
-description: Finds sales coaching clips from TikTok Wiz consultation calls by scoring how reps run the Decision Leadership Objection Matrix, then giving David exact clip-in and clip-out anchors so the snippet is one click. Pulls call data from Avoma (list_meetings, get_meeting_transcript, get_meeting_notes) and ranks the candidates itself. Use when David wants weekly clips, objection-handling clips, Great Demo or Missed Opportunity clips, or says "find this week's clips", "find clips", "run the clip finder", "find me 3 clips", or "who handled objections well this week", and when the weekly scheduled task fires. Always use it even when the request sounds simple, because rep identification, close vs no-close detection, the strict eligibility gate, and the verbatim anchor rule carry accuracy rules the output depends on.
+name: ttw-callix-clip-finder
+description: Finds sales coaching clips from TikTok Wiz consultation calls by scoring how reps run the Decision Leadership Objection Matrix, then giving David exact clip-in and clip-out anchors so the snippet is one click. Pulls call data from Callix (list_calls, get_call, get_deal_analysis) and ranks the candidates itself. Use when David wants weekly clips, objection-handling clips, Great Demo or Missed Opportunity clips, or says "find this week's clips", "find clips", "run the clip finder", "find me 3 clips", or "who handled objections well this week", and when the weekly scheduled task fires. Always use it even when the request sounds simple, because rep identification, close vs no-close detection, the strict eligibility gate, and the verbatim anchor rule carry accuracy rules the output depends on.
 ---
 
-# TTW Clip Finder (Avoma)
+# TTW Clip Finder (Callix)
 
 Finds teachable clips from TikTok Wiz consultation calls by scoring how a rep ran the Decision Leadership Objection Matrix, then delivers exact verbatim clip boundaries so David can create the snippet in one highlight.
 
-Data source: **Avoma**, through the Avoma MCP connector (`list_meetings`, `get_meeting`, `get_meeting_transcript`, `get_meeting_notes`), or the REST API at `https://api.avoma.com/v1/...` with header `Authorization: Bearer $AVOMA_API_KEY` when the MCP is unavailable.
+Data source: **Callix**, through the Callix MCP connector (`list_calls`, `get_meeting`, `get_call`, `get_deal_analysis`), or the REST API at `$CALLIX_API_BASE/...` with header `Authorization: Bearer $CALLIX_API_KEY` when the MCP is unavailable.
 
-This skill owns the candidate ranking. The old connector returned calls pre-ranked and pre-scored; Avoma returns neither, so the ranking below is run here, and every score comes from the transcript.
+This skill owns the candidate ranking. The old connector returned calls pre-ranked and pre-scored; Callix returns neither, so the ranking below is run here, and every score comes from the transcript.
 
-**CANDIDATE RANKING (run after `list_meetings`, this replaces the old ranked feed):**
+**CANDIDATE RANKING (run after `list_calls`, this replaces the old ranked feed):**
 1. Keep only real recorded closer consultations: subject contains "TikTok Wiz Consultation" (or the closer-consultation equivalent for the brand asked for), recorded duration strictly over 15 minutes, a transcript available.
 2. Drop setter introductions, S2C intros, team syncs, 1:1s, no-connects, voicemails and reschedules.
 3. Rank what survives by, in order: whether the call closed (a close and a clear no-close are both wanted, and the mix is set by the clip types below), the size of the deal discussed, how far the rep's handling fell short of the matrix on a no-close, and recency. Most recent first inside a tier.
@@ -34,7 +34,7 @@ The full scoring rubric, the 16 objections, the per-step 0-1-2 markers, and the 
 
 ## Step 1: Establish the window
 
-The window is a `from_date` / `to_date` pair on `list_meetings`, computed in Mountain Time.
+The window is a `from_date` / `to_date` pair on `list_calls`, computed in Mountain Time.
 - Default weekly run: the last 7 days.
 - "today and yesterday": 2 days. "this week": 7 days. "last two weeks": 14 days (keep 30 as the practical ceiling).
 - The director works in Mountain Time (America/Denver). If he names calendar dates, use those dates directly and drop anything outside the range after you pull.
@@ -42,34 +42,34 @@ The window is a `from_date` / `to_date` pair on `list_meetings`, computed in Mou
 
 ## Step 2: List the calls to review
 
-1. Call `list_meetings` over the window and PAGINATE to the end (the response carries a next page link; keep going until it is null). Avoma pages are small, so a week is several pages.
-2. Apply the CANDIDATE RANKING above. Each surviving meeting carries a `meeting_uuid` used in the next step.
-3. If David asked for a specific rep, keep only that rep's meetings (match the organizer email, never the display name, since Avoma mislabels speakers and duplicate names exist).
+1. Call `list_calls` over the window and PAGINATE to the end (the response carries a next page link; keep going until it is null). Callix pages are small, so a week is several pages.
+2. Apply the CANDIDATE RANKING above. Each surviving meeting carries a `call_id` used in the next step.
+3. If David asked for a specific rep, keep only that rep's meetings (match the organizer email, never the display name, since Callix mislabels speakers and duplicate names exist).
 
 ## Step 3: Filter to scoreable consultations (STRICT)
 
 The ranking surfaces review candidates, but still confirm each is a real closer consultation before scoring:
 - It is a closer **Consultation**, not a setter Introduction / intro call. The matrix does not apply to setter intros.
-- It has a usable speaker transcript from `get_meeting_transcript`. No transcript means nothing to score.
+- It has a usable speaker transcript from `get_call`. No transcript means nothing to score.
 - It is a real, full-length pitch call, not a no-connect, voicemail, or reschedule. A long call is not proof of a real consultation, confirm from the transcript end-state.
 
 Keep a short operator list of what got dropped and why. It does not go in the output.
 
 ## Step 4: Reliability and the incomplete-run rule
 
-Avoma can time out or error intermittently. For every call:
-- Retry a failed or timed-out `list_meetings` or `get_meeting_transcript` at least twice before giving up. The same `meeting_uuid` often succeeds on a retry.
-- If Avoma throws an auth error, tell David the Avoma connector needs re-approving (or that `AVOMA_API_KEY` needs refreshing if you are on the REST path), then continue once it is back.
+Callix can time out or error intermittently. For every call:
+- Retry a failed or timed-out `list_calls` or `get_call` at least twice before giving up. The same `call_id` often succeeds on a retry.
+- If Callix throws an auth error, tell David the Callix connector needs re-approving (or that `CALLIX_API_KEY` needs refreshing if you are on the REST path), then continue once it is back.
 
 Never silently drop a scoreable call. If an analysis cannot be pulled after retries, note it in the output as not yet scored rather than omitting it.
 
 ## Step 4b: Large transcripts (context safety)
 
-`get_meeting_transcript` returns the full speaker transcript inline, and for a long consultation that payload can exceed the inline token limit and be saved to a file instead. When that happens, do NOT read the whole file into the main context. Hand the saved file path to a subagent and have it score the call against the rubric and return only the findings: rep by behavior, close status with the end-state quote, the per-step scores with verbatim evidence, and the candidate clip with verbatim CLIP IN / CLIP OUT anchors plus the timestamp of each anchor if the transcript carries timestamps. This keeps the full transcript out of the main context while preserving verbatim accuracy.
+`get_call` returns the full speaker transcript inline, and for a long consultation that payload can exceed the inline token limit and be saved to a file instead. When that happens, do NOT read the whole file into the main context. Hand the saved file path to a subagent and have it score the call against the rubric and return only the findings: rep by behavior, close status with the end-state quote, the per-step scores with verbatim evidence, and the candidate clip with verbatim CLIP IN / CLIP OUT anchors plus the timestamp of each anchor if the transcript carries timestamps. This keeps the full transcript out of the main context while preserving verbatim accuracy.
 
 ## Step 5: Pull and read each analysis
 
-1. For each kept candidate, call `get_meeting_transcript` with its `meeting_uuid` (and `get_meeting_notes` for the AI notes).
+1. For each kept candidate, call `get_call` with its `call_id` (and `get_deal_analysis` for the AI notes).
 2. Score the matrix from the SPEAKER TRANSCRIPT, never from the notes alone. The transcript is where the permission ask, the relabel, the future pace, and whether the rep folded actually live. There is no pre-computed scorecard any more: the 25-point score, close attempts, downsell and lead bucket are all derived here, from the transcript, against `references/decision-leadership-rubric.md`.
 3. Use the AI notes as a cross-check only, never as the score: they help confirm close-vs-no-close and point at where the friction was, but the matrix score and the clip come from the transcript.
 4. Work through candidates one at a time or in batches of no more than 5, summarizing each batch before loading more so the run does not blow past context.
@@ -199,4 +199,7 @@ The snippet itself is still created by hand where the recording lives: open the 
 
 ## Scheduled run (weekly)
 
-When the scheduled task fires, call `list_meetings` over the last 7 days, rank the candidates per CANDIDATE RANKING (cap 50), pull each kept candidate with `get_meeting_transcript`, score the full step sequence strictly against the rubric, pass every card through the accuracy gate, and deliver to the Slack DM unattended. The Avoma and Slack connectors must be authorized in the task context. If a run returns no calls or cannot send, surface that as the failure rather than delivering an empty or padded report.
+When the scheduled task fires, call `list_calls` over the last 7 days, rank the candidates per CANDIDATE RANKING (cap 50), pull each kept candidate with `get_call`, score the full step sequence strictly against the rubric, pass every card through the accuracy gate, and deliver to the Slack DM unattended. The Callix and Slack connectors must be authorized in the task context. If a run returns no calls or cannot send, surface that as the failure rather than delivering an empty or padded report.
+
+
+CALLIX REST PATHS ARE UNVERIFIED. `$CALLIX_API_BASE` and every path under it above are placeholders: Callix's MCP tool names are documented (REPLY-2-CALLIX.md section 3) but its REST base URL, paths, query parameter names and response field names are NOT, and this environment cannot reach `callix.io` to check (the network policy answers 403). Use the Callix MCP tools as the primary and only path. If they are unavailable, STOP and report that — do NOT call a guessed URL. A guessed path does not fail loudly; it 404s or returns a differently-shaped body, and the report is then silently wrong. Fill these in only after a live call confirms them, then delete this paragraph.

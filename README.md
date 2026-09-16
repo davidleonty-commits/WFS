@@ -3,14 +3,14 @@
 Prepared by Cayden Johnson, September 2026, for the incoming Sales Director.
 
 > **Status: the Section 1A connector swap has been done.** Every prompt and skill in this
-> repository now reaches Slack, OnceHub, Avoma and Pipedrive directly. Nothing calls the
+> repository now reaches Slack, OnceHub, Callix and Pipedrive directly. Nothing calls the
 > retired Lovable WFS MCP. The swap is a clean diff against the original export, which is the
 > first commit in this repository's history.
 >
 > - `DATA-ACCESS.md` is the canonical old-tool to new-call map, and the contract the prompts
 >   were rewritten against. Edit it first if you change how a source is read, then propagate.
 > - `RETARGETING.md` tracks the director identity. Slack id, Pipedrive id and the name are
->   filled in for David Leonty; four values (work Google account, Avoma account email, Team
+>   filled in for David Leonty; four values (work Google account, Callix account email, Team
 >   Sync organizer, browser deviceId) are still outstanding. Start there.
 >
 > The rest of this README is the outgoing director's handoff, kept as written except where the
@@ -35,7 +35,7 @@ Nothing here contains API keys or passwords. Auth lives in the connectors, which
 | ~~**Lovable WFS MCP**~~ (the outgoing director's private app at `commandcenter.aiautomating.com`) | Was the backbone for Slack sends, OnceHub reads, call data and pre-filtered Pipedrive views. | **RETIRED, and nothing calls it any more.** Its tools were replaced with direct API access; see Section 1A and `DATA-ACCESS.md`. |
 | **Slack Web API** (bot token, or the Slack MCP connector) | Every send, and the `#payments` and reps-channel reads | The single sender for every task. Scopes are listed in `DATA-ACCESS.md`. |
 | **OnceHub API** (`api.oncehub.com/v2`, API key) | Bookings, master pages, booking pages | Lead flow report, both show-rate reports, EOD booking health, webinar report. |
-| **Avoma MCP** (or the Avoma REST API as fallback) | Call transcripts, meeting lists, AI notes | Used by the show-rate and call-report tasks and all call-review skills. Note: Avoma has no scorecard. Scoring is done from the transcript by the task's own rubric. |
+| **Callix MCP** (or the Callix REST API as fallback) | Call transcripts, meeting lists, AI notes | Used by the show-rate and call-report tasks and all call-review skills. Note: Callix has no scorecard. Scoring is done from the transcript by the task's own rubric. |
 | **Pipedrive MCP** | Deals, activities, pipeline 3 (TTW closer pipeline), Lead Source field | Director audit labeling, accountability report, KPI formulas, webinar report. |
 | **Google Drive / Docs / Sheets** | SIP docs (one per rep), TTW Salesboard 2026 sheet (read-only), SIP master template, Decision Leadership Objection Matrix | The SIP engines edit ONE Google Doc each, through the browser. |
 | **Claude in Chrome** (browser) | Editing the SIP Google Docs | The five local SIP engines only. |
@@ -73,14 +73,14 @@ What the swap changed in substance, because the old behavior no longer exists:
   sheet's Slack User ID column (or resolved once via `users.lookupByEmail`).
 - **The call scorecard.** `calls_get_analysis` returned the app's own scoring (lead_score,
   rep_score, primary_objection, financially_qualified, close_attempts, downsell_offered,
-  lead_bucket) alongside the transcript. Avoma returns none of it. Every task that read those
+  lead_bucket) alongside the transcript. Callix returns none of it. Every task that read those
   fields now scores the transcript itself against the rubric it already carried. In practice
   most of those fields were already null, and the prompts already said to derive from the
   transcript, so the graded output should not move.
 - **Candidate ranking.** `calls_find_review_candidates` returned calls pre-ranked. The ranking
-  rules now live explicitly in the `ttw-avoma-clip-finder` skill and run after `list_meetings`.
-- **Rep identity.** The Lovable rep UUID is gone. Call data keys on the rep's **Avoma email**
-  (`REP_AVOMA_EMAIL`, replacing `REP_WFS_ID` in the SIP engines); deal and activity data keys on
+  rules now live explicitly in the `ttw-callix-clip-finder` skill and run after `list_calls`.
+- **Rep identity.** The Lovable rep UUID is gone. Call data keys on the rep's **Callix email**
+  (`REP_EMAIL`, replacing `REP_WFS_ID` in the SIP engines); deal and activity data keys on
   the integer **Pipedrive owner id**. The old rule "map by id, NEVER by name string" still holds
   and for the same reason: the roster carries duplicate full names across different people.
 - **The Director Console.** `calls_propose_review_note`, `tracker_propose_entry`,
@@ -106,7 +106,7 @@ Two consequences worth knowing before you enable anything:
 |---|---|---|
 | Slack (WFS Group workspace) | Bot token with `chat:write`, `chat:write.public`, `channels:read`, `channels:history`, `im:write`, `users:read`, plus the new director's own Slack user id (replaces `U092C85GA4D` everywhere) | every task |
 | OnceHub | API key | lead flow report, both show-rate reports, EOD booking health |
-| Avoma | API key, or connect the Avoma MCP in claude.ai | call reports, SIP engines, clip finder, review sourcing, weekly call review, all review skills |
+| Callix | API key, or connect the Callix MCP in claude.ai | call reports, SIP engines, clip finder, review sourcing, weekly call review, all review skills |
 | Pipedrive | API token, or connect the Pipedrive MCP in claude.ai | accountability report, leaderboard, director audit, KPI formulas, webinar report |
 | Google Drive / Sheets / Docs | OAuth under the director's WORK Google account (the Salesboard reads must be logged under a work identity, per the leaderboard prompt) | SIP engines, leaderboard, sales hype, EOW, roster sheet |
 | Supabase | Project URL and service key for project `apdwbbocldfsklvcwaqd`, only if the `lead_quality` pipeline is kept | daily call report v27, sweeps, guardian, webinar report |
@@ -165,9 +165,9 @@ What each one does:
 
 - **pipeline-mgmt-accountability-report**: three sections from Pipedrive (Expected Close past due, Hot List, activities overdue plus due today), one message to the reps channel. No CRM writes.
 - **daily-midday-checkin**: reads today's `#payments` posts (only those after 9:00 AM, because the payments automation reposts yesterday's deals in the morning) and today's sets from the reps channel, writes a short check-in that calls out payments and set counts, tags the five closers by Slack user id, and asks what the team has confirmed. Reads its own last two posts back from the memory DM so it never repeats itself.
-- **midday-show-rate-update**: time-based show rate (calls due by now vs Avoma live calls over 15 min) for Webinar and S2C, plus a Call Recaps section in my voice, one bullet per live call. Has the unattributed-booking rescue (rep personal booking pages come back with `master_page = null` in OnceHub and used to deflate the denominator). A show rate over 100% is a hard QA failure.
+- **midday-show-rate-update**: time-based show rate (calls due by now vs Callix live calls over 15 min) for Webinar and S2C, plus a Call Recaps section in my voice, one bullet per live call. Has the unattributed-booking rescue (rep personal booking pages come back with `master_page = null` in OnceHub and used to deflate the denominator). A show rate over 100% is a hard QA failure.
 - **ttw-daily-lead-flow-report**: OnceHub booking counts for the day, QA-gated, posted to the client channel. This is the source the show-rate tasks reconcile against; all three use the same day boundary and status filter.
-- **mgmt-call-reports**: pulls today's TTW consultation transcripts from Avoma, scores each call, posts a Day Summary plus threaded per-call reviews. Every Slack message body must stay under 3000 characters or Slack silently splits it into a top-level message that escapes the thread. No compliance flags in Slack, ever; those go in the run report only.
+- **mgmt-call-reports**: pulls today's TTW consultation transcripts from Callix, scores each call, posts a Day Summary plus threaded per-call reviews. Every Slack message body must stay under 3000 characters or Slack silently splits it into a top-level message that escapes the thread. No compliance flags in Slack, ever; those go in the run report only.
 - **eod-show-rate-update**: full-day scheduled counts (no halving), live calls, reschedules, cancellations, double bookings, closer Booking Health, to the client channel.
 
 ### Weekly rhythm (Mondays)
@@ -182,7 +182,7 @@ What each one does:
 | `sip-engine---noel-soto` | Mon 3:00 PM | Owner DM | TEST | Local |
 | `sip-engine---scott-jose` | Mon 4:00 PM | Owner DM | TEST | Local |
 
-- **weekly-ttw-clip-finder**: runs the `ttw-avoma-clip-finder` skill over the last 7 days, scores objection handling against the Decision Leadership matrix, hands you exact clip-in and clip-out anchors so each Avoma snippet is one click.
+- **weekly-ttw-clip-finder**: runs the `ttw-callix-clip-finder` skill over the last 7 days, scores objection handling against the Decision Leadership matrix, hands you exact clip-in and clip-out anchors so each Callix snippet is one click.
 - **pipedrive-director-audit-labeling**: labels and clears the director's due and overdue Pipedrive activities via API, then DMs a run report. Tightly scoped edit allow-list. Set `PROCESS_MODE: DRY_RUN` first to see what it would touch under your account.
 - **SIP engines (five, one per rep)**: each Monday does exactly one thing based on the Issue Date on the rep's most recent SIP tab: create a new SIP (week 0), append check-in 1 (week 1), append check-in 2 (week 2), then create again. KPIs come connector-only from Pipedrive plus the Salesboard sheet using the `ttw-dashboard-metrics` definitions. Minimum 5 of the rep's calls verified by transcript per run. Slack update tags the rep exactly once as `<@REP_SLACK_ID>` inline, and nowhere else (a second mention double-tags the rep). The three original engines (Vidush, Crue, Garrett) were paused (`enabled: false`) on 9/8/26 when I began winding down; Noel and Scott were still enabled. All five are still in TEST, so they only ever messaged me, never the rep.
 
@@ -232,7 +232,7 @@ What the cloud-only ones do (the twins are described under the local tables abov
 - **midday-hype-mwf**: Mon = close rate, Wed = CDPBC, Fri = show rate, over a rolling 7 days, bottom two vs leader. Hard-locked to DM in the prompt until you remove the lock.
 - **weekly-call-review-sourcing-v2**: picks 5 lost-deal or great-close calls across the closer team each week, runs `closer-call-review-script` on each, assembles the Loom scripts into one Google Doc.
 - **weekly-pif-buyer-report**: profiles every paid-in-full buyer from the past week for marketing (who they were, what pain, what closed them). Accuracy over completeness; blank fields allowed, fabricated fields are a failure.
-- **lead-quality-zero-row-guard**: cheap monitor that DMs you if a weekday has zero or under 5 `lead_quality` rows in Supabase when Avoma shows calls happened.
+- **lead-quality-zero-row-guard**: cheap monitor that DMs you if a weekday has zero or under 5 `lead_quality` rows in Supabase when Callix shows calls happened.
 - **sip-engine-jayden-coulter**: the sixth SIP engine, same three-week cycle as the five in `scheduled-prompts/`, but cloud-hosted.
 - **eow-report-reminder**: sends ONE Slack DM on Friday at 4 PM reminding you to run the `ttw-eow-report` skill with a fresh Closer Sales Dashboard screenshot. It deliberately does not build the report, because every number has to come from your screenshot.
 - **ttw-weekly-call-review-sat**: runs the `ttw-weekly-call-review` skill unattended over the week and DMs the workbook and summary.
@@ -245,7 +245,7 @@ What the cloud-only ones do (the twins are described under the local tables abov
 Two things to know about the cloud editions:
 - Several read the **WFS Active Sales Team Roster** Google Sheet (fileId above) instead of a hardcoded roster. That sheet is now the single place to add or remove a rep; the "v2 roster sheet" tasks and the leaderboard all read it at step 0.
 - The **Show Rate EOD v12** task made Pipedrive the primary revenue source on 8/7/26 (collected-amount custom field populated on 139 of 139 enrolled deals). The Salesboard is a reconciliation check there, not the source. The leaderboard still reads the Salesboard for revenue.
-- The routines each had my full connector list attached (including personal ones like RobinHood and Alpha Vantage). When you recreate them, attach only what the prompt needs. Each one's frontmatter now lists exactly that under `connectors_required`: typically Slack, Avoma, Pipedrive, Google Drive, and Supabase only where the `lead_quality` pipeline is involved.
+- The routines each had my full connector list attached (including personal ones like RobinHood and Alpha Vantage). When you recreate them, attach only what the prompt needs. Each one's frontmatter now lists exactly that under `connectors_required`: typically Slack, Callix, Pipedrive, Google Drive, and Supabase only where the `lead_quality` pipeline is involved.
 
 ### Not included on purpose
 
@@ -260,14 +260,14 @@ Two things to know about the cloud editions:
 | Skill | What it produces | Trigger phrase |
 |---|---|---|
 | `closer-call-review` | One closer call graded, as a Loom teleprompter script anchored on the closer's SIP | "review this closer call" |
-| `closer-call-review-script` | Same, with Avoma clip windows (start and stop timestamps) and screen-share cues quoting the talk track and objection matrix verbatim | "closer loom script" |
+| `closer-call-review-script` | Same, with Callix clip windows (start and stop timestamps) and screen-share cues quoting the talk track and objection matrix verbatim | "closer loom script" |
 | `closer-call-review-slack` | The team-facing written Slack post for a closer review (status emoji, coaching bullets with word tracks, "Where it slipped", "What to preserve", `@channel` takeaways) | "make the closer slack post" |
 | `setter-call-review-slack` | Written Slack post for a setter / booking call | "review this setter call" |
 | `setter-call-review-script` | Loom teleprompter script for a setter call (SHARE / READ / SAY beats) | "setter loom script" |
-| `ttw-daily-call-review` | Daily batch report from an uploaded Avoma transcript file | "here are today's calls" |
-| `ttw-daily-avoma-report` | Same daily report, but self-serve: pulls Avoma itself and DMs you. The 6 PM report. | "run the daily call report" |
+| `ttw-daily-call-review` | Daily batch report from an uploaded Callix transcript file | "here are today's calls" |
+| `ttw-daily-call-report` | Same daily report, but self-serve: pulls Callix itself and DMs you. The 6 PM report. | "run the daily call report" |
 | `ttw-weekly-call-review` | Weekly or monthly lead-quality grading into RED / GREEN / GREY / BLUE / ORANGE buckets, two-tab workbook, Google Sheet, FDQ opportunity-cost economics | "run the weekly call review" |
-| `ttw-avoma-clip-finder` | Coaching clips with exact clip-in and clip-out anchors | "find this week's clips" |
+| `ttw-callix-clip-finder` | Coaching clips with exact clip-in and clip-out anchors | "find this week's clips" |
 
 The closer skills ship with `references/`: the talk track, the objection matrix, the roster, and a SIP file per closer (`sips/tom.md`, `crue.md`, `vidush.md`, `turok.md`). **Update those SIP files when a rep's SIP changes; the review grades against them.**
 
@@ -290,7 +290,7 @@ The closer skills ship with `references/`: the talk track, the objection matrix,
 
 | Skill | What it produces |
 |---|---|
-| `qa-failure-loop` | Every scheduled-task QA failure is logged instead of dying in a DM, classified against the known-issue playbook (Avoma pagination, format drift, source gaps, tool errors), and a weekly pass patches the worst offender. Use this when a report does not send. |
+| `qa-failure-loop` | Every scheduled-task QA failure is logged instead of dying in a DM, classified against the known-issue playbook (Callix pagination, format drift, source gaps, tool errors), and a weekly pass patches the worst offender. Use this when a report does not send. |
 | `fable-review` | The audit protocol for improving any skill or scheduled task: finds logic gaps, cuts token cost, proposes upgrades. `qa-failure-loop` calls it. |
 | `board-orchestrator` | Runs my personal Asana "Work Board - Cayden" one task at a time. Optional; only useful if you adopt the same board structure. |
 
@@ -298,9 +298,9 @@ The closer skills ship with `references/`: the talk track, the objection matrix,
 
 ## 4. First-week setup for the new director
 
-1. **The Section 1A connector swap is already done.** What is left is to collect the credentials in that checklist and connect the standard connectors (Slack, Avoma, Pipedrive, Google Drive, Supabase if kept) under your own Claude account. Each prompt's frontmatter lists what it needs under `connectors_required`; attach only those.
-2. **Upload the 17 skill folders** to your Claude account (Settings, Capabilities, Skills, upload each folder). Names must stay the same because the scheduled prompts call them by name (for example `anthropic-skills:ttw-avoma-clip-finder`; the `anthropic-skills:` prefix is just the workspace label and may differ in yours).
-3. **Retarget the prompts.** Done for the director identity: Slack `U0BUZ6C0C91`, Pipedrive `27299998`, and the name swapped to David Leonty wherever the text is about the sitting director. `RETARGETING.md` lists the four values still outstanding (work Google account, Avoma account email, Team Sync organizer, browser deviceId) and the five places that still say Cayden on purpose, because changing them would falsify a record or break a lookup. Still worth confirming yourself:
+1. **The Section 1A connector swap is already done.** What is left is to collect the credentials in that checklist and connect the standard connectors (Slack, Callix, Pipedrive, Google Drive, Supabase if kept) under your own Claude account. Each prompt's frontmatter lists what it needs under `connectors_required`; attach only those.
+2. **Upload the 17 skill folders** to your Claude account (Settings, Capabilities, Skills, upload each folder). Names must stay the same because the scheduled prompts call them by name (for example `anthropic-skills:ttw-callix-clip-finder`; the `anthropic-skills:` prefix is just the workspace label and may differ in yours).
+3. **Retarget the prompts.** Done for the director identity: Slack `U0BUZ6C0C91`, Pipedrive `27299998`, and the name swapped to David Leonty wherever the text is about the sitting director. `RETARGETING.md` lists the four values still outstanding (work Google account, Callix account email, Team Sync organizer, browser deviceId) and the five places that still say Cayden on purpose, because changing them would falsify a record or break a lookup. Still worth confirming yourself:
    - Roster tables: confirm the closers and setters are current. As handed off: Closers Vidush Rana, Crue Lindgren, Turok Tarango, Tom Judson, Garrett McKenna, Noel Soto, Scott Jose. Setters Antonio Vespa, Petros Foustanellas.
 4. **Create the scheduled tasks** in Claude Cowork, one per folder, pasting the `SKILL.md` body as the prompt and using the fire times in Section 2. Set the model to Opus and permission mode to auto (the prompts are written to run with no approval gate; safety comes from DELIVERY_MODE).
 5. **Run everything in TEST first.** Every task has a `DELIVERY_MODE` (or `PROCESS_MODE`) value at the top of its CONFIG block. Leave it on TEST so the output lands only in your DM, watch two or three runs, then flip the single value to LIVE. The two client-facing reports (`ttw-daily-lead-flow-report`, `eod-show-rate-update`) are read by the client; hold those in TEST until you trust the numbers.
@@ -314,7 +314,7 @@ These are the rules the prompts enforce. Keep them when you edit.
 
 - **One Slack sender only.** The Slack Web API with the workspace bot token, never a personal user token, never a second sender. (The prompts used to say "never the native Slack connector" because the retired app held the token. Same discipline, different name.)
 - **Delivery is proven by the send's return value**, never by a follow-up read: `ok`, a `ts`, and the resolved channel. A read that disagrees is a read problem and never a reason to re-send.
-- **Never enter credentials, never complete a CAPTCHA, never download files.** Keys live in the environment (`SLACK_BOT_TOKEN`, `ONCEHUB_API_KEY`, `AVOMA_API_KEY`, `PIPEDRIVE_API_TOKEN`) and are never printed or written into a message.
+- **Never enter credentials, never complete a CAPTCHA, never download files.** Keys live in the environment (`SLACK_BOT_TOKEN`, `ONCEHUB_API_KEY`, `CALLIX_API_KEY`, `PIPEDRIVE_API_TOKEN`) and are never printed or written into a message.
 - **No emojis in report bodies, no em dashes, no en dashes.** Single asterisks for bold. Plain hyphens, commas, periods.
 - **Slack message bodies under 3000 characters** or the block splits and escapes the thread.
 - **Mentions are `<@USERID>` tokens, never plain names**, and each rep is tagged exactly once.

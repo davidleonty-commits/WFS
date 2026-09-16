@@ -37,6 +37,62 @@ one: get it wrong and the show-rate numerator is silently wrong.
 
 ---
 
+## 0a. CUTOVER DONE, 2026-09-16 — and what is still unverified
+
+Every Avoma reference in `scheduled-prompts/`, `cloud-routines/`, `skills/` and the operative
+root docs is gone: 492 mentions across 53 files. The two Avoma-named skill folders were renamed
+(`ttw-avoma-clip-finder` -> `ttw-callix-clip-finder`, `ttw-daily-avoma-report` ->
+`ttw-daily-call-report`). The key is stored in gitignored `.claude/settings.local.json` as
+`CALLIX_API_KEY` and is not in git.
+
+Tool names came from REPLY-2-CALLIX.md section 3, which sourced them from Callix's own MCP page:
+
+| was | now |
+|---|---|
+| `mcp__Avoma_MCP__list_meetings` | `mcp__Callix__list_calls` |
+| `mcp__Avoma_MCP__get_meeting_transcript` | `mcp__Callix__get_call` |
+| `mcp__Avoma_MCP__get_meeting_notes` | `mcp__Callix__get_deal_analysis` |
+| `list_team_usage_metrics` | `get_rep_performance` |
+| `meeting_uuid` | `call_id` |
+| `AVOMA_API_KEY` | `CALLIX_API_KEY` |
+
+**Three things could not be verified, and none of them were guessed.**
+
+1. **The MCP package does not resolve.** `npm view @callixorg/mcp-server` returns 404, as do
+   `@callix/mcp-server`, `callix-mcp-server`, `@callixorg/mcp` and `callix-mcp`. A registry
+   search for "callix" returns only `@callixbrasil/*` and `callix-dialer-widget` — the Brazilian
+   dialer, which section 0 already rules is the wrong Callix. A 404 on a *scoped* package is
+   also what an unauthenticated client gets for a **private** package, so this does not prove
+   the package is absent; it proves it is not publicly installable as named. **Ask Callix for
+   the exact package name, or for npm auth, or for a hosted MCP endpoint.** The `.mcp.json`
+   entry is left in place so it works the moment that resolves.
+
+2. **REST paths.** `$CALLIX_API_BASE` and every path under it is a placeholder. 18 files carry a
+   `CALLIX REST PATHS ARE UNVERIFIED` paragraph telling the run to stop rather than call a
+   guessed URL.
+
+3. **Parameter and response field names.** `transcript_ready`, `meeting_state`,
+   `organizer_email`, `start_at`, `is_internal` and `attendees` are the OLD platform's names,
+   carried over unchanged. 10 files carry a `CALLIX FIELD NAMES UNVERIFIED` paragraph. This is
+   the most dangerous of the three: a wrong field name does not error, it silently matches
+   nothing, and a report that should read 40 calls reads zero and looks like a quiet day. The
+   gate therefore makes an unexpected zero a QA failure rather than a publishable result.
+
+All three clear with one live call, once `callix.io` is reachable: `get_current_time`, then
+`list_calls` for yesterday with no filters, then read the raw first row.
+
+**Dated lessons-ledger entries were made vendor-neutral rather than swapped.** Five lines
+(`L3`/`L4` on page_size caps, `L7` on title normalisation, and others) record what happened on
+the Avoma-era stack in July. Rewriting them to say "Callix" would assert those facts about a
+platform nobody has tested, so they now read "the call platform" instead. History stays true
+and the Avoma name is still gone.
+
+**Note the network policy blocks Callix too.** `app.callix.io` and `api.callix.io` both return
+403 at the proxy, exactly like `api.oncehub.com`. Allowing both on the environment's network
+policy is one change that unblocks both migrations.
+
+---
+
 ## 0b. Callix is ALREADY live in Slack: `#callix-call-updates` (C0BRDDMDGP6)
 
 Found 2026-09-16 by listing the director's Slack channels. A Callix Slack bot

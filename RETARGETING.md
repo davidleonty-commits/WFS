@@ -94,7 +94,7 @@ only useful if you adopt the same board; otherwise leave it uploaded and unused,
 
 ## 3. Test order
 
-1. Connect Slack, Avoma, Pipedrive and Drive, and set the four outstanding values above.
+1. Connect Slack, Callix, Pipedrive and Drive, and set the four outstanding values above.
 2. Leave every `DELIVERY_MODE` on TEST. In TEST every task DMs you and nothing reaches a
    channel, a rep, or the client.
 2a. **Look at how a sent message renders before anything goes LIVE.** Every send now goes out

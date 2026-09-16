@@ -80,9 +80,9 @@ For cloud routines: set `CALLIX_API_KEY` as an environment variable on the claud
 
 Ask verbatim, ideally with the admin on the call or by message during it:
 
-> "Is the Avoma workspace being cancelled, and on what date? Are the Zoom consultation calls booked through OnceHub being recorded in Callix today?"
+> "Is the Callix workspace being cancelled, and on what date? Are the Zoom consultation calls booked through OnceHub being recorded in Callix today?"
 
-**Paste to Claude:** the answer with the date. It decides whether the Avoma comparison runs are possible and how urgent the Callix cutover is.
+**Paste to Claude:** the answer with the date. It decides whether the Callix comparison runs are possible and how urgent the Callix cutover is.
 
 ## 7. Google Drive access (2 minutes, your action)
 
@@ -98,7 +98,7 @@ Once 1 through 7 are in, his Claude can recreate the first task. Suggest the ord
 1. `eow-report-reminder` (one DM, no data sources; proves Slack TEST path)
 2. `ttw-daily-lead-flow-report-cloud` (OnceHub only; proves the denominator)
 3. `daily-ttw-leaderboard-v4` (Pipedrive plus Salesboard; proves Drive and Pipedrive)
-4. `daily-call-report-publisher-v27` (Callix or Avoma; proves the call layer)
+4. `daily-call-report-publisher-v27` (Callix or Callix; proves the call layer)
 5. the two show-rate reports (OnceHub plus calls together)
 
 Everything to David's DM. Two clean days per task, message matches its template line for line, then LIVE one task at a time. The only LIVE channel is the reps channel; the client channel is never a destination.

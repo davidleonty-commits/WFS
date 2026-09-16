@@ -65,7 +65,7 @@ These have each produced a real misgrade on this report. Check every RED against
 
 **7. Pre-price talk about their past.** Money struggles from earlier ventures, said before the number landed and never revisited, are not about this offer.
 
-**8. A garbled or mangled passage.** Avoma mangles figures constantly. "$4.26" is $426/mo, "$8" is $8,000, "$5.50 ish" is a 550 credit score, "$1.45" is $145,000. A mangled line proves nothing; resolve it from the rep's restatement or discard it.
+**8. A garbled or mangled passage.** Callix mangles figures constantly. "$4.26" is $426/mo, "$8" is $8,000, "$5.50 ish" is a 550 credit score, "$1.45" is $145,000. A mangled line proves nothing; resolve it from the rep's restatement or discard it.
 
 **9. An unrun application, or nothing collected.** Facts about what the rep did.
 

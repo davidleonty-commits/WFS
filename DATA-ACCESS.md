@@ -1,6 +1,6 @@
 # Data access contract (replaces the Lovable WFS connector)
 
-Every scheduled prompt and skill in this package used to reach Slack, OnceHub, Avoma and
+Every scheduled prompt and skill in this package used to reach Slack, OnceHub, Callix and
 Pipedrive through one custom MCP server (`Lovable_WFS_Slack`, hosted at
 `commandcenter.aiautomating.com`) that belonged to the outgoing director. That server is gone.
 
@@ -128,36 +128,36 @@ What the wrapper used to do for you, and now has to be done in the prompt:
 
 ---
 
-## 3. Avoma
+## 3. Callix
 
-Avoma MCP (`list_meetings`, `get_meeting`, `get_meeting_transcript`, `get_meeting_notes`,
+Callix MCP (`list_calls`, `get_meeting`, `get_call`, `get_deal_analysis`,
 `get_current_datetime`) is the primary path and needs no key. The direct REST API is the
-fallback: `https://api.avoma.com/v1/...` with header `Authorization: Bearer $AVOMA_API_KEY`.
+fallback: `$CALLIX_API_BASE/...` with header `Authorization: Bearer $CALLIX_API_KEY`.
 
 | Old call | New call |
 |---|---|
-| `calls_list(rep_id, from, to)` | `list_meetings` (or `GET /v1/meetings/` with `from_date`, `to_date`, `page`, `page_size`) filtered to the rep by organizer / attendee **email**, not by a Lovable UUID |
-| `calls_get_analysis(call_id)` | `get_meeting` + `get_meeting_transcript` + `get_meeting_notes` (or `GET /v1/meetings/{uuid}`, `GET /v1/transcriptions/?meeting_uuid=`, `GET /v1/notes/?meeting_uuid=`) |
-| `calls_find_review_candidates(days_back, limit)` | `list_meetings` over the window, then rank with the rules in the `ttw-avoma-clip-finder` skill |
-| `avoma_api(path, query)` | call the named Avoma endpoint directly |
+| `calls_list(rep_id, from, to)` | `list_calls` (or `GET /v1/meetings/` with `from_date`, `to_date`, `page`, `page_size`) filtered to the rep by organizer / attendee **email**, not by a Lovable UUID |
+| `calls_get_analysis(call_id)` | `get_meeting` + `get_call` + `get_deal_analysis` (or `GET /v1/meetings/{uuid}`, `GET /v1/transcriptions/?call_id=`, `GET /v1/notes/?call_id=`) |
+| `calls_find_review_candidates(days_back, limit)` | `list_calls` over the window, then rank with the rules in the `ttw-callix-clip-finder` skill |
+| `avoma_api(path, query)` | call the named Callix endpoint directly |
 
-Two gaps the swap has to fill, because they were the Lovable app's own work and not Avoma's:
+Two gaps the swap has to fill, because they were the Lovable app's own work and not Callix's:
 
 1. **The scorecard.** `calls_get_analysis` returned a scored object (lead_score, rep_score,
    primary_objection, financially_qualified, close_attempts, downsell_offered, lead_bucket,
-   payment_type and so on) alongside the transcript. Avoma returns no such fields. Every prompt
+   payment_type and so on) alongside the transcript. Callix returns no such fields. Every prompt
    that read them now SCORES THE TRANSCRIPT ITSELF against the rubric it already carries: the
    `ttw-daily-call-review` scorecard, the Decision Leadership Objection Matrix, and the
    `ttw-dashboard-metrics` definitions. The scoring rules did not change; only who runs them did.
    A score is never guessed from AI notes, it is read off the transcript, as before.
 2. **The ranking.** `calls_find_review_candidates` returned calls pre-ranked for coaching. The
-   ranking rules live in the `ttw-avoma-clip-finder` skill and are applied after `list_meetings`:
+   ranking rules live in the `ttw-callix-clip-finder` skill and are applied after `list_calls`:
    keep real recorded consultations (duration over 15 minutes, title contains "TikTok Wiz
    Consultation" or the closer-consultation equivalent, a usable speaker transcript), then rank
    closes against no-closes and the objection-handling quality of each.
 
-Identity: the rep key is the **Avoma user email**. Prompt CONFIG blocks that carried a
-`REP_WFS_ID` UUID now carry `REP_AVOMA_EMAIL`.
+Identity: the rep key is the **Callix user email**. Prompt CONFIG blocks that carried a
+`REP_WFS_ID` UUID now carry `REP_EMAIL`.
 
 ---
 
@@ -172,12 +172,12 @@ Closer pipeline is pipeline 3, as before.
 | `pipeline_smart_view(view="hot_list_7d", limit)` | `getDeals` on pipeline 3, keep open deals labeled Hot List with activity in the last 7 days |
 | `pipeline_smart_view(view="deals_won_last_7d", limit)` | `getDeals` on pipeline 3, `status=won`, keep deals whose `won_time` is within the last 7 days |
 | `reps_scoreboard(window_days)` | compute per-rep KPIs from Pipedrive plus the Salesboard workbook using the `ttw-dashboard-metrics` formulas, which is what the connector did internally |
-| `reps_scoreboard` used only to map an id to a name | resolve through the WFS Active Sales Team Roster sheet instead (Pipedrive owner id and Avoma email columns) |
+| `reps_scoreboard` used only to map an id to a name | resolve through the WFS Active Sales Team Roster sheet instead (Pipedrive owner id and Callix email columns) |
 
 **Identity, and the reason the old prompts say "map by rep_id, NEVER by name string":** the
 roster carries duplicate full names across different people, so a name match silently merges two
 reps. That hazard is unchanged. The stable keys are now the **Pipedrive owner id** (numeric, for
-deal and activity data) and the **Avoma organizer email** (for call data). Join on those, never
+deal and activity data) and the **Callix organizer email** (for call data). Join on those, never
 on a name.
 
 ---
@@ -208,7 +208,7 @@ way your environment stores secrets (claude.ai connector settings, environment v
 |---|---|---|
 | `SLACK_BOT_TOKEN` | Slack, WFS Group workspace | every task |
 | `ONCEHUB_API_KEY` | OnceHub, Settings, API and Webhooks | lead flow report, both show-rate reports, EOD booking health, webinar report |
-| `AVOMA_API_KEY` | Avoma, Settings, API (optional if the Avoma MCP connector is attached) | call reports, SIP engines, clip finder, review sourcing, weekly call review, all review skills |
+| `CALLIX_API_KEY` | Callix, Settings, API (optional if the Callix MCP connector is attached) | call reports, SIP engines, clip finder, review sourcing, weekly call review, all review skills |
 | `PIPEDRIVE_API_TOKEN` | Pipedrive (optional if the Pipedrive MCP connector is attached) | accountability report, leaderboard, director audit, KPI formulas, webinar report |
 | Google OAuth | Drive / Docs / Sheets, under the director's WORK Google account | SIP engines, leaderboard, sales hype, EOW, roster sheet |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Supabase project `apdwbbocldfsklvcwaqd` | only if the `lead_quality` pipeline is kept |

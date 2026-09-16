@@ -102,7 +102,7 @@ The script has to sound like him talking, not like a written review read aloud. 
 - **Transcript:** required. Read it in full, decide the track, mark the timestamps for the open (frame, pain, info confirmation), the middle (financial qual, pre-call sell, any red flags), and the close (the commitment stack, or the decision to walk).
 - **Setter and prospect identity:** the setter is the rep running the qualification and booking the call onto someone else's calendar. The prospect is the one being qualified. If speaker labels are scrambled, identify the setter by who is controlling the frame, confirming info, and booking. Use the setter's first name in the OPEN greeting. If the transcript never names the setter, greet with "[Name]" as a placeholder for David to fill in, and tell him in the chat that the call did not name the rep.
 - **Loom link:** usually NOT needed here, because this script is what he reads to CREATE the Loom. He records first, then the link exists. If he is regenerating a script for an already-filmed call and gives a link, ignore it for the script body (it belongs on the written Slack post, not the teleprompter).
-- **Call link (JustCall / Avoma):** optional, for his reference only. Does not go in the script body.
+- **Call link (JustCall / Callix):** optional, for his reference only. Does not go in the script body.
 
 ---
 

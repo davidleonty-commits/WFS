@@ -13,10 +13,10 @@ Grades the leads a webinar produced, not the closers who took the calls.
 
 ## Data sources
 
-- **Supabase** project_id `apdwbbocldfsklvcwaqd`, table `public.lead_quality`. One row per graded call, keyed on `meeting_uuid`. Columns used: `call_date`, `prospect_name`, `prospect_email`, `affordability`, `decision_maker`, `timeline`, `intent`, `lead_score`, `financially_qualified`, `dq_reason`, `rubric_version`, `webinar_date`, `source_master_page_id`. The table also holds `rep`, `outcome`, and `collected`, which this report does not use.
+- **Supabase** project_id `apdwbbocldfsklvcwaqd`, table `public.lead_quality`. One row per graded call, keyed on `call_id`. Columns used: `call_date`, `prospect_name`, `prospect_email`, `affordability`, `decision_maker`, `timeline`, `intent`, `lead_score`, `financially_qualified`, `dq_reason`, `rubric_version`, `webinar_date`, `source_master_page_id`. The table also holds `rep`, `outcome`, and `collected`, which this report does not use.
 - **Pipedrive** via `searchDeals`. Every deal carries a Lead Source custom field holding the OnceHub booking page label, so a single search returns the whole cohort. OnceHub is no longer needed for attribution.
 
-Never pull an Avoma transcript in this skill, and never score a call. This skill reads grades and writes attribution, nothing else.
+Never pull an Callix transcript in this skill, and never score a call. This skill reads grades and writes attribution, nothing else.
 
 ---
 
@@ -95,7 +95,7 @@ set webinar_date = 'YYYY-MM-DD',
     lead_source_label = 'Webinar MM DD YY | Paid | Closer | 45min',
     pipedrive_deal_id = <deal id>,
     updated_at = now()
-where meeting_uuid = '...'
+where call_id = '...'
   and webinar_date is null;
 ```
 
@@ -127,7 +127,7 @@ If coverage falls below 80 percent of completed bookings, add one line under the
 
 **This skill NEVER scores a call.** There is exactly one grader in this system, the Daily Call Report Publisher, and its rubric lives inside that scheduled task where this skill cannot read it. Grading here would mean grading from memory, which is how two reports start disagreeing about the same lead. If David asks to fill the missing calls, do not score. Tell him the two supported routes:
 
-1. Re-run the Publisher for the specific call date, which regrades under the canonical rubric and upserts on `meeting_uuid` so nothing duplicates.
+1. Re-run the Publisher for the specific call date, which regrades under the canonical rubric and upserts on `call_id` so nothing duplicates.
 2. Check `public.report_run_log` for that date, since the backfill guardian may already have logged the shortfall and be able to heal it.
 
 Then re-run this report, which will pick up the new rows from cache.

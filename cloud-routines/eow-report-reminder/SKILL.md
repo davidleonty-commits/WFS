@@ -15,7 +15,7 @@ CONFIG
 DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The only destination this task may ever use.)
 SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 
-This is a reminder only. Do NOT build the End of Week report. Do NOT invoke the `ttw-eow-report` skill. Do NOT pull KPIs, read Slack history, or gather Avoma metrics. The only action this task takes is sending one Slack DM.
+This is a reminder only. Do NOT build the End of Week report. Do NOT invoke the `ttw-eow-report` skill. Do NOT pull KPIs, read Slack history, or gather Callix metrics. The only action this task takes is sending one Slack DM.
 
 This is an unattended run. David is not present. Never ask questions, never wait for confirmation.
 

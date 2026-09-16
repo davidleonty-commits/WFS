@@ -28,7 +28,7 @@ Work every objection all the way through the Universal Flow. Acknowledge and Cla
 
 Ask for the close at least twice before any call ends, and never let the price reveal be the last ask you make. A let me think about it, objection 4, or an I need a day, objection 9, is not a no. On money, objections 10, 11, and 12, run the reframe before you reach for a payment plan or a discount. Expensive compared to what, the price or the cost of not solving this.
 
-Send me your open follow-up pipeline list every Monday by 9AM MT with name, stage, last touch, next move, and projected close date. Share at least one call per day in Avoma for review, and match your energy to the prospect on every one. If they are fired up, lean in. If they are hesitant, you bring the conviction, because flat tonality reads as low confidence and they feel it.
+Send me your open follow-up pipeline list every Monday by 9AM MT with name, stage, last touch, next move, and projected close date. Share at least one call per day in Callix for review, and match your energy to the prospect on every one. If they are fired up, lean in. If they are hesitant, you bring the conviction, because flat tonality reads as low confidence and they feel it.
 
 ## 4. Milestones, Check-ins, and Action Steps
 

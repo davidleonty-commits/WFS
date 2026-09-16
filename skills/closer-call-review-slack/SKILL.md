@@ -13,7 +13,7 @@ description: >
   Loom link and asking for the team Slack message. For CLOSER calls, produces the
   team post. NOT the Loom teleprompter (use closer-call-review-script), NOT
   setter calls (use setter-call-review-slack / -script), NOT the daily batch
-  (ttw-daily-call-review / ttw-daily-avoma-report).
+  (ttw-daily-call-review / ttw-daily-call-report).
 ---
 
 # Closer Call Review | Team Slack Post
@@ -170,7 +170,7 @@ When it is genuinely between two colors, go with the lower one and let the bulle
 - **Lifetime access, know it cold:** lifetime access to the material, Discord, and updates. Only the one-on-one coaching is capped at six months.
 - **Financing paths:** Clarity Pay (third-party, soft check, declines common lately), Affirm, Special Financing (SFC, internal, no credit check), Split-It, 6-pay, and Base 44 ($50/mo) as the downsell save for real-intent leads who cannot afford Inner Circle.
 - **Core rule:** isolate and confirm value BEFORE going to any plan. Financing is not an objection-handling tool.
-- **Closers:** Tom Judson (UK accent), Vidush Rana (Austin TX, "I gotcha," "fantastic"), Crue Lindgren ("right," "for sure"), Turok Tarango (California, "hey man," "wonderful"), Paul, Kim, Harvey. If Avoma scrambles the labels, the closer is the one running discovery, pitching, and asking for the sale. Map the transcript first name to the full Slack name via `references/roster.md`.
+- **Closers:** Tom Judson (UK accent), Vidush Rana (Austin TX, "I gotcha," "fantastic"), Crue Lindgren ("right," "for sure"), Turok Tarango (California, "hey man," "wonderful"), Paul, Kim, Harvey. If Callix scrambles the labels, the closer is the one running discovery, pitching, and asking for the sale. Map the transcript first name to the full Slack name via `references/roster.md`.
 
 ---
 

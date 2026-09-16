@@ -1,11 +1,11 @@
 ---
 name: ttw-weekly-call-review
-description: Build the TikTok Wiz weekly sales call review from Avoma transcripts, grading every consultation into lead-quality buckets (RED, GREEN, GREY, BLUE, ORANGE) backed by the lead's own verbatim financial statement, and producing a two-tab workbook, a Google Sheet, and a management summary with FDQ opportunity-cost economics. Use this whenever David or anyone at WFS asks for the weekly or monthly call review, a call report, a lead quality report, an FDQ report, a bucket breakdown, a rep scorecard from calls, "how many of our leads could not afford it", or wants calls over 30 minutes pulled and graded. Also use it to re-grade, audit, verify, or extend an existing call review to a new date range. Trigger even if the person does not say "skill" or name the buckets.
+description: Build the TikTok Wiz weekly sales call review from Callix transcripts, grading every consultation into lead-quality buckets (RED, GREEN, GREY, BLUE, ORANGE) backed by the lead's own verbatim financial statement, and producing a two-tab workbook, a Google Sheet, and a management summary with FDQ opportunity-cost economics. Use this whenever David or anyone at WFS asks for the weekly or monthly call review, a call report, a lead quality report, an FDQ report, a bucket breakdown, a rep scorecard from calls, "how many of our leads could not afford it", or wants calls over 30 minutes pulled and graded. Also use it to re-grade, audit, verify, or extend an existing call review to a new date range. Trigger even if the person does not say "skill" or name the buckets.
 ---
 
 # TTW Weekly Call Review
 
-Produce a defensible lead-quality and rep-performance report from Avoma sales call transcripts.
+Produce a defensible lead-quality and rep-performance report from Callix sales call transcripts.
 
 The entire value of this report is that **every RED is backed by something the lead actually said.** An untraceable number is worse than no number, because it gets carried into a coaching conversation and lands on a rep who did nothing wrong. Grade conservatively, cite verbatim, and prefer "we do not know" over a confident guess.
 
@@ -32,22 +32,22 @@ Never present figures without saying how many rows were independently verified a
 Confirm the window per the rule above, then:
 
 ```
-mcp__Avoma_MCP__list_meetings
+mcp__Callix__list_calls
   from_date: <ISO start>   to_date: <ISO end>
   page_size: 100
 ```
 
-Paginate to the end (follow the `next` link until it is null), then keep only recorded consultations over 1800 seconds, since consultations run over 30 minutes. If the Avoma MCP is unavailable, the same sweep is `GET https://api.avoma.com/v1/meetings/` with `{from_date, to_date, page, page_size}` and header `Authorization: Bearer $AVOMA_API_KEY`.
+Paginate to the end (follow the `next` link until it is null), then keep only recorded consultations over 1800 seconds, since consultations run over 30 minutes. If the Callix MCP is unavailable, the same sweep is `GET $CALLIX_API_BASE/calls` with `{from_date, to_date, page, page_size}` and header `Authorization: Bearer $CALLIX_API_KEY`.
 
 The result usually exceeds the inline token cap and is written to a file. Parse it with python. Never read a whole persisted tool result into context.
 
-Reps are identified by the meeting's **organizer email**, not by a connector rep id. Resolve an email to a name through the WFS Active Sales Team Roster sheet. Never join on a display name: the roster carries duplicate full names, and Avoma mislabels speakers.
+Reps are identified by the meeting's **organizer email**, not by a connector rep id. Resolve an email to a name through the WFS Active Sales Team Roster sheet. Never join on a display name: the roster carries duplicate full names, and Callix mislabels speakers.
 
 **Exclusions.** Drop internal team syncs and any calls run by the sales director themselves. They are not consultations and they distort every rate. State what you excluded.
 
 ### Step 2 — Get complete transcripts
 
-Read `references/transcript-integrity.md` before pulling. Truncated caches are the single largest source of wrong numbers on this report: many stop at exactly the first Avoma chunk, before the price is ever stated, so a call reads as "money never discussed" when the lead actually declined a lender two minutes later.
+Read `references/transcript-integrity.md` before pulling. Truncated caches are the single largest source of wrong numbers on this report: many stop at exactly the first Callix chunk, before the price is ever stated, so a call reads as "money never discussed" when the lead actually declined a lender two minutes later.
 
 Every transcript must pass a completeness check before it is graded.
 
@@ -93,3 +93,6 @@ Rep scores get the benefit of the doubt. A reasonably handled call that did not 
 - `references/transcript-integrity.md` — completeness checks, pagination, speaker labels, mangled figures, tooling. Read before pulling.
 - `references/review-workflow.md` — the multi-agent review process, agent prompts, and QA gates. Mandatory.
 - `references/report-spec.md` — columns, Report tab, FDQ economics, Slack and workbook templates.
+
+
+CALLIX REST PATHS ARE UNVERIFIED. `$CALLIX_API_BASE` and every path under it above are placeholders: Callix's MCP tool names are documented (REPLY-2-CALLIX.md section 3) but its REST base URL, paths, query parameter names and response field names are NOT, and this environment cannot reach `callix.io` to check (the network policy answers 403). Use the Callix MCP tools as the primary and only path. If they are unavailable, STOP and report that — do NOT call a guessed URL. A guessed path does not fail loudly; it 404s or returns a differently-shaped body, and the report is then silently wrong. Fill these in only after a live call confirms them, then delete this paragraph.

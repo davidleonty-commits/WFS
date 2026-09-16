@@ -61,6 +61,11 @@ CLIENT_OK = re.compile(
     re.I,
 )
 
+# Avoma is retired (2026-09-16). No operative reference may come back. `avoma_api` is exempt: it is the
+# RETIRED connector's own tool name, and DATA-ACCESS.md maps FROM it, so naming it there is correct.
+AVOMA_RESIDUE = re.compile(r"avoma", re.I)
+AVOMA_OK = re.compile(r"avoma_api")
+
 # Not identity, but must be gone before the tasks can run (see README Section 1A and TROUBLESHOOTING-REPLY.md).
 CONNECTOR_RESIDUE = re.compile(r"Lovable[ _]WFS|WFS_MCP_TOKEN|REP_WFS_ID|commandcenter\.aiautomating\.com|mcp__scheduled-tasks__update_scheduled_task", re.I)
 
@@ -95,6 +100,7 @@ def check(verbose=True):
     conn = 0
     supa = 0
     client = []
+    avoma = []
     for f in files():
         t = f.read_text(encoding="utf-8")
         for n, line in enumerate(t.splitlines(), 1):
@@ -106,12 +112,17 @@ def check(verbose=True):
                 supa += 1
             if CLIENT_CHANNEL.search(line) and not CLIENT_OK.search(line):
                 client.append(f"{f.relative_to(ROOT)}:{n}: {line.strip()[:140]}")
+            if AVOMA_RESIDUE.search(line) and not AVOMA_OK.search(line):
+                avoma.append(f"{f.relative_to(ROOT)}:{n}: {line.strip()[:140]}")
             if CONNECTOR_RESIDUE.search(line):
                 conn += 1
     print(f"\n{hits} identity residue line(s), {supa} Supabase residue line(s), {conn} connector residue line(s) across {sum(1 for _ in files())} files.")
     if client:
         print(f"\nCLIENT CHANNEL: {len(client)} line(s) still look like a SEND to #wfs-ttw-sales-mgmt-client. Reads are fine; sends are forbidden. Confirm each is a read or rewrite it:")
         for c in client: print("  ", c)
+    if avoma:
+        print(f"\nAVOMA: {len(avoma)} line(s) still reference the retired call platform. It was cut over to Callix on 2026-09-16; every operative reference must be gone:")
+        for a in avoma: print("  ", a)
     if supa:
         print(f"Supabase decision pending on {supa} line(s): either set SUPABASE_PROJECT_ID to the new project or delete those Supabase steps (TROUBLESHOOTING-REPLY.md section J).")
     if hits:
@@ -120,7 +131,7 @@ def check(verbose=True):
         print("Identity scrub complete: no trace of the previous director remains.")
     if conn:
         print(f"Connector swap still pending on {conn} line(s): run the Section 1A rewrite (Lovable WFS tools, REP_WFS_ID, WFS_MCP_TOKEN, update_scheduled_task). Use --check-connector to list them.")
-    return hits == 0 and not client
+    return hits == 0 and not client and not avoma
 
 
 def check_connector():

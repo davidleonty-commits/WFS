@@ -56,7 +56,7 @@ Read the qa-failure-loop skill and follow its weekly failure review exactly. In 
 
 4. Check the patched column against this window. If a failure type that was previously patched has fired again, it becomes the top offender automatically regardless of raw counts, and the report says the prior patch did not hold.
 
-5. Run fable-review against the top offender, passing its failure rows as the evidence input. Target the actual failure mechanism, not the task in general. If four of five failures are source_shape on one Avoma endpoint, the patch is pagination hardening, not a rewrite.
+5. Run fable-review against the top offender, passing its failure rows as the evidence input. Target the actual failure mechanism, not the task in general. If four of five failures are source_shape on one Callix endpoint, the patch is pagination hardening, not a rewrite.
 
 6. Produce the patch, matched to the offender type:
    - Scheduled task: the exact revised task prompt, complete and paste-ready, plus the create-verify-delete update plan (create or edit the replacement first, verify it exists and is scheduled correctly, only then remove the old one).

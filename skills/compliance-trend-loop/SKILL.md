@@ -1,6 +1,6 @@
 ---
 name: compliance-trend-loop
-description: Rolling compliance pattern tracker for David's TTW sales fleet. Turns stateless per-call compliance flags (income coaching on financing applications, guarantee language, exclusive partnership claims) into per-rep rolling 30-day trends with hard escalation thresholds and auto-built evidence packets containing verbatim quotes and call links. Use whenever any call review or daily report flags a compliance issue, whenever David says "compliance trend", "compliance ledger", "who keeps flagging", "how many times has [rep] done this", "build the compliance packet", "escalation evidence", or asks whether a compliance issue is a one-off or a pattern. Also use in every daily and weekly call report, which should carry a compliance trend line, and when preparing any escalation to WFS leadership about rep conduct. Composes with closer-call-review, setter-call-review, ttw-daily-call-review, and ttw-daily-avoma-report; every compliance flag those produce must land in this ledger.
+description: Rolling compliance pattern tracker for David's TTW sales fleet. Turns stateless per-call compliance flags (income coaching on financing applications, guarantee language, exclusive partnership claims) into per-rep rolling 30-day trends with hard escalation thresholds and auto-built evidence packets containing verbatim quotes and call links. Use whenever any call review or daily report flags a compliance issue, whenever David says "compliance trend", "compliance ledger", "who keeps flagging", "how many times has [rep] done this", "build the compliance packet", "escalation evidence", or asks whether a compliance issue is a one-off or a pattern. Also use in every daily and weekly call report, which should carry a compliance trend line, and when preparing any escalation to WFS leadership about rep conduct. Composes with closer-call-review, setter-call-review, ttw-daily-call-review, and ttw-daily-call-report; every compliance flag those produce must land in this ledger.
 ---
 
 # Compliance Trend Loop
@@ -25,7 +25,7 @@ A Google Sheet named **Compliance Ledger** in David's Drive. On first run, searc
 | rep | closer or setter name |
 | violation_type | one of the standard types below |
 | severity | clear / borderline |
-| call_link | Avoma link or call ID with timestamp of the moment |
+| call_link | Callix link or call ID with timestamp of the moment |
 | quote | the verbatim line or exchange |
 | context | one neutral line on the situation (what the prospect asked, where in the call) |
 | flagged_in | which review or report surfaced it |

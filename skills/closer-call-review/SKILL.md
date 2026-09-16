@@ -34,7 +34,7 @@ The review speaks directly to the closer in second person, in David's "we" coach
 
 Required every time:
 
-- **Call transcript.** Raw Avoma transcript or VTT of the consultation. Read it in full.
+- **Call transcript.** Raw Callix transcript or VTT of the consultation. Read it in full.
 
 Loaded automatically from the skill (read every time):
 
@@ -48,7 +48,7 @@ Treat the talk track and the objection matrix as memorized: map the call's pivot
 
 Optional:
 
-- **Loom link / Avoma link.** Not needed for the script itself. If David wants timestamps verified against Avoma, use the real timestamps from the transcript.
+- **Loom link / Callix link.** Not needed for the script itself. If David wants timestamps verified against Callix, use the real timestamps from the transcript.
 
 ---
 
@@ -231,7 +231,7 @@ Most closer calls here are TikTok Wiz Inner Circle. Use this to grade financing 
 
 **Closers (the speaker matching one of these names is the closer, never the lead):** Tom Judson (UK accent), Vidush Rana (Austin TX, "I gotcha," "fantastic"), Crue Lindgren ("right," "for sure"), Turok Tarango (California Pacific time, "hey man," "wonderful"), Paul, Kim, Harvey. David also reviews Elevated Tech closers; if the program is clearly ET, treat the named rep as the closer and grade the same fundamentals.
 
-If Avoma scrambles or omits the speaker labels, identify the closer as the one running discovery, pitching, and asking for the sale. Map a transcript first name to the full Slack name via `references/roster.md`.
+If Callix scrambles or omits the speaker labels, identify the closer as the one running discovery, pitching, and asking for the sale. Map a transcript first name to the full Slack name via `references/roster.md`.
 
 ---
 
