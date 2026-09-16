@@ -203,6 +203,58 @@ channel BEFORE five of those lines were fixed: its heuristic looks for send verb
 `Destination = ... (LIVE after commit)` line, and two lessons-ledger entries asserting the
 report posts there. The check is necessary and not sufficient; read the remaining mentions.
 
+## Update 2026-09-16 (second): identity filled, and Callix turns out to be live in Slack
+
+### Items 5 and 10 are closed
+
+**Item 5 (identity values).** The director supplied his TTW account and confirmed the WFS one;
+the Slack handle and WFS email did not need supplying at all — `slack_read_user_profile` on
+`U0BUZ6C0C91` returns them directly (`david.leonty`,
+`david.leonty@thewfsgroup.com`, WFS Group, America/New_York). Filled across 11 files:
+
+| Value | Setting |
+|---|---|
+| `david.leonty@thewfsgroup.com` | 6 SIP engines' browser account check, `weekly-qa-failure-review` REQUIRED_GOOGLE_ACCOUNT, `daily-sales-hype-v3` GOOGLE ACCOUNT, TEAM_SYNC_ORGANIZER |
+| `david.leonty@ttwhizprogram.com` | `daily-ttw-leaderboard-v4` Salesboard read account, `ttw-eow-report` call-platform account row |
+
+Still outstanding, and still not guessable: browser deviceId, Asana board name, Supabase
+project id. Each may be answered "none".
+
+**Item 10 (channel membership).** Verified rather than assumed. The tasks reference exactly
+three Slack channels, and the director is a member of all three: `C07PVHXGD38` #payments,
+`C09ADJS1V6H` #wfs-ttw-sales-reps-dm-external, `C098J2VG41E` #wfs-ttw-sales-mgmt-client (read
+only — see the prohibition above). The fourth id the prompts contain, `C0D38JNPM9`, is not a
+channel at all: it is the OnceHub booking page `BP-C0D38JNPM9`, as TROUBLESHOOTING-REPLY.md
+section E already noted. Note the heading of item 10 is now wrong in its own terms — there is
+no bot to add; membership is the director's own, because the connector posts as him.
+
+### Item 3 (call data has no source) is substantially relieved
+
+`#callix-call-updates` (C0BRDDMDGP6) is live and already carrying one structured message per
+analyzed TTW consultation, posted by an external Callix Slack bot. Enumeration, outcome, lead
+score and signal are readable through the Slack connector today, with no Callix credential.
+See CALLIX-MIGRATION.md section 0b for the field table and, more importantly, the four things
+it does not give — above all transcripts, without which call *scoring* cannot move off Avoma.
+
+So item 3 splits: the reporting half has a source now; the scoring half still does not.
+
+### New: the TTW Salesboard is world-writable by link
+
+`TTW Salesboard 2026` (`1_5YMQVATclX5gRRJfkqG-wfyWP23TYlDoLugu8Tz_W4`, owner
+joy@thewfsgroup.com) returns permission `{"role":"writer","type":"anyone"}` — anyone with the
+link can edit it, not merely view it. Several tasks read it as a source of truth for rep
+performance. This is not a blocker for running them and it is not this package's to fix, but
+whoever owns Drive hygiene should know: a task that trusts that sheet trusts anyone who has
+ever been sent the link. Worth raising with joy@thewfsgroup.com.
+
+### New: the Callix API key supplied on 2026-09-16 is wrong
+
+It is byte-identical to the OnceHub key. Two unrelated vendors did not issue the same 32-hex
+string. It was not stored anywhere; a real one is still needed if the API path (as opposed to
+the Slack channel path above) is wanted.
+
+---
+
 ## Suggested order
 
 1. Set `PROCESS_MODE: DRY_RUN` on both Pipedrive audit tasks. Before anything else.

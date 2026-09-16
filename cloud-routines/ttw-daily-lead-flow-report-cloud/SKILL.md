@@ -40,7 +40,12 @@ LIVE_TARGET: DIRECTOR_SLACK_ID (the director's own DM. The client channel #wfs-t
 JITTER_MINUTES: 0
 CLOSER_CAPACITY: 40
 TEAM_SYNC_SUBJECT_MATCH: "Team Sync" (case-insensitive substring match on meeting subject)
-TEAM_SYNC_ORGANIZER: cayden.johnson@thewfsgroup.com
+TEAM_SYNC_ORGANIZER: david.leonty@thewfsgroup.com
+# ^ Set to the sitting director on the assumption he inherited the Team Sync from the outgoing one.
+#   This is a LOOKUP KEY, not an identity: it only breaks the tie when several meetings match
+#   TEAM_SYNC_SUBJECT_MATCH. If someone else hosts the sync, change it to their address. Because the
+#   organizer is a preference and not a filter, a wrong value here degrades to subject matching rather
+#   than losing the meeting.
 
 
 =====================================================

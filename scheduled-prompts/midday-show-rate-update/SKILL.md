@@ -152,14 +152,14 @@ Per-rep: attribute each qualifying call (both paths) to its rep (the ttwhizprogr
 CAPTURE THE QUALIFYING SET: retain, for every qualifying Live call (both paths), its Avoma meeting id, title, rep first name, source tag (Webinar or S2C; path (b) is always S2C), prospect/lead identifier parsed from the title, start time, and a "missing-Consultation" boolean. This exact set feeds STEP 2B and the STEP 3 reconciliation. The number of qualifying calls MUST equal Webinar Live Calls + S2C Live Calls.
 
 =====================================================
-STEP 2B: Call Recaps from transcripts (Avoma get_meeting_transcript), IN CAYDO'S VOICE
+STEP 2B: Call Recaps from transcripts (Avoma get_meeting_transcript), IN DAVID'S VOICE
 =====================================================
 For EACH call in the STEP 2 qualifying set (both paths), pull its transcript with get_meeting_transcript and write a 1 to 2 sentence recap. Do this inside the Avoma subagent used in STEP 2 (or a fresh subagent handed only the qualifying meeting ids) so full transcripts never bloat the main context; the subagent returns only the finished one-liners, one per meeting id.
 Each recap must:
 - State the OUTCOME plainly: closed (note the offer/payment or that they paid), follow-up or next call booked, or no-close.
 - For a non-close, name what kept it from closing (the specific objection or blocker, e.g. price, spouse/partner, needs to think, timing, technical fit) OR the concrete next step agreed on the call. For a close, note what landed it or the immediate next step.
 - Be grounded ONLY in the transcript. Do not invent numbers, names, or commitments. If the transcript is too thin or garbled to tell, write "Transcript unclear; outcome not determinable" rather than guessing.
-- SOUND LIKE CAYDO WROTE IT. Never refer to the salesperson as "the rep" or "the closer" inside a recap; use the rep's first name (from the STEP 2 captured fields), or he/she once the name is established. Same for the prospect: use their name or he/she, not "the prospect" or "the lead" mid-sentence. Keep it condensed and plain, the way David would jot it down, not corporate. No filler.
+- SOUND LIKE DAVID WROTE IT. Never refer to the salesperson as "the rep" or "the closer" inside a recap; use the rep's first name (from the STEP 2 captured fields), or he/she once the name is established. Same for the prospect: use their name or he/she, not "the prospect" or "the lead" mid-sentence. Keep it condensed and plain, the way David would jot it down, not corporate. No filler.
 - Be 1 to 2 sentences, plain text, no emojis, NO em dashes.
 Attribute each recap to its rep and prospect using the STEP 2 captured fields. If a transcript cannot be fetched for a qualifying call, still list the call with "Transcript unavailable" and flag it as an anomaly.
 GOOD vs BAD voice example (illustrative only, do not copy the facts): BAD "No-close. The rep switched the prospect to a no-credit-check partner and the recording ends with no payment." GOOD "Crue almost had Frantz at $400 down, but the financing link showed the full 8k so he moved him to a no-credit-check partner and it stalled before Frantz paid."

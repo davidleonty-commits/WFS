@@ -154,7 +154,7 @@ Read every figure **exactly as shown**. Do not recompute, round, or correct. Bla
 
 ## Avoma call review activity
 
-`list_team_usage_metrics`, from_date = Sunday 06:00Z, to_date = Saturday 06:00Z (MT midnight boundaries). On 403, fall back to the Avoma REST API directly: `GET https://api.avoma.com/v1/engagement/` with the same dates and header `Authorization: Bearer $AVOMA_API_KEY`. Row = the director's own Avoma account email (the outgoing director's was `cayden.johnson@ttwhizprogram.com`). Duration as hours and minutes, never raw seconds.
+`list_team_usage_metrics`, from_date = Sunday 06:00Z, to_date = Saturday 06:00Z (MT midnight boundaries). On 403, fall back to the Avoma REST API directly: `GET https://api.avoma.com/v1/engagement/` with the same dates and header `Authorization: Bearer $AVOMA_API_KEY`. Row = the director's own call-platform account email: `david.leonty@ttwhizprogram.com` (the outgoing director's was `cayden.johnson@ttwhizprogram.com`, kept here only so an old row can still be recognised). Duration as hours and minutes, never raw seconds.
 
 ## QA gate, before every send
 

@@ -29,7 +29,7 @@ LOOKBACK_DAYS: 14
 QA_FAILURE_LOG: Google Sheet named "QA Failure Log" in the owner's Drive
   (Includes a "Known Issues" tab. If the sheet does not exist, create it per the qa-failure-loop skill and report the creation.)
 WFS_BROWSER_DEVICE_ID: 2fac653e-7302-41bb-839a-a7b4b18cab1b
-REQUIRED_GOOGLE_ACCOUNT: cayden.johnson@thewfsgroup.com
+REQUIRED_GOOGLE_ACCOUNT: david.leonty@thewfsgroup.com
 
 =====================================================
 STARTUP

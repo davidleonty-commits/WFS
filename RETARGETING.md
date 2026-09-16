@@ -1,69 +1,67 @@
 # Retargeting checklist for the new director
 
-The Section 1A connector swap is done, and the director identity is now David Leonty
-(Slack `U0BUZ6C0C91`, Pipedrive `27299998`). This file tracks what is filled in and what is
-still outstanding.
+The Section 1A connector swap is done and the director identity is now David Leonty.
+This file tracks what is filled in and what is still outstanding.
 
 | Item | Value | Status |
 |---|---|---|
 | Slack member ID (`DIRECTOR_SLACK_ID`) | `U0BUZ6C0C91` | Filled, 39 files |
+| Slack handle | `david.leonty` (display name "David Leonty") | Confirmed from the Slack connector |
 | Pipedrive user id (`OWNER_USER_ID`) | `27299998` | Filled, the 2 audit tasks |
 | Director name in voice and identity text | David / David Leonty | Swapped, 36 files |
-| Work Google account | not supplied | **Outstanding** |
-| Avoma account email | not supplied | **Outstanding** |
-| Team Sync organizer | not supplied | **Outstanding** |
+| WFS work Google account | `david.leonty@thewfsgroup.com` | Filled, 9 files |
+| TTW work Google account | `david.leonty@ttwhizprogram.com` | Filled, 2 files |
+| Team Sync organizer | `david.leonty@thewfsgroup.com` | Filled as a lookup key, verify on first run |
+| Slack channel membership | member of all 3 channels the tasks touch | Verified 2026-09-16 |
+| Self-DM channel id | not supplied | Not needed — resolved at runtime |
 | Browser deviceId (local SIP engines) | not supplied | **Outstanding** |
+| Asana board name | not supplied | **Outstanding** |
+| Supabase project id | not supplied | **Outstanding** |
+
+The Slack handle and the WFS account were not guessed: `slack_read_user_profile` on
+`U0BUZ6C0C91` returns username `david.leonty`, email `david.leonty@thewfsgroup.com`,
+organization WFS Group, timezone America/New_York.
 
 ---
 
-## 1. Still outstanding: four values
-
-Each is one value. Until they are set, the tasks named below either stop on a verification
-step or read the wrong person's data.
-
-### Work Google account (8 files)
-
-`cayden.johnson@thewfsgroup.com` is the WORK Google identity the Salesboard and the SIP docs
-are read and written under. The five local SIP engines and the sixth cloud one verify the
-attached browser is signed into it before touching anything, the leaderboard requires a work
-(not personal) account for the Salesboard read, and `weekly-qa-failure-review` carries it as
-`REQUIRED_GOOGLE_ACCOUNT`. `daily-sales-hype-v3` now carries a `<fill in: your own work Google
-account>` marker where the outgoing director's personal Gmail used to be authorized.
-
-Keep the verification step itself: it is what stops a run editing a personnel record from the
-wrong identity.
-
-```bash
-grep -rn "cayden.johnson@thewfsgroup.com" --include='*.md' .
-```
-
-### Avoma account email (1 file)
-
-`skills/ttw-eow-report` reads your own call-review activity from Avoma by account email. The
-outgoing director's was `cayden.johnson@ttwhizprogram.com`.
-
-### Team Sync organizer (1 file)
-
-`cloud-routines/ttw-daily-lead-flow-report-cloud` finds the "TTW - Team Sync" meeting by
-organizer (`TEAM_SYNC_ORGANIZER`). If you now run that meeting, it is your email; if someone
-else does, it is theirs.
+## 1. Still outstanding
 
 ### Browser deviceId (the six SIP engines, plus the QA failure review)
 
 `deviceId 2fac653e-7302-41bb-839a-a7b4b18cab1b` was the outgoing director's machine. Replace it
 with your own, or delete the id and let the task fall back to its existing "list connected
 browsers and pick the one signed into the work account" path, which already handles a wrong or
-missing deviceId.
+missing deviceId. That fallback now checks for `david.leonty@thewfsgroup.com`.
+
+### Asana board name and Supabase project id
+
+Both are one value each, and both may legitimately be "none" — say so and the steps that use
+them are deleted rather than filled. See TROUBLESHOOTING-REPLY.md section J for Supabase.
+
+### Team Sync organizer — filled, but verify
+
+`cloud-routines/ttw-daily-lead-flow-report-cloud` finds the "TTW - Team Sync" meeting by
+subject and *prefers* one organized by `TEAM_SYNC_ORGANIZER`. It is set to David on the
+assumption the sitting director inherited the meeting. Because the organizer breaks ties
+rather than filtering, a wrong value degrades to subject matching instead of losing the
+meeting — but if someone else hosts the sync, change it.
 
 ### Secrets (never in a prompt body)
 
 Store these where your environment stores secrets, per `DATA-ACCESS.md` section 6:
-`SLACK_BOT_TOKEN`, `ONCEHUB_API_KEY`, `AVOMA_API_KEY`, `PIPEDRIVE_API_TOKEN`, Google OAuth, and
-(only if you keep the `lead_quality` pipeline) `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`.
+`ONCEHUB_API_KEY`, `CALLIX_API_KEY`, `PIPEDRIVE_API_TOKEN`, Google OAuth, and (only if you keep
+the `lead_quality` pipeline) `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`. There is no Slack bot
+token: the claude.ai Slack connector posts as the connected user.
 
-The OnceHub key supplied on 2026-09-15 was never written to this repository. Rotate it in
-OnceHub (Settings, API and Webhooks) since it was shared in a chat transcript, and put the
-replacement in your secret store.
+No API key has ever been written to this repository. The OnceHub key was supplied on
+2026-09-15 and again on 2026-09-16; it lives only in gitignored `.claude/settings.local.json`.
+Rotate it in OnceHub (Settings, API and Webhooks), because it has now been pasted into a chat
+transcript twice.
+
+**The Callix key supplied on 2026-09-16 was not stored. It is character-for-character the same
+string as the OnceHub key, which two unrelated vendors cannot both have issued — it is a
+copy-paste of the wrong value. Nothing was written rather than wire a key that will fail
+authentication in a way that looks like a Callix outage.**
 
 ---
 
