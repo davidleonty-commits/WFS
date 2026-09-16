@@ -16,9 +16,9 @@ Purpose: the Daily Call Report Publisher runs at 6:30 PM MT, which is too early 
 STOP CONDITION (timezone-safe): compute the day of week in Mountain Time (America/Denver), never the session or UTC day. Run Tuesday through Saturday MT. On Sunday and Monday MT, produce no output and end.
 
 DIRECTOR_SLACK_ID: U0BUZ6C0C91
-SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
+SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 
-DELIVERY_MODE: TEST. Any message goes to the director's Slack DM, channel = DIRECTOR_SLACK_ID, via `chat.postMessage` on that bot token only. Never a second sender, never a team channel.
+DELIVERY_MODE: TEST. Any message goes to the director's Slack DM, channel = DIRECTOR_SLACK_ID, via `slack_send_message` on that connector only. Never a second sender, never a team channel.
 
 STEP 1, DEFINE THE SWEEP WINDOW
 Compute today's local Mountain date. The sweep covers lead_quality rows whose call_date falls in the last 7 local days, inclusive of yesterday. Seven days rather than one, because a deal can be won several days after the call and one nightly pass would miss it.

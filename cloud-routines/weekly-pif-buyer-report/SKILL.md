@@ -15,7 +15,7 @@ Profile every TikTok Wiz deal that closed PAID IN FULL during the past week, and
 Accuracy beats completeness. A blank field is acceptable. A fabricated field is a task failure. ALWAYS publish the confirmed paid-in-full buyers you have this week, even if some are missing a call and even if only a couple qualify. Note what is missing rather than holding the report. Confirmed paid in full is defined by the money: the balance remaining is fully collected, no matter how many payments it took.
 MODE
 TEST MODE is currently active. Deliver only to the director's Slack DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91).
-LIVE MODE target, once David explicitly declares this task out of test phase: post to the Slack channel #wfs-ttw-sales-mgmt-client with chat.postMessage on the workspace bot token.
+LIVE MODE target, once David explicitly declares this task out of test phase: post to the Slack channel #wfs-ttw-sales-mgmt-client with `slack_send_message` on the Slack connector.
 Do NOT post to #wfs-ttw-sales-mgmt-client until David has explicitly said this task is live. If you are unsure which mode you are in, default to TEST and send to the DM.
 STANDING RULES
 
@@ -27,7 +27,7 @@ STANDING RULES
    * Do ALL work through hosted connectors and direct APIs only: Pipedrive MCP, Avoma MCP, the Slack Web API, and Google Drive.
    * Write the running log via the Google Drive connector, not via a browser session.
    * If you find yourself reaching for a browser or a local file, stop. The task is misconfigured. Report that to David's DM instead of proceeding.
-* Slack delivery goes exclusively through `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header Authorization: Bearer $SLACK_BOT_TOKEN). One sender only: never a personal user token, never a second sender.
+* Slack delivery goes exclusively through `slack_send_message` on the claude.ai Slack connector (the claude.ai Slack connector, which posts as you). One sender only: never a second sender.
 * Read-only on all sources. Never edit the Salesboard, Pipedrive, or Avoma. Never set Avoma meeting outcomes, purposes, or privacy. The only write target in this task is the running log Google Sheet described below.
 * No em dashes anywhere in any output.
 * No emojis directly after any rep name.
@@ -147,7 +147,7 @@ Columns: Week Ending, Name, Won Date, Closer, City, State, Age, Age Source (STAT
 Before writing, READ the existing sheet (if more than one file shares this title, read the one with the newest createdTime, it is the most complete superset). You need it to compute the trailing 4-week PIF average and the rolling trend line in the Slack post. Those comparisons must come from real logged history, never invented. On the first run there is no history, so say so plainly instead of making up a comparison.
 KNOWN LIMITATION: the Google Drive connector has no Sheets append/update capability, so you cannot append in place. Append by reading the newest log in full and creating a new file with all prior rows plus this week's. If that inline rewrite is not feasible in the run, write the updated log as a CSV and deliver it to the session for David to drop into Drive, and say so. Do NOT skip logging silently. Publishing the Slack post does NOT depend on the log write succeeding; publish either way.
 STEP 8: BUILD AND SEND THE SLACK POST
-Send via `chat.postMessage` on the workspace bot token to the director's DM (channel = DIRECTOR_SLACK_ID). Use Slack mrkdwn. Structure:
+Send via `slack_send_message` on the Slack connector to the director's DM (channel = DIRECTOR_SLACK_ID). Use Slack mrkdwn. Structure:
 HEADER: one line of context in David's voice, then the CONFIRMED PIF buyer count (deduped, balance fully collected) and total cash collected from those confirmed buyers, and how that compares to the trailing 4-week PIF average from the running log. In one line, note how many of those buyers had a full call analysis versus how many are CRM-only because no usable transcript was found, and separately note the count of any labelled-PIF-but-balance-owed deals that were held out.
 PER-LEAD BLOCKS, one per buyer, in this exact format:
 [Name] | [City, State] | closed [day] by [Closer] • Who they are: [age if known, occupation, household context] • Came from: [UTM source] / [campaign or webinar cohort] | opted in [X] days before closing • Experience: [beginner / tried and failed / has sold online before] • Pain: [primary pain point, close to their own words] • Why they bought: [reason for buying, near-verbatim] • What flipped them: [the specific proof, reframe, or moment] • Objection they raised first: [top objection]

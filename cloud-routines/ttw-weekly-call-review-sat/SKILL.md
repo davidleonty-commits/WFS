@@ -13,7 +13,7 @@ Run the weekly TikTok Wiz sales call review report.
 
 CONFIG
 DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The completion DM goes here and nowhere else.)
-SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
+SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 
 Invoke the `ttw-weekly-call-review` skill and follow it end to end. This is an unattended scheduled run: do not stop to ask clarifying questions or wait for confirmation at the skill's normal checkpoints. Make the reasonable call, state the assumption in your final summary, and keep going.
 
@@ -41,10 +41,10 @@ DO NOT SEND THE MANAGEMENT-TEAM SLACK MESSAGE. David sends that one himself. Dra
 Also: keep any compliance findings out of the Slack draft. Report those separately in your response to David.
 
 Final step, required: DM David on Slack when the run is complete
-- After the report is finished and delivered, send the director a Slack DM with `chat.postMessage`, `channel` = DIRECTOR_SLACK_ID, nothing scheduled so it goes out immediately.
+- After the report is finished and delivered, send the director a Slack DM with `slack_send_message`, `channel` = DIRECTOR_SLACK_ID, nothing scheduled so it goes out immediately.
 - This DM is separate from the management-team draft above and IS meant to be sent. It is a completion notice to David only. Do not post it to a channel.
 - Keep it to a few lines: the report is ready, the date window covered, call count and gradeable count, close count and close rate, average rep score, FDQ percentage, the estimated FDQ opportunity cost, the Google Sheet link, and a note that the management-team Slack draft is waiting in the session for him to review and send. Flag any QA gate failure or compliance finding in one line so he knows to open the session.
-- Send this DM even if the run had problems. If the report could not be completed, DM him saying what halted it and how far it got. If `chat.postMessage` fails outright, retry it ONCE after a short pause; there is no second sender.
+- Send this DM even if the run had problems. If the report could not be completed, DM him saying what halted it and how far it got. If `slack_send_message` fails outright, retry it ONCE after a short pause; there is no second sender.
 - Confirm the DM from the return value only (ok = true, a non-empty ts, and a returned channel matching DIRECTOR_SLACK_ID) and say so in your final summary.
 
 Finish with a short summary: call count, gradeable count, close count and rate, average rep score, bucket counts with percentages, FDQ percentage, whether the completion DM went out, and anything that failed a QA gate or needed a judgment call.

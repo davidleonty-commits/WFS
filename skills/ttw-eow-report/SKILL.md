@@ -1,6 +1,6 @@
 ---
 name: ttw-eow-report
-description: David's weekly End of Week sales report for TikTok Wiz: team KPIs, a prose rep summary, his call review activity, per rep Call Analysis graded against the five coaching categories, tactical themes, and the team touchpoint close. Manual run only, never scheduled. David supplies a Closer Sales Dashboard screenshot plus any talking points, and every number comes from that screenshot. Never build a rep table. Weeks run Sunday through Friday. Always delivered with the Slack bot token to the director's DM, never a channel. Use when he says "run the EOW report", "end of week report", "weekly sales summary", "build my Friday message", "weekly KPI recap", or sends a Sales Rep Table View screenshot. Always use it even when the ask sounds simple, because the five categories, the no dashes rule, the no table rule, first names only, the forward looking coaching frame, and DM only delivery are what he corrected and are easy to get wrong.
+description: David's weekly End of Week sales report for TikTok Wiz: team KPIs, a prose rep summary, his call review activity, per rep Call Analysis graded against the five coaching categories, tactical themes, and the team touchpoint close. Manual run only, never scheduled. David supplies a Closer Sales Dashboard screenshot plus any talking points, and every number comes from that screenshot. Never build a rep table. Weeks run Sunday through Friday. Always delivered with the Slack Slack connector to the director's DM, never a channel. Use when he says "run the EOW report", "end of week report", "weekly sales summary", "build my Friday message", "weekly KPI recap", or sends a Sales Rep Table View screenshot. Always use it even when the ask sounds simple, because the five categories, the no dashes rule, the no table rule, first names only, the forward looking coaching frame, and DM only delivery are what he corrected and are easy to get wrong.
 ---
 
 # TTW End of Week Report
@@ -18,15 +18,15 @@ The Friday leadership message. Always a DRAFT for David to review and post himse
 
 ## Hard rule 1: one sender, DM only
 
-Every outbound message uses `chat.postMessage` on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`).
+Every outbound message uses `slack_send_message` on the claude.ai Slack connector (the claude.ai Slack connector, which posts as you).
 
 Parameters every time: `channel` = DIRECTOR_SLACK_ID U0BUZ6C0C91, nothing scheduled so it sends immediately. Confirm from the return value: `ok` = true, a non-empty `ts`, and a returned `channel` matching DIRECTOR_SLACK_ID.
 
 - **Never** a personal user token and never a second sender.
 - **Never** post to a channel. The only destination ever allowed is the director's DM, DIRECTOR_SLACK_ID.
-- If the send fails outright, retry `chat.postMessage` ONCE. There is no second sender, so a failed retry is reported, not worked around.
+- If the send fails outright, retry `slack_send_message` ONCE. There is no second sender, so a failed retry is reported, not worked around.
 
-Reading is separate from sending. Use `conversations.history` and `conversations.replies` to gather source material from anywhere. Reading is unrestricted, sending is DM only.
+Reading is separate from sending. Use `slack_read_channel` and `slack_read_thread` to gather source material from anywhere. Reading is unrestricted, sending is DM only.
 
 ## Hard rule 2: never fabricate the numbers
 
@@ -158,7 +158,7 @@ Read every figure **exactly as shown**. Do not recompute, round, or correct. Bla
 
 ## QA gate, before every send
 
-1. Destination is DIRECTOR_SLACK_ID and the call is `chat.postMessage` on the bot token. No channel, no second sender.
+1. Destination is DIRECTOR_SLACK_ID and the call is `slack_send_message` on the Slack connector. No channel, no second sender.
 2. No rep table and no code block of rep metrics anywhere.
 3. Zero dash characters except the name separator hyphens in Call Analysis.
 4. Every Call Analysis bullet lands on one of the five categories, introduces it in David's words rather than as a bare label, varies that lead in across reps, and says what the rep needs to **do**. If a bullet describes what went wrong instead of what to fix, rewrite it.

@@ -1,0 +1,14 @@
+{
+  "_instructions": "Copy this file to replacements.json, fill every value from the director's answers (see START-HERE.md, step 1). Never put an API key or token in this file. Leave SUPABASE_PROJECT_ID blank if Supabase is not being used. Leave ASANA_BOARD_NAME blank if board-orchestrator is not being used. Leave BROWSER_DEVICE_ID blank; the SIP engines should run without a browser (TROUBLESHOOTING-REPLY.md section F).",
+  "FULL_NAME": "<director's full name, e.g. David Smith>",
+  "FIRST_NAME": "<what the team calls them, e.g. David>",
+  "SLACK_HANDLE": "<their Slack handle without the @, e.g. david.smith>",
+  "SLACK_USER_ID": "<their Slack member id, starts with U>",
+  "SLACK_SELF_DM_ID": "<the channel id of their own self-DM, starts with D>",
+  "WFS_EMAIL": "<their @thewfsgroup.com Google account>",
+  "TTW_EMAIL": "<their @ttwhizprogram.com Google account, or blank if same as WFS_EMAIL>",
+  "PIPEDRIVE_USER_ID": "<their Pipedrive user id, 8 digits>",
+  "SUPABASE_PROJECT_ID": "",
+  "ASANA_BOARD_NAME": "",
+  "BROWSER_DEVICE_ID": ""
+}

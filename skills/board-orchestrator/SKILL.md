@@ -218,9 +218,8 @@ changes — Asana already logs those.
 
 ## 7. When to message David
 
-Channel: **`chat.postMessage`** on the WFS Group workspace bot token (Slack MCP connector,
-or a direct POST to https://slack.com/api/chat.postMessage with header
-`Authorization: Bearer $SLACK_BOT_TOKEN`), `channel` = DIRECTOR_SLACK_ID (U0BUZ6C0C91). Operational alerts go out immediately. If the send fails outright, retry
+Channel: **`slack_send_message`** on the claude.ai Slack connector, which posts as YOU
+(the connected user), never as a bot. `channel` = DIRECTOR_SLACK_ID (U0BUZ6C0C91). Operational alerts go out immediately. If the send fails outright, retry
 it ONCE: there is no second sender, so a failed retry is reported in the pass summary
 instead.
 

@@ -171,7 +171,7 @@ Build the report in this exact structure. Put `&nbsp;` on its own line between s
 
 ## Delivery to Slack DM
 
-Send the finished report to the director's own Slack DM with `chat.postMessage` on the WFS Group workspace bot token. Set `channel` to the director's Slack member ID (DIRECTOR_SLACK_ID U0BUZ6C0C91). The report is private to him and goes to no team or exec channel, so naming a closer in a missed-close line is fine here.
+Send the finished report to the director's own Slack DM with `slack_send_message` on the claude.ai Slack connector. Set `channel` to the director's Slack member ID (DIRECTOR_SLACK_ID U0BUZ6C0C91). The report is private to him and goes to no team or exec channel, so naming a closer in a missed-close line is fine here.
 
 **Send, do not draft.** The run pulls, scores, builds, and sends with no approval step. This is the scheduled daily behavior.
 

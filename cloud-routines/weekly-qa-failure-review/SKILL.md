@@ -22,8 +22,8 @@ DELIVERY_MODE: TEST
   (TEST or LIVE. TEST sends only to TEST_TARGET, the owner's DM. Keep TEST until officially out of test mode.)
 DIRECTOR_SLACK_ID: U0BUZ6C0C91
 TEST_TARGET: DIRECTOR_SLACK_ID
-SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
-LIVE_TARGET: @cayden
+SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
+LIVE_TARGET: DIRECTOR_SLACK_ID
   (This task has no channel destination by design. Its output is owner-only in both modes.)
 LOOKBACK_DAYS: 14
 QA_FAILURE_LOG: Google Sheet named "QA Failure Log" in the owner's Drive
@@ -87,7 +87,7 @@ This task logs its own QA failures and retries to the QA Failure Log, same as an
 =====================================================
 DELIVERY
 =====================================================
-Send with `chat.postMessage` on the bot token above to TEST_TARGET while DELIVERY_MODE is TEST. One sender, one send only. Delivery is proven by the return value: ok = true, a non-empty ts, and a returned channel matching the destination.
+Send with `slack_send_message` on the connector above to TEST_TARGET while DELIVERY_MODE is TEST. One sender, one send only. Delivery is proven by the return value: ok = true, a non-empty ts, and a returned channel matching the destination.
 
 Message contents:
 - Two-line summary: worst offender, root cause, patch shipped or proposed.

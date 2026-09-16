@@ -14,7 +14,7 @@ PURPOSE: Source this week's world-class sales coaching clips from TikTok Wiz con
 
 CONFIG
 DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The only delivery destination for this task.)
-SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
+SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 Runs as a remote cloud task, fully connector-based, no browser, autonomous — never ask the user questions; the user is not present.
 
 Invoke the `anthropic-skills:ttw-avoma-clip-finder` skill and follow its full workflow: score how reps executed the Decision Leadership Objection Matrix across the week's calls, identify the best teachable moments (Great Demo / objection handling / Missed Opportunity), apply the strict clip eligibility gate and verbatim clip-anchor rule, and hand David exact clip-in and clip-out anchors so each snippet is one click to create.
@@ -30,7 +30,7 @@ DATA SOURCE FALLBACK: the Avoma MCP is PRIMARY. If a native Avoma tool fails aft
 QA FAILURE LOGGING
 On any QA failure, and on any pass that required one or more fix-and-recheck retries, read the qa-failure-loop skill and append a row to the QA Failure Log sheet in Drive with full specifics (stage, class, exact error or wrong value, retries count, outcome, known-issue match) before sending any failure DM. If the failure matches a Known Issues playbook row, apply that documented fix during the retry cycle and log the match. If a playbook fix fails to resolve the issue, flag that in both the log and the DM, because a rotted workaround is itself a finding. The QA Failure Log is an additional write target for this task.
 
-DELIVERY: Deliver the finished clip list to the director's Slack DM with `chat.postMessage` on the bot token above, channel = DIRECTOR_SLACK_ID, sent immediately. Send exactly once; on delivery failure retry `chat.postMessage` once, then stop, since there is no second sender. Delivery is proven by the return value only: ok = true, a non-empty ts, and a returned channel matching DIRECTOR_SLACK_ID.
+DELIVERY: Deliver the finished clip list to the director's Slack DM with `slack_send_message` on the connector above, channel = DIRECTOR_SLACK_ID, sent immediately. Send exactly once; on delivery failure retry `slack_send_message` once, then stop, since there is no second sender. Delivery is proven by the return value only: ok = true, a non-empty ts, and a returned channel matching DIRECTOR_SLACK_ID.
 
 SCHEDULE: Runs Mondays per the schedule itself — no day-of-week gate needed in the prompt.
 

@@ -12,7 +12,7 @@ Call reviews without follow-through are content, not coaching. This loop closes 
 1. **Never use em dashes.** Anywhere, including ledger entries and Slack output.
 2. **Evidence or nothing.** A behavior is only "present" in a call if it can be quoted or timestamped from the transcript. A behavior is only "absent" if the situation where it would occur actually arose and the rep handled it differently. A call with no objections proves nothing about objection handling.
 3. **The ledger is the single source of truth.** Never reconstruct watch status from memory of past conversations. Read the ledger, then write to it.
-4. **Delivery rules apply.** Any Slack output goes out with `chat.postMessage` on the WFS Group workspace bot token, one sender, routed to the director's DM while in test mode. The ledger is this skill's only write target; never touch the salesboard or any other resource doc.
+4. **Delivery rules apply.** Any Slack output goes out with `slack_send_message` on the claude.ai Slack connector, one sender, routed to the director's DM while in test mode. The ledger is this skill's only write target; never touch the salesboard or any other resource doc.
 5. **This tracks coaching follow-through, not gotchas.** The tone in any output is a coach checking that reps are getting better, not building a case by default. The case builds itself only when the behavior persists.
 
 ## The ledger

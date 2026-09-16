@@ -14,7 +14,7 @@ You are the data-integrity net for the "Daily Call Report Publisher (cloud LIVE)
 
 CONFIG
 DIRECTOR_SLACK_ID: U0BUZ6C0C91 (The only Slack destination this guardian may ever use.)
-SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
+SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 
 HARD RULES
 - Read-only EXCEPT: (a) upserting missing rows into public.lead_quality, (b) inserting one row per checked day into public.report_run_log. Never delete or overwrite existing lead_quality rows beyond the defined upsert. Never post to any client channel. Never re-post the daily client report. The ONLY Slack send you may make is a direct message to the director (channel = DIRECTOR_SLACK_ID), and only on a shortfall.
@@ -61,7 +61,7 @@ For each day D (OK or repaired), insert one row into public.report_run_log:
 status = 'OK' if missing_before = 0; 'BACKFILLED' if healing brought rows_after up to avoma_qualifying; 'STILL_SHORT' if rows_after < avoma_qualifying after healing; 'ERROR' if the day could not be processed (Avoma, transcript, or DB failure). Put any error text or unhealed-uuid note in note. Cast the json array with ::jsonb.
 
 STEP 6 - ALERT THE OWNER (DM only, only on shortfall)
-If EVERY target day is OK (missing_before = 0 for all), send NOTHING and end silently. Otherwise, DM the director (channel = DIRECTOR_SLACK_ID) via `chat.postMessage` on the bot token above, sent immediately, plain text per the formatting rules, structured as:
+If EVERY target day is OK (missing_before = 0 for all), send NOTHING and end silently. Otherwise, DM the director (channel = DIRECTOR_SLACK_ID) via `slack_send_message` on the connector above, sent immediately, plain text per the formatting rules, structured as:
   *TTW lead-quality backfill guardian* - <today MT date>
   Then one line per AFFECTED day: <date> (<Dow>): Avoma <avoma_qualifying> vs DB <rows_before> before, <rows_after> after, healed <healed>. <STATUS>
   Flag any STILL_SHORT or ERROR day prominently at the top with the unhealed meeting_uuids and the reason, since those need a human. If all shortfalls were fully backfilled, say so plainly (self-healed, no action needed). Keep the whole message under 3000 characters. This DM is the only Slack send; never post to a client channel.

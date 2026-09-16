@@ -18,52 +18,49 @@ data-access method changed.
 
 ## 1. Slack
 
-One sender, always: the WFS Group workspace **bot token**. Never a personal user token, never a
-second sender. (The old rule said "never the native Slack connector" only because the Lovable app
-held the bot token. It no longer does, so the native Slack API IS the sender now. The
-single-sender discipline is unchanged.)
+One sender, always: **the claude.ai Slack connector**, which posts as YOU (the connected user),
+never as a bot. This is the exact equivalent of what the retired app did: its
+`slack_auth_whoami` returned `user cayden.johnson, bot_id null`, i.e. it posted as the director
+himself, not as an application.
 
-Reach the Slack Web API either through the Slack MCP connector in claude.ai, or with a direct
-HTTPS call: `POST https://slack.com/api/<method>` with `Authorization: Bearer $SLACK_BOT_TOKEN`
-and `Content-Type: application/json`.
+That matters beyond plumbing. These messages are written to sound like the director wrote them
+("in David's voice", "as if David is personally recapping the call"). A bot-authored message
+with the director's voice reads wrong, and rep mentions behave differently. **No bot token is
+needed, and none should be created.**
+
+The old rule "never the native Slack connector" existed only so two senders could not race each
+other. The native connector IS the single sender now. Delete the lock, keep the discipline.
 
 | Old call | New call |
 |---|---|
-| `slack_schedule_message(text, channel)` | `chat.postMessage(channel, text)` |
-| `slack_schedule_message(..., thread_ts)` | `chat.postMessage(channel, text, thread_ts)` |
-| `slack_schedule_message(..., send_at_mt)` | `chat.scheduleMessage(channel, text, post_at)` where `post_at` is that Mountain time as Unix epoch seconds |
-| `slack_schedule_message(..., jitter_minutes = 0)` | `chat.postMessage`, sent immediately |
-| `slack_schedule_message(..., jitter_minutes = N > 0)` | pick a random whole number of minutes `j` in `[0, N]`; `j = 0` sends immediately with `chat.postMessage`, otherwise `chat.scheduleMessage` with `post_at = now + j minutes` |
-| `slack_schedule_message(..., agent = "...")` | no equivalent, drop the field (it was an internal label in the Lovable app) |
+| `slack_schedule_message(text, channel)` | `slack_send_message(channel, text)` |
+| `slack_schedule_message(..., thread_ts)` | `slack_send_message(channel, text, thread_ts)` |
+| `slack_schedule_message(..., send_at_mt)` | `slack_schedule_message` with the send time |
+| `slack_schedule_message(..., jitter_minutes)` | no equivalent, and none needed: it was always 0 |
+| `slack_schedule_message(..., agent = "...")` | no equivalent, drop the field |
 | `slack_schedule_message(..., mentions = [...])` | no equivalent and none needed: mentions are inline `<@USERID>` tokens in `text`, each rep tagged exactly once |
-| `slack_send_sos(target, text)` | no second sender exists. Retry `chat.postMessage` ONCE after a short pause; if the retry also fails, report the failure in the run summary and send nothing else |
-| `slack_list_pending()` | `chat.scheduledMessages.list`. Only meaningful for messages scheduled with `chat.scheduleMessage`; an immediate `chat.postMessage` never enters a queue, so a "wait for it to clear pending" loop has nothing to wait for and is dropped |
-| `slack_cancel_message(id)` | `chat.deleteScheduledMessage(channel, scheduled_message_id)`, and only while the message is still scheduled and unposted |
-| `slack_read_channel(channel_id, limit, oldest, latest)` | `conversations.history(channel, limit, oldest, latest)` |
-| `slack_read_thread(channel_id, message_ts)` | `conversations.replies(channel, ts)` |
-| `slack_send_message(channel_id, text)` | `chat.postMessage(channel, text)` (same single sender as everything else) |
-| `slack_search_users(query)` | `users.list`, or `users.lookupByEmail(email)` |
+| `slack_send_sos(target, text)` | no second sender exists. Retry `slack_send_message` ONCE, then report the failure |
+| `slack_list_pending()` | drop it. The prompts already say it was never a delivery test |
+| `slack_cancel_message(id)` | `slack_cancel_message`, and only for a message scheduled and not yet posted |
+| `slack_read_channel(...)` | `slack_read_channel` (same name on the connector) |
+| `slack_read_thread(...)` | `slack_read_thread` (same name) |
+| `slack_send_message(...)` | `slack_send_message` (same name) |
+| `slack_search_users(query)` | `slack_search_users` |
 
-**Delivery verification.** The prompts' DELIVERY VERIFICATION steps used to check the Lovable
-queue row. The direct-API equivalent, and it is still the RETURN VALUE of the send, never a
-follow-up read:
+**Delivery verification.** The RETURN VALUE of the send, never a follow-up read: `ok` plus a
+non-empty `ts`, and a returned channel matching the DELIVERY_MODE destination. Any of those
+missing means the send is NOT verified: report it, do not re-send blindly.
 
-1. `ok: true` in the response body, and
-2. a non-empty `ts` (`chat.postMessage`) or `scheduled_message_id` (`chat.scheduleMessage`), and
-3. the returned `channel` id equals the destination the DELIVERY_MODE resolved to.
+**Channel membership.** Because the connector posts as you, YOU must be a member of every
+destination channel. There is no bot to invite.
 
-Any of the three missing means the send is NOT verified: report the failure, do not re-send
-blindly (a blind re-send is how a report gets posted twice).
+- `#wfs-ttw-sales-reps-dm-external` (C09ADJS1V6H), reps channel, includes external members
+- `#wfs-ttw-sales-mgmt-client` (C098J2VG41E), client-facing
+- `#payments` (C07PVHXGD38), read only
 
-**Errors.** `invalid_auth` / `not_authed` means the bot token is missing or rotated: report that
-`SLACK_BOT_TOKEN` needs refreshing, and send nothing else. `channel_not_found` or
-`not_in_channel` means the bot is not in that conversation: report it and never improvise a
-different destination. `msg_too_long` means the 3000-character body cap was missed upstream.
-
-**Scopes** the token needs: `chat:write`, `chat:write.public`, `channels:read`,
-`channels:history`, `groups:history`, `im:write`, `im:history`, `users:read`.
-
----
+**Errors.** Not authorized means the Slack connector needs reconnecting under your own account.
+`channel_not_found` or `not_in_channel` means you are not a member of that conversation: report
+it, never improvise a different destination.
 
 ## 2. OnceHub
 

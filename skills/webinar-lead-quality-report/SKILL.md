@@ -170,7 +170,7 @@ Put `&nbsp;` on its own line between sections so Slack renders spacing.
 
 ## Delivery
 
-TEST MODE until David explicitly declares this skill out of test mode: send output with **`chat.postMessage`** on the WFS Group workspace bot token (Slack MCP connector, or a direct POST to https://slack.com/api/chat.postMessage with header `Authorization: Bearer $SLACK_BOT_TOKEN`), sent immediately, to the director's DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91). One sender only: never a personal user token, never a second sender, never a team channel while in test mode.
+TEST MODE until David explicitly declares this skill out of test mode: send output with **`slack_send_message`** on the claude.ai Slack connector (the claude.ai Slack connector, which posts as you), sent immediately, to the director's DM (channel = DIRECTOR_SLACK_ID U0BUZ6C0C91). One sender only: never a second sender, never a team channel while in test mode.
 
 Split at webinar-block boundaries if a message would exceed the roughly 3000-character Slack block cap, never mid-lead.
 

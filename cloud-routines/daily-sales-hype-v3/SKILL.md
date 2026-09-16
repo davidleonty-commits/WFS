@@ -14,7 +14,7 @@ PURPOSE: Write David's daily sales hype message for the TTW closer/setter Slack 
 
 CONFIG
 DIRECTOR_SLACK_ID: U0BUZ6C0C91 (This is the TEST destination and the destination for every failure DM.)
-SLACK ACCESS: the WFS Group workspace bot token on the Slack Web API, reached either through the Slack MCP connector or a direct POST to https://slack.com/api/<method> with header Authorization: Bearer $SLACK_BOT_TOKEN. One sender only: never a personal user token, never a second sender.
+SLACK ACCESS: the claude.ai Slack connector, which posts as YOU (the connected user), never as a bot. One sender only: never a second sender.
 Runs as a remote cloud task, fully connector-based, no browser, autonomous — never ask the user questions; the user is not present.
 
 ROLE
@@ -110,7 +110,7 @@ QA FAILURE LOGGING
 On any QA failure, and on any pass that required one or more fix-and-recheck retries, read the qa-failure-loop skill and append a row to the QA Failure Log sheet in Drive with full specifics (stage, class, exact error or wrong value, retries count, outcome, known-issue match) before sending any failure DM. If the failure matches a Known Issues playbook row, apply that documented fix during the retry cycle and log the match. If a playbook fix fails to resolve the issue, flag that in both the log and the DM, because a rotted workaround is itself a finding. The QA Failure Log is an additional write target for this task. KNOWN TOOLING LIMIT (2026-07-29): the Google Drive connector in cloud sessions exposes read plus create_file only, with no tool to append a row to an existing Sheet. When the append is therefore impossible, do not block or retry the run on it: include the fully formed log row inline in the failure DM, clearly labeled for manual paste, and note that the append was not possible.
 
 DELIVERY
-Deliver ONLY with `chat.postMessage` on the bot token above, one sender, no other delivery method under any circumstance. Verify the send from its RETURN VALUE and nothing else: ok = true, a non-empty ts, and a returned channel matching the destination the mode resolved to. If the send fails, retry chat.postMessage ONCE; there is no second sender.
+Deliver ONLY with `slack_send_message` on the connector above, one sender, no other delivery method under any circumstance. Verify the send from its RETURN VALUE and nothing else: ok = true, a non-empty ts, and a returned channel matching the destination the mode resolved to. If the send fails, retry `slack_send_message` ONCE; there is no second sender.
 - TEST MODE (default until David explicitly says this task is out of test mode): send as a Slack DM to the director (channel = DIRECTOR_SLACK_ID).
   TEST MARKER (cloud-migration testing only): while DELIVERY_MODE is TEST, the delivered message MUST begin with the emoji 🙌🏽 followed by a space, before all other content. This tags it as the CLOUD task test DM so the owner can compare it against the local task output. The QA gate must verify the marker is present in TEST. When this task is flipped to LIVE, delete this marker rule: the 🙌🏽 must NEVER appear in a live channel post.
 - LIVE MODE (only after David explicitly says it's live): send to the channel #wfs-ttw-sales-reps-dm-external.
