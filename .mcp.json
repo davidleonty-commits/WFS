@@ -1,21 +1,3 @@
 {
-  "mcpServers": {
-    "oncehub": {
-      "type": "sse",
-      "url": "https://mcp.oncehub.com/sse",
-      "headers": {
-        "API-Key": "${ONCEHUB_API_KEY}"
-      }
-    },
-    "Callix": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@callixorg/mcp-server"
-      ],
-      "env": {
-        "CALLIX_API_KEY": "${CALLIX_API_KEY}"
-      }
-    }
-  }
+  "mcpServers": {}
 }

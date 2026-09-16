@@ -70,12 +70,27 @@ def envelope(body):
     return "\n   ".join(parts)
 
 
-print("1. AUTH and MASTER PAGES  (GET /v2/master_pages)")
-status, body = get("/master_pages", {"limit": "5"})
+print("0. REACHABILITY  (is the host allowed out of this environment at all?)")
+status, body = get("/booking-calendars", {"limit": "1"})
+if status is None:
+    print(f"   {body}")
+    sys.exit(
+        "   The request never reached OnceHub. If this says 'CONNECT tunnel failed, response 403',\n"
+        "   api.oncehub.com is not on this environment's network policy allowlist. That is a settings\n"
+        "   change at claude.ai -> Code -> Environments, not something a key or this script can fix.\n"
+        "   Add api.oncehub.com (and app.callix.io, which is blocked the same way), then re-run."
+    )
+print(f"   reached OnceHub, HTTP {status}")
+
+print("\n1. AUTH and BOOKING CALENDARS  (GET /v2/booking-calendars)")
 print(f"   HTTP {status}")
+if status == 404:
+    sys.exit("   404 here means the resource name is wrong for this account; v1 called it /master_pages.")
+if status in (401, 403):
+    sys.exit("   Auth rejected. Check the key, and that it has not been rotated.")
 if status != 200:
     print(f"   {body}")
-    sys.exit("   Stop here: fix auth before checking anything else.")
+    sys.exit("   Stop here: fix this before checking anything else.")
 print("   " + envelope(body))
 print("   -> the prompts say 'paginate to the end'. Confirm which field above carries the cursor.")
 
@@ -117,4 +132,28 @@ if status == 200:
 else:
     print(f"   {body if isinstance(body, str) else json.dumps(body)[:200]}")
 
-print("\nDone. Nothing above contains a booking's contents or a customer's details.")
+print("\n4. CALLIX  (same network policy; see CALLIX-MIGRATION.md section 0a)")
+ck = os.environ.get("CALLIX_API_KEY")
+if not ck:
+    print("   CALLIX_API_KEY not set, skipping.")
+else:
+    for base in ("https://app.callix.io/api/v1", "https://api.callix.io/v1"):
+        req = urllib.request.Request(
+            base + "/calls?limit=1",
+            headers={"Authorization": f"Bearer {ck}", "Accept": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                b = json.loads(r.read().decode())
+            print(f"   {base} -> HTTP {r.status}")
+            print("   " + envelope(b))
+            print("   -> paste the row fields above into every CALLIX FIELD NAMES UNVERIFIED gate,")
+            print("      map transcript_ready / meeting_state / organizer_email / start_at /")
+            print("      is_internal / attendees to their real names, then delete the gates.")
+            break
+        except urllib.error.HTTPError as e:
+            print(f"   {base} -> HTTP {e.code} {e.read().decode()[:120]}")
+        except Exception as e:
+            print(f"   {base} -> {type(e).__name__}: {e}")
+
+print("\nDone. Nothing above contains a booking\'s contents or a customer\'s details.")
